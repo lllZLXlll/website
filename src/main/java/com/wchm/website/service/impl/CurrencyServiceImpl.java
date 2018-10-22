@@ -19,10 +19,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.StringUtils;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.http.HttpService;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
@@ -31,6 +40,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Value("${wchm.company-address}")
     private String companyAddress;
+
+    @Value("${wchm.infura-api}")
+    private String infuraApi;
 
     @Autowired
     CurrencyMapper currencyMapper;
@@ -166,17 +178,19 @@ public class CurrencyServiceImpl implements CurrencyService {
                 }
 
                 long result;
+                // 用户钱包地址
+                String address = currency.getAddress();
                 // 查询当前最大期数
                 int periods = currencyRecordMapper.queryCurrencyRecordMaxPeriods(id);
 
                 // TODO 调用web3j转账方法
-
+                int status = web3jTransaction(companyAddress, address, money);
 
                 // 转账记录表中增加一条记录
                 CurrencyRecord record = new CurrencyRecord();
                 record.setPool_id(id);
                 record.setFrom(companyAddress);
-                record.setTo(currency.getAddress());
+                record.setTo(address);
                 record.setCurrency(money);
                 record.setPeriods(periods + 1);
                 record.setState(1); // TODO 此处要根据web3j的接口返回结果修改此处
@@ -185,7 +199,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                 record.setTime(new Date());
                 result = currencyRecordMapper.recordSave(record);
                 if (result <= 0) {
-                    log.error("-----error-----向转账记录表中增加一条记录失败，带币池表id：" + id +"，转账金额：" + money + "-----");
+                    log.error("-----error-----向转账记录表中增加一条记录失败，带币池表id：" + id + "，转账金额：" + money + "-----");
                     throw new RuntimeException("转账失败，转账出现异常，请联系技术！");
                 }
 
@@ -197,7 +211,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                 currency.setSurplus(s);
                 result = currencyMapper.currencyUpdate(currency);
                 if (result <= 0) {
-                    log.error("-----error-----修改代币池表中记录失败，带币池表id：" + id +"，修改字段：surplus，修改金额：" + s.doubleValue() + "-----");
+                    log.error("-----error-----修改代币池表中记录失败，带币池表id：" + id + "，修改字段：surplus，修改金额：" + s.doubleValue() + "-----");
                     throw new RuntimeException("转账失败，转账出现异常，请联系技术！");
                 }
 
@@ -206,7 +220,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                 operation.setAdmin_name(admin.getUsername());
                 operation.setOperation_type("4");
                 operation.setMoney(money);
-                operation.setAddress(currency.getAddress());
+                operation.setAddress(address);
                 operation.setCreate_time(new Date());
                 operation.setState(1); // TODO 此处要根据web3j的接口返回结果修改此处
                 operationMapper.operationSave(operation);
@@ -216,9 +230,51 @@ public class CurrencyServiceImpl implements CurrencyService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("-----error-----给用户转账出现异常，带币池表id：" + id +"，转账金额：" + money + "-----");
+            log.error("-----error-----给用户转账出现异常，带币池表id：" + id + "，转账金额：" + money + "-----");
             throw new RuntimeException("转账失败，转账出现异常，请联系技术！");
         }
         return Result.create().success("转账成功！");
+    }
+
+    /**
+     * web3j 转账方法
+     *
+     * @param from  <p>转账地址</p>
+     * @param to    <p>到账地址</p>
+     * @param money <p>转账代币</p>
+     * @return <p>返回结果：1:成功，0:失败</p>
+     */
+    private int web3jTransaction(String from, String to, BigDecimal money) throws Exception {
+        // web3j
+        Web3j web3 = Web3j.build(new HttpService(infuraApi));
+
+        // 封装转账交易对象
+        BigInteger nonce = new BigInteger("1");
+        BigInteger gasPrice = new BigInteger("1");
+        BigInteger gasLimit = new BigInteger("1");
+        BigInteger value = new BigInteger("1");
+        String data = "";
+        Transaction tran = new Transaction(
+                from,
+                nonce,
+                gasPrice,
+                gasLimit,
+                to,
+                value,
+                data
+        );
+
+        // 转账
+        CompletableFuture completableFuture = web3.ethSendTransaction(tran).sendAsync();
+        Future<String> future = completableFuture.whenComplete((v, e) -> {
+        });
+        String address = future.get();
+        log.info("-----转账返回的交易哈希：" + address);
+
+        if (StringUtils.isEmpty(address)) {
+            return 0;
+        }
+
+        return 1;
     }
 }
