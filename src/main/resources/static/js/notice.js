@@ -11,7 +11,7 @@ var tbody = "" +
     "       <a title='编辑'  onclick='x_notice_show(\"编辑\",\"data7\")' href='javascript:;'>" +
     "           <i class='layui-icon'>&#xe63c;</i>" +
     "       </a>" +
-    "       <a title='删除' onclick=\"notice_del('data8')\" href='javascript:;'>" +
+    "       <a title='删除'  onclick=\"notice_del('data8')\" href='javascript:;'>" +
     "           <i class='layui-icon'>&#xe640;</i>" +
     "       </a>" +
     "   </td>" +
@@ -141,6 +141,7 @@ function noticeSave(field) {
                 });
             } else {
                 layer.msg(data.msg,{icon:1,time:1000});
+
             }
         }
     })
@@ -184,7 +185,6 @@ function updateNotice(field) {
         timeInsert: field.timeInsert,
         state: field.state,
     };
-
     $.ajax({
         type : 'post',
         url : '/admin/notice/update',

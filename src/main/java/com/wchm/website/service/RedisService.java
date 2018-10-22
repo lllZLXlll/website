@@ -1,5 +1,9 @@
 package com.wchm.website.service;
 
+import com.wchm.website.entity.Operation;
+import com.wchm.website.util.Result;
+import org.apache.poi.ss.formula.functions.T;
+
 /**
  * redis 操作类
  */
@@ -18,7 +22,7 @@ public interface RedisService {
      *
      * @param key
      * @param value
-     * @param minutes  保存多少分钟
+     * @param minutes 保存多少分钟
      * @return
      */
     boolean setMinutes(String key, String value, Integer minutes);
@@ -28,7 +32,7 @@ public interface RedisService {
      *
      * @param key
      * @param value
-     * @param hours  保存多少小时
+     * @param hours 保存多少小时
      * @return
      */
     boolean setHours(String key, String value, Integer hours);
@@ -57,4 +61,13 @@ public interface RedisService {
      * @return
      */
     boolean remove(String key);
+
+    /**
+     *
+     * @param beanClass
+     * @param value
+     * @return
+     */
+    Object strToBean(Class<?> beanClass, String value);
+
 }

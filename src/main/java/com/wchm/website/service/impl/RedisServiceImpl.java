@@ -1,6 +1,11 @@
 package com.wchm.website.service.impl;
 
+import com.wchm.website.entity.Admin;
+import com.wchm.website.entity.Operation;
 import com.wchm.website.service.RedisService;
+import com.wchm.website.util.Result;
+import net.sf.json.JSONObject;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -49,5 +54,13 @@ public class RedisServiceImpl implements RedisService {
     public boolean remove(final String key) {
         return redisTemplate.delete(key);
     }
+
+    @Override
+    public Object strToBean(Class<?> beanClass, String value) {
+        JSONObject jsonObject = JSONObject.fromObject(value);
+        return JSONObject.toBean(jsonObject, beanClass);
+    }
+
+
 }
 

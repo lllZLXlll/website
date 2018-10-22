@@ -50,4 +50,18 @@ public class Notice implements Serializable {
         return DateUtil.formatDefaultDate(create_time);
 
     }
+
+    @Override
+    public String toString() {
+        return "Notice{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", description='" + description + '\'' +
+                ", time=" + time +
+                ", timeInsert=" + timeInsert +
+                ", create_time=" + create_time +
+                ", state=" + state +
+                '}';
+    }
 }

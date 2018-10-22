@@ -129,6 +129,7 @@ function newsSave(field) {
         state: field.state,
     };
 
+    $("#addto").attr("disabled",true);
     $.ajax({
         type : 'post',
         url : '/admin/news/save',
@@ -143,9 +144,12 @@ function newsSave(field) {
                 });
             } else {
                 layer.msg(data.msg,{icon:1,time:1000});
+                $("#addto").attr("disabled",false);
             }
         }
+
     })
+ //   $("#addNews").attr(disabled,true);
 }
 
 function CheckUrl(str) {
@@ -171,11 +175,11 @@ function CheckUrl(str) {
 function newsUpdate(field) {
     // 校验参数，地址是否合法
     if (CheckUrl(field.url)) {
-        if (CheckUrl(field.icon)) {
+        // if (CheckUrl(field.icon)) {
             updateNews(field);
-        } else {
-            layer.msg("图片地址不正确",{icon:2,time:1000});
-        }
+        // } else {
+        //     layer.msg("图片地址不正确",{icon:2,time:1000});
+        // }
     } else {
         layer.msg("原文地址不正确",{icon:2,time:1000});
     }

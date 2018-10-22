@@ -1,7 +1,9 @@
 package com.wchm.website.mapper;
 
 import com.wchm.website.entity.Admin;
+import com.wchm.website.entity.Community;
 import com.wchm.website.entity.News;
+import com.wchm.website.entity.Operation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -19,5 +21,12 @@ public interface AdminMapper {
 
     @Select("SELECT count(id) FROM website_notice WHERE state = 1")
     Integer queryNoticeCount();
+
+    //插入
+    @Insert("INSERT INTO website_operation_log(admin_name, operation_type, money, address, create_time, state) " +
+            "VALUES(#{operation.admin_name}, #{operation.operation_type}, #{operation.money}," +
+            " #{operation.address}, #{operation.create_time},#{operation.state})")
+    Long operationSave(@Param("operation") Operation operation);
+
 
 }

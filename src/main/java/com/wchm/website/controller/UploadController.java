@@ -36,6 +36,8 @@ public class UploadController {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     public final static Logger log = LoggerFactory.getLogger(UploadController.class);
 
+    private final String notice = "/notice/";
+
     @Value("${wchm.update-image-relative}")
     private String relative;
 
@@ -47,10 +49,10 @@ public class UploadController {
     @UnToken
     public Map<String, Object> fileUpload(HttpServletRequest request, HttpServletResponse response) throws Exception {
 //        String path2 = request.getServletContext().getRealPath("/");
-        String savePath = absolutely;
+        String savePath = absolutely + notice;
 
         // 文件保存目录URL
-        String saveUrl = request.getContextPath() + relative;
+        String saveUrl = request.getContextPath() + relative + notice;
 
         log.info("--------------savePath----------------" + savePath);
         log.info("--------------saveUrl----------------" + saveUrl);
@@ -88,8 +90,8 @@ public class UploadController {
             return getError("目录名不正确。");
         }
         // 创建文件夹
-        savePath += dirName + "/";
-        saveUrl += dirName + "/";
+//        savePath += dirName + "/";
+//        saveUrl += dirName + "/";
         File saveDirFile = new File(savePath);
         if (!saveDirFile.exists()) {
             saveDirFile.mkdirs();

@@ -475,29 +475,21 @@ public class DateUtil {
 	 * @return
 	 */
 	public static String getTimeDifference(Date date1, Date date2) {
-		int hour = 0;
-		int minute = 0;
-		int day;
-		long total_minute = 0;
-		StringBuffer sb = new StringBuffer();
-		total_minute = (date1.getTime() - date2.getTime()) / (1000 * 60);
-		day = (int) total_minute / 60 / 24;
-		hour = (int) total_minute / 60 % 24;
-		minute = (int) total_minute % 60;
-		/*
-		 * sb.append(day).append("天").append(hour).append("小时").append(minute).
-		 * append("分钟");
-		 */
-		if (day != 0) {
-			sb.append(day).append("天");
-		}
-		// if(hour!=0){
-		// sb.append(hour).append("小时");
-		// }
-		// if(minute!=0){
-		// sb.append(minute).append("分钟");
-		// }
-		return sb.toString();
+		long nd = 1000* 24* 60* 60;
+		long nh = 1000* 60* 60;
+		long nm = 1000* 60;
+		// long ns = 1000;
+		// 获得两个时间的毫秒时间差异
+		long diff = date1.getTime() - date2.getTime();
+		// 计算差多少天
+		long day = diff / nd;
+		// 计算差多少小时
+		long hour = diff % nd / nh;
+		// 计算差多少分钟
+		long min = diff % nd % nh / nm;
+		// 计算差多少秒//输出结果
+		// long sec = diff % nd % nh % nm / ns;
+		return day + "天"+ hour + "小时"+ min + "分钟";
 	}
 
 	/**
@@ -649,5 +641,10 @@ public class DateUtil {
 		now.setTime(date);
 		now.set(Calendar.DAY_OF_MONTH, now.getActualMaximum(Calendar.DAY_OF_MONTH));
 		return now.getTime();
+	}
+
+
+	public static void main(String[] args) throws Exception {
+		System.out.println(formatTimesTampDate(customTimeByAddMonth(new Date(), 1)));
 	}
 }

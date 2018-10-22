@@ -54,5 +54,18 @@ public class News implements Serializable {
 
     }
 
-
+    @Override
+    public String toString() {
+        return "News{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", time=" + time +
+                ", timeInsert=" + timeInsert +
+                ", icon='" + icon + '\'' +
+                ", url='" + url + '\'' +
+                ", create_time=" + create_time +
+                ", state=" + state +
+                '}';
+    }
 }

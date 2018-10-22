@@ -10,23 +10,32 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/css/font.css">
 	<link rel="stylesheet" href="/css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="/js/md5.js"></script>
     <script type="text/javascript" src="/js/login.js"></script>
 
 </head>
-<body class="login-bg">
+<script language="JavaScript">
+    function keyLogin(){
+        if (event.keyCode==13){  //回车键的键值为13
+            document.getElementById("loginSub").click(); //调用登录按钮的登录事件
+        }
+    }
+</script>
+
+<body class="login-bg" onkeydown="keyLogin();">
     
     <div class="login layui-anim layui-anim-up">
         <div class="message">后台系统登录</div>
         <div id="darkbannerwrap"></div>
         
-        <form id="loginForm" class="layui-form">
+        <form id="loginForm" class="layui-form" >
             <input id="username" name="username" placeholder="用户名" type="text" lay-verify="required" class="layui-input" >
             <hr class="hr15">
             <input id="password" name="password" lay-verify="required" placeholder="密码" type="password" class="layui-input">
             <hr class="hr15">
-            <input id="loginSub" value="登录" lay-submit lay-filter="login" style="width:100%;" type="button">
+            <input id="loginSub" value="登录"   lay-submit lay-filter="login"  style="width:100%;" type="button">
             <hr class="hr20">
         </form>
         <div style="width:100%; height:30px; color: red; text-align: center; font-size: 16px;">
