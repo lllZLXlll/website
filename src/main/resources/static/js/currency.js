@@ -156,24 +156,20 @@ function recordTransfer(field) {
 
     if (!isNaN(money)) {
         if (parseFloat(money) > parseFloat(surplus)) {
-            layer.msg("转账代币不能大于剩余可转账代币",{icon:2,time:2000});
+            layer.msg("转账代币不能大于剩余可转账代币",{icon:2,time:3000});
             return;
         }
     } else {
-        layer.msg("请输入合法的转账代币",{icon:2,time:2000});
+        layer.msg("请输入合法的转账代币",{icon:2,time:3000});
         return;
     }
-    layer.confirm('请确认填写无误，提交将不够撤销！',function(){
-        transfer(field);
-    });
+
+    transfer(field);
 }
 
 function transfer(field) {
-    var param = {
-        id: field.id,
-        money: field.money,
-    };
-    $("#edit").attr("disabled",true);
+
+    $("#editxx").attr("disabled", true); // 失效
     $.ajax({
         type : 'get',
         url : '/admin/currency/transfers/' + field.id + '/' + field.money,
@@ -184,8 +180,8 @@ function transfer(field) {
                     parent.window.location.href="/admin/currency/list"; // 重新载入刷新数据
                 });
             } else {
-                layer.msg(data.msg,{icon:2,time:2000});
-                $("#edit").attr("disabled",false);
+                layer.msg(data.msg,{icon:2,time:5000});
+                $("#editxx").attr("disabled", false); // 生效
             }
         }
     })

@@ -49,10 +49,10 @@ public interface CurrencyMapper {
             " where address = #{currency.address} ")
     Long currencyUpdateByAddress(@Param("currency") Currency currency);
 
-    @Select("SELECT * FROM website_currency_pool_record WHERE pool_id = #{id} AND state = 1")
+    @Select("SELECT * FROM website_currency_pool_record WHERE pool_id = #{id} ORDER BY id DESC")
     List<CurrencyRecord> queryCurrencyRecordByPage(@Param("id") Integer id);
 
-    @Select("SELECT * FROM website_currency_pool WHERE id = #{id} AND state = 1")
+    @Select("SELECT * FROM website_currency_pool WHERE id = #{id} AND state = 1 ORDER BY id DESC")
     Currency queryCurrencyById(@Param("id") Long id);
 }
 
