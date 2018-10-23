@@ -83,7 +83,7 @@ wchm:
   # 公司账户私钥 测试私钥
   company-pri-key: "0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47"
   # PCT代币地址
-  contract-address: "0x107eff256b79fd5723c0499edd1120c303d73256"
+  contract-address: "0x183630c3AfA08957E588eaa26b748cc5C2D42DC6"
   # method-id
   method-id: "0xa9059cbb000000000000000000000000"
   # 第三方请求以太坊接口数据访问地址

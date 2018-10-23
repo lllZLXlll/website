@@ -285,16 +285,16 @@ public class CurrencyServiceImpl implements CurrencyService {
         // 转账交易参数
         BigInteger nonce; // 转账地址的交易数量
         BigInteger gasPrice; // gas价格
-        BigInteger gasLimit = new BigInteger("1000000"); // 矿工费
+        BigInteger gasLimit = new BigInteger("100000"); // 矿工费
         BigInteger value = Convert.toWei(money + "", Convert.Unit.ETHER).toBigInteger(); // 转换成WEI单位
         String data; // 需要把私钥等信息拼接
 
         // 最新的
         DefaultBlockParameter defaultParam = DefaultBlockParameterName.LATEST;
-        // 当前最新交易笔数 0
+        // 当前最新交易笔数
         EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(companyAddress, defaultParam).sendAsync().get();
         nonce = ethGetTransactionCount.getTransactionCount();
-        // 邮费价格 5000000000
+        // 邮费价格
         gasPrice = web3.ethGasPrice().sendAsync().get().getGasPrice();
         // 转账人私钥
         Credentials credentialss = Credentials.create(companyPriKey);
