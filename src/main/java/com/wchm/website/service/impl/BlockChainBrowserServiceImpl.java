@@ -172,7 +172,6 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         vo.setAddress(hash);
 
         // 请求以太坊API返回数据
-        // TODO 请求经常超时，应该不是网络的问题，猜测可能是github的这个包的问题，换个包试一试。
         String response = HttpUtils.get(apiUrl);
         JSONObject json = JSONObject.fromObject(response);
 
@@ -195,7 +194,7 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
                     String timeStamp = j.get("timeStamp").toString(); // 时间
 
                     // 判断是转出send还是收入receive
-                    if (from.equals(from)) {
+                    if (from.equals(hash)) {
                         txVo.setType("send");
                         txVo.setAddress(to);
                     } else {
