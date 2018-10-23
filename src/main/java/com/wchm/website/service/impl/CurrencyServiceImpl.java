@@ -255,15 +255,17 @@ public class CurrencyServiceImpl implements CurrencyService {
      * @param money <p>转账代币</p>
      * @return <p>返回结果：1:成功，0:失败</p>
      */
+
+    // TODO 修改此方法返回类型，改为map，如果转账失败要获取失败原因插入到数据库中。
     private static int web3jTransaction(String from, String to, BigDecimal money) throws Exception {
 
         /**
          *
-         * 私钥:         0x4bac2df2e83f1bdb4cb18fadb9777bf785c27dfa09cac7fa29cb6384e12497a9
+         * 私钥:         0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47
          *
-         * from:        0xEf34D9201b2E8dbf4dDd5072d708eA3cfd401a9d
+         * from:        0xb4182216164d5c45f37ccad696f7e5c92abff03d
          *
-         * 代币地址:      0x107eff256b79fd5723c0499edd1120c303d73256
+         * PCT代币地址:      0x107eff256b79fd5723c0499edd1120c303d73256
          *
          * to:          0xafc79afd163e192f144f9e48bb2739b35040e966
          *
@@ -272,14 +274,15 @@ public class CurrencyServiceImpl implements CurrencyService {
          */
 
         /**_________________________测试数据____________begin_________________*/
-        // 账户私钥
-        String priKey = "0x4bac2df2e83f1bdb4cb18fadb9777bf785c27dfa09cac7fa29cb6384e12497a9";
-        // from
-        from = "0xEf34D9201b2E8dbf4dDd5072d708eA3cfd401a9d";
-        // to
+        // 公司账户私钥，固定值 TODO 这是测试数据，以后要改成公司的私钥，要放到配置文件中
+        String priKey = "0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47";
+        // 公司钱包地址，固定值 TODO 测试地址，以后要改成公司的地址，要放到配置文件中
+        from = "0xb4182216164d5c45f37ccad696f7e5c92abff03d";
+        // TODO 测试地址，以后要改成用户的地址
         to = "0xef34d9201b2e8dbf4ddd5072d708ea3cfd401a9d";
-        // 代币地址
-        String dabi = "0x107eff256b79fd5723c0499edd1120c303d73256";
+        // 公司发行的PCT代币地址，固定的 TODO 要放到配置文件中
+        String contractAddress = "0x107eff256b79fd5723c0499edd1120c303d73256";
+        // 固定值 TODO 要放到配置文件中
         String methodID = "0xa9059cbb000000000000000000000000";
         /**_________________________测试数据_____________end________________*/
 
@@ -305,25 +308,17 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         // value转换16进制
         String value_16 = value.toString(16);
-        String value_64 = strFomcat64(value_16); // 需要有64位，不够补零
+        String value_64 = strFomcat64(value_16); // 需要有64位，不够往前补零
 
         String toAddress = to.substring(2); // 去掉0x
         data = methodID + toAddress + value_64;
 
-        /**
-         * nonce:       0
-         * gasPrice:    5000000000
-         * gasLimit:    1000000
-         * dabi:        0x107eff256b79fd5723c0499edd1120c303d73256
-         * data:        0xa9059cbb000000000000000000000000ef34d9201b2e8dbf4ddd5072d708ea3cfd401a9d0000000000000000000000000000000000000000000000000de0b6b3a7640000
-         */
-
-        RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, dabi, data);
+        RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, contractAddress, data);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentialss);
         final String hexValue = Numeric.toHexString(signedMessage);
         EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get();
         String address = ethSendTransaction.getTransactionHash();
-        log.info("-----转账返回的交易哈希：" + address);
+        log.info("-----转账返回的交易哈希：" + address); // TODO 此地址要保存到数据库中
 
         Response.Error error = ethSendTransaction.getError();
         if (error != null) {
@@ -331,13 +326,11 @@ public class CurrencyServiceImpl implements CurrencyService {
             return 0;
         }
 
-        log.info("-----result：" + ethSendTransaction.getResult());
-
         return 1;
     }
 
     public static void main(String[] args) throws Exception {
-        web3jTransaction(null, null, new BigDecimal("0.0000001"));
+        web3jTransaction(null, null, new BigDecimal("1"));
 
 
     }
@@ -348,51 +341,5 @@ public class CurrencyServiceImpl implements CurrencyService {
         }
         return s;
     }
-
-//    public void postTransfer() throws Exception {
-//        // 设置需要的矿工费
-//        BigInteger GAS_LIMIT = BigInteger.valueOf(1000000);
-//        // form
-//        final String ownAddress = "0xEf34D9201b2E8dbf4dDd5072d708eA3cfd401a9d";
-//        //被转人账户地址
-//        String toAddress = "0xafc79afd163e192f144f9e48bb2739b35040e966";
-//        String dabi = "0xa9059cbb000000000000000000000000";
-//
-//        //转账人私钥
-//        Credentials credentialss = Credentials.create("0x4bac2df2e83f1bdb4cb18fadb9777bf785c27dfa09cac7fa29cb6384e12497a9");
-//        BigInteger value = Convert.toWei("1", Convert.Unit.ETHER).toBigInteger();
-//        long d = (long) Math.pow(10, 18);
-//
-//        String multiply = multiply(money_ed, d + "");
-//        String str = new BigInteger(multiply, 10).toString(16);
-//        String fun = fun(str); // 64
-//
-//        String toAddressT = address_ed.substring(2, address_ed.length()); // 去掉0x
-//        String data = Urls.METHODID_ZZ + toAddressT + fun; //  64
-//        //0xa9059cbb000000000000000000000000+to的地址Ef34D9201b2E8dbf4dDd5072d708eA3cfd401a9d+64位的16进制转账金额
-//        Log.e("data", data + "--------" + multiply + "--------" + priKey + "-------" + ((long) Math.pow(10, 18)) + "----" + multiply);
-//        EthGetTransactionCount ethGetTransactionCount = null;
-//        try {
-//            ethGetTransactionCount = web3js.ethGetTransactionCount(
-//                    ownAddress, DefaultBlockParameterName.PENDING).sendAsync().get();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-//
-//        BigInteger bi2 = new BigInteger("5");
-//        BigInteger text = nonce.add(bi2);
-//
-//        BigInteger patPct = new BigInteger("0");
-//
-//
-//        RawTransaction rawTransaction = RawTransaction.createTransaction(text, gasPrice, GAS_LIMIT, dabi, patPct, data);
-//        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentialss);
-//        final String hexValue = Numeric.toHexString(signedMessage);
-//        EthSendTransaction ethSendTransaction = web3js.ethSendRawTransaction(hexValue).sendAsync().get();
-//        String transactionHash = ethSendTransaction.getTransactionHash();
-//    }
 
 }
