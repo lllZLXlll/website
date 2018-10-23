@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.thymeleaf.util.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -31,6 +32,9 @@ public class CurrencyRecord implements Serializable {
     @ApiModelProperty("收入账户地址")
     private String to;
 
+    @ApiModelProperty("交易地址")
+    private String txAddress;
+
     @ApiModelProperty("用户代币总额")
     private BigDecimal currency;
 
@@ -51,5 +55,11 @@ public class CurrencyRecord implements Serializable {
 
     public String getTime() {
         return DateUtil.formatDefaultDate(time);
+    }
+
+    public String getTxAddress() {
+        if (StringUtils.isEmpty(txAddress))
+            return "";
+        return txAddress;
     }
 }

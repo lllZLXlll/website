@@ -79,8 +79,14 @@ wchm:
   update-image-absolutely: D:/upload/images/
   # 白皮书文件地址
   paper-absolutely: D:/paper/
-  # 公司钱包地址
-  company-address: "0xc76913487286b26addc60c325bc92be1f4977d69"
+  # 公司钱包地址 测试地址
+  company-address: "0xb4182216164d5c45f37ccad696f7e5c92abff03d"
+  # 公司账户私钥 测试私钥
+  company-pri-key: "0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47"
+  # PCT代币地址
+  contract-address: "0x107eff256b79fd5723c0499edd1120c303d73256"
+  # method-id
+  method-id: "0xa9059cbb000000000000000000000000"
   # 第三方请求以太坊接口数据访问地址
   infura-api: "https://mainnet.infura.io/v3/c783bc77104c4b2d8d7cca07e85dcbc5"
   # 查询钱包地址交易记录api地址

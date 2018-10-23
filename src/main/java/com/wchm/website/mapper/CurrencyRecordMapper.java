@@ -12,10 +12,10 @@ public interface CurrencyRecordMapper {
 
     //插入
     @Insert("INSERT INTO website_currency_pool_record(" +
-            "   pool_id, `from`, `to`, currency, periods, state, `describe`, admin, time" +
+            "   pool_id, `from`, `to`, `tx_address`, currency, periods, state, `describe`, admin, time" +
             ") " +
             "VALUES(" +
-            "   #{record.pool_id}, #{record.from}, #{record.to}," +
+            "   #{record.pool_id}, #{record.from}, #{record.to}, #{record.txAddress}," +
             "   #{record.currency}, #{record.periods}, #{record.state}," +
             "   #{record.describe}, #{record.admin}, NOW()" +
             ")")

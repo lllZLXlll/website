@@ -4,6 +4,7 @@ var tbody = "" +
     "   <td>data1</td>" +//id
     "   <td>data2</td>" +//from
     "   <td>data3</td>" +//to
+    "   <td>data10</td>" +//tx_address
     "   <td>data4</td>" +//currency
     "   <td>data5</td>" +//periods
     "   <td>data6</td>" +//state
@@ -45,6 +46,7 @@ function queryPageData(id) {
                         tableBody = tableBody.replace('data1', i + 1);
                         tableBody = tableBody.replace('data2', dataList[i].from);
                         tableBody = tableBody.replace('data3', dataList[i].to);
+                        tableBody = tableBody.replace('data10', dataList[i].txAddress);
                         tableBody = tableBody.replace('data4', dataList[i].currency);
                         tableBody = tableBody.replace('data5', dataList[i].periods);
                         tableBody = tableBody.replace('data6', state);

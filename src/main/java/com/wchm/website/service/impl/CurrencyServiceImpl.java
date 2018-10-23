@@ -37,7 +37,9 @@ import org.web3j.utils.Numeric;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
@@ -47,11 +49,17 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Value("${wchm.company-address}")
     private String companyAddress;
 
+    @Value("${wchm.company-pri-key}")
+    private String companyPriKey;
+
+    @Value("${wchm.contract-address}")
+    private String contractAddress;
+
+    @Value("${wchm.method-id}")
+    private String methodId;
+
     @Value("${wchm.infura-api}")
     private String infuraApi;
-
-    // 10的18次方
-    private static BigDecimal _10_18 = new BigDecimal(Math.pow(10, 18));
 
 
     @Autowired
@@ -193,25 +201,49 @@ public class CurrencyServiceImpl implements CurrencyService {
                 String address = currency.getAddress();
                 // 查询当前最大期数
                 int periods = currencyRecordMapper.queryCurrencyRecordMaxPeriods(id);
+                int state = 1;
 
-                // TODO 调用web3j转账方法
-                int status = web3jTransaction(companyAddress, address, money);
+                // 调用web3j转账方法
+                Map<String, String> resultMap = web3jTransaction(address, money);
+                String txAddress = resultMap.get("address");
+                String message = resultMap.get("message");
+
+                if (StringUtils.isEmpty(txAddress)) {
+                    // 转账失败
+                    state = 0;
+                }
 
                 // 转账记录表中增加一条记录
                 CurrencyRecord record = new CurrencyRecord();
                 record.setPool_id(id);
                 record.setFrom(companyAddress);
                 record.setTo(address);
+                record.setTxAddress(txAddress);
                 record.setCurrency(money);
                 record.setPeriods(periods + 1);
-                record.setState(1); // TODO 此处要根据web3j的接口返回结果修改此处
-                record.setDescribe("交易成功"); // TODO 此处要根据web3j的接口返回结果修改此处
+                record.setState(state);
+                record.setDescribe(message);
                 record.setAdmin(admin.getUsername());
                 record.setTime(new Date());
                 result = currencyRecordMapper.recordSave(record);
                 if (result <= 0) {
                     log.error("-----error-----向转账记录表中增加一条记录失败，带币池表id：" + id + "，转账金额：" + money + "-----");
                     throw new RuntimeException("转账失败，转账出现异常，请联系技术！");
+                }
+
+                // 添加日志记录
+                Operation operation = new Operation();
+                operation.setAdmin_name(admin.getUsername());
+                operation.setOperation_type("4");
+                operation.setMoney(money);
+                operation.setAddress(address);
+                operation.setCreate_time(new Date());
+                operation.setState(state);
+                operationMapper.operationSave(operation);
+
+                if (state == 0) {
+                    // 转账失败返回错误信息给前台，不再往下执行修改余额操作
+                    return Result.create().fail(message);
                 }
 
                 // 代币池用户剩余代币余额修改
@@ -225,17 +257,6 @@ public class CurrencyServiceImpl implements CurrencyService {
                     log.error("-----error-----修改代币池表中记录失败，带币池表id：" + id + "，修改字段：surplus，修改金额：" + s.doubleValue() + "-----");
                     throw new RuntimeException("转账失败，转账出现异常，请联系技术！");
                 }
-
-                // 添加日志记录
-                Operation operation = new Operation();
-                operation.setAdmin_name(admin.getUsername());
-                operation.setOperation_type("4");
-                operation.setMoney(money);
-                operation.setAddress(address);
-                operation.setCreate_time(new Date());
-                operation.setState(1); // TODO 此处要根据web3j的接口返回结果修改此处
-                operationMapper.operationSave(operation);
-
             } else {
                 return Result.create().fail("没有找到此用户信息！");
             }
@@ -250,44 +271,16 @@ public class CurrencyServiceImpl implements CurrencyService {
     /**
      * web3j 转账方法
      *
-     * @param from  <p>转账地址</p>
      * @param to    <p>到账地址</p>
      * @param money <p>转账代币</p>
-     * @return <p>返回结果：1:成功，0:失败</p>
+     * @return <p>返回结果：map中的error不为null则说明转账失败，address不为null则转账成功</p>
      */
 
-    // TODO 修改此方法返回类型，改为map，如果转账失败要获取失败原因插入到数据库中。
-    private static int web3jTransaction(String from, String to, BigDecimal money) throws Exception {
-
-        /**
-         *
-         * 私钥:         0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47
-         *
-         * from:        0xb4182216164d5c45f37ccad696f7e5c92abff03d
-         *
-         * PCT代币地址:      0x107eff256b79fd5723c0499edd1120c303d73256
-         *
-         * to:          0xafc79afd163e192f144f9e48bb2739b35040e966
-         *
-         * MethodID:    0xa9059cbb000000000000000000000000
-         *
-         */
-
-        /**_________________________测试数据____________begin_________________*/
-        // 公司账户私钥，固定值 TODO 这是测试数据，以后要改成公司的私钥，要放到配置文件中
-        String priKey = "0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47";
-        // 公司钱包地址，固定值 TODO 测试地址，以后要改成公司的地址，要放到配置文件中
-        from = "0xb4182216164d5c45f37ccad696f7e5c92abff03d";
-        // TODO 测试地址，以后要改成用户的地址
-        to = "0xef34d9201b2e8dbf4ddd5072d708ea3cfd401a9d";
-        // 公司发行的PCT代币地址，固定的 TODO 要放到配置文件中
-        String contractAddress = "0x107eff256b79fd5723c0499edd1120c303d73256";
-        // 固定值 TODO 要放到配置文件中
-        String methodID = "0xa9059cbb000000000000000000000000";
-        /**_________________________测试数据_____________end________________*/
+    private Map<String, String> web3jTransaction(String to, BigDecimal money) throws Exception {
+        Map<String, String> result = new HashMap<>();
 
         // web3j
-        Web3j web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/c783bc77104c4b2d8d7cca07e85dcbc5"));
+        Web3j web3 = Web3j.build(new HttpService(infuraApi));
 
         // 转账交易参数
         BigInteger nonce; // 转账地址的交易数量
@@ -299,43 +292,43 @@ public class CurrencyServiceImpl implements CurrencyService {
         // 最新的
         DefaultBlockParameter defaultParam = DefaultBlockParameterName.LATEST;
         // 当前最新交易笔数 0
-        EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(from, defaultParam).sendAsync().get();
+        EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(companyAddress, defaultParam).sendAsync().get();
         nonce = ethGetTransactionCount.getTransactionCount();
         // 邮费价格 5000000000
         gasPrice = web3.ethGasPrice().sendAsync().get().getGasPrice();
         // 转账人私钥
-        Credentials credentialss = Credentials.create(priKey);
+        Credentials credentialss = Credentials.create(companyPriKey);
 
         // value转换16进制
         String value_16 = value.toString(16);
-        String value_64 = strFomcat64(value_16); // 需要有64位，不够往前补零
-
-        String toAddress = to.substring(2); // 去掉0x
-        data = methodID + toAddress + value_64;
+        // 需要有64位，不够往前补零
+        String value_64 = strFormat64(value_16);
+        // 去掉0x
+        String toAddress = to.substring(2);
+        data = methodId + toAddress + value_64;
 
         RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, contractAddress, data);
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentialss);
         final String hexValue = Numeric.toHexString(signedMessage);
         EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get();
+        // 转账返回的交易哈希
         String address = ethSendTransaction.getTransactionHash();
-        log.info("-----转账返回的交易哈希：" + address); // TODO 此地址要保存到数据库中
-
         Response.Error error = ethSendTransaction.getError();
-        if (error != null) {
+
+        if (StringUtils.isEmpty(address)) {
             log.error("-----error-----后台客户币池转账失败:" + error.getMessage() + ", 错误码:" + error.getCode());
-            return 0;
+            result.put("message", "转账失败: " + error.getMessage() + ", 错误码: " + error.getCode());
+            result.put("address", null);
+            return result;
         }
 
-        return 1;
+        result.put("message", "转账成功");
+        result.put("address", address);
+        return result;
     }
 
-    public static void main(String[] args) throws Exception {
-        web3jTransaction(null, null, new BigDecimal("1"));
-
-
-    }
-
-    private static String strFomcat64(String s) {
+    // 将字符串补足64位，不够往前补零
+    private static String strFormat64(String s) {
         while (s.length() < 64) {
             s = "0" + s;
         }
