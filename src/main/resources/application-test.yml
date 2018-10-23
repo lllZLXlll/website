@@ -71,13 +71,16 @@ pagehelper:
 
 
 wchm:
-  # 上传文件目录
-  # 相对路径
+  # 服务器文件相对路径
+  update-relative: /upload/
+  # 服务器文件绝对路径
+  update-absolutely: /usr/local/website/upload/
+  # 上传图片相对路径
   update-image-relative: /upload/images/
-  # 绝对路径
+  # 上传图片绝对路径
   update-image-absolutely: /usr/local/website/upload/images/
   # 白皮书文件地址
-  paper-absolutely: /usr/local/website/paper/
+  paper-absolutely: /usr/local/website/upload/paper/
   # 公司钱包地址 测试地址
   company-address: "0xb4182216164d5c45f37ccad696f7e5c92abff03d"
   # 公司账户私钥 测试私钥
