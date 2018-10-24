@@ -45,6 +45,9 @@ public class News implements Serializable {
     @ApiModelProperty("是否展示（1:展示，0:不展示）")
     private Integer state;
 
+    @ApiModelProperty("语言（1:英文，0:中文）")
+    private Integer lang;
+
     public String getTime() {
         return DateUtil.formatDefaultDate(time);
     }
@@ -54,18 +57,5 @@ public class News implements Serializable {
 
     }
 
-    @Override
-    public String toString() {
-        return "News{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", time=" + time +
-                ", timeInsert=" + timeInsert +
-                ", icon='" + icon + '\'' +
-                ", url='" + url + '\'' +
-                ", create_time=" + create_time +
-                ", state=" + state +
-                '}';
-    }
+
 }

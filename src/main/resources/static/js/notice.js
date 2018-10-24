@@ -1,3 +1,4 @@
+
 // 列表数据
 var tbody = "" +
     "<tr>" +
@@ -7,11 +8,13 @@ var tbody = "" +
     "   <td>data4</td>" +
     "   <td>data5</td>" +
     "   <td>data6</td>" +
+    "   <td>data7</td>" +
+    "   <td>data8</td>" +
     "   <td class='td-manage'>" +
-    "       <a title='编辑'  onclick='x_notice_show(\"编辑\",\"data7\")' href='javascript:;'>" +
+    "       <a title='编辑'  onclick='x_notice_show(\"编辑\",\"data9\")' href='javascript:;'>" +
     "           <i class='layui-icon'>&#xe63c;</i>" +
     "       </a>" +
-    "       <a title='删除'  onclick=\"notice_del('data8')\" href='javascript:;'>" +
+    "       <a title='删除'  onclick=\"notice_del('data10')\" href='javascript:;'>" +
     "           <i class='layui-icon'>&#xe640;</i>" +
     "       </a>" +
     "   </td>" +
@@ -25,11 +28,12 @@ $(function () {
 });
 
 // 分页查询
-function queryPageData(title) {
+function queryPageData(title,lang) {
     var param = {
         pageNum: pageNum,
         pageSize: pageSize,
         title: title,
+        lang:lang,
     };
 
     $.ajax({
@@ -44,16 +48,20 @@ function queryPageData(title) {
                     var tableBody = '';
                     var dataList = data.data.list;
                     for (var i = 0; i < dataList.length; i++) {
+                        var state = dataList[i].state;
+                        var lang = dataList[i].lang;
+
                         tableBody += tbody;
                         tableBody = tableBody.replace('data1', i + 1);
-                        tableBody = tableBody.replace('data2', dataList[i].title);
-                        tableBody = tableBody.replace('data3', dataList[i].description);
-                        tableBody = tableBody.replace('data4', dataList[i].time);
-                        tableBody = tableBody.replace('data5', dataList[i].create_time);
-                        var state = dataList[i].state;
-                        tableBody = tableBody.replace('data6', state == 1 ? '展示' : '隐藏');
-                        tableBody = tableBody.replace('data7', '/admin/notice/info/' + dataList[i].id);
-                        tableBody = tableBody.replace('data8', dataList[i].id);
+                        tableBody = tableBody.replace('data2', dataList[i].title );
+                        tableBody = tableBody.replace('data3', dataList[i].description );;
+                        tableBody = tableBody.replace('data4', dataList[i].content )
+                        tableBody = tableBody.replace('data5', dataList[i].time );
+                        tableBody = tableBody.replace('data6', dataList[i].create_time );
+                        tableBody = tableBody.replace('data7', state == 1 ? '展示' : '隐藏');
+                        tableBody = tableBody.replace('data8', lang == 1 ? '英文' : '中文');
+                        tableBody = tableBody.replace('data9', '/admin/notice/info/' + dataList[i].id);
+                        tableBody = tableBody.replace('data10', dataList[i].id);
                     }
                     $("#noticeTbody").html(tableBody);
 
@@ -89,8 +97,17 @@ function queryPageData(title) {
 // 搜索
 function noticeSreach() {
     var title = $("#noticeTitle").val();
-    queryPageData(title);
+    var lang = $("#lang").val();
+    queryPageData(title,lang);
 }
+
+
+/*$("#newsLang").change(function (event){
+    $("#lang").submit();
+    event.preventDefault();
+});*/
+
+
 
 // 删除
 function notice_del(id) {
@@ -124,6 +141,7 @@ function noticeSave(field) {
         content: content,
         description: field.description,
         timeInsert: field.timeInsert,
+        lang: field.lang,
         state: field.state,
     };
 
@@ -183,6 +201,7 @@ function updateNotice(field) {
         description: field.description,
         content: content,
         timeInsert: field.timeInsert,
+        lang: field.lang,
         state: field.state,
     };
     $.ajax({

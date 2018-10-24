@@ -40,11 +40,11 @@ public class Partner implements Serializable {
     private Integer state;
 
     public String getTime() {
-        return DateUtil.formatDefaultDate(create_time);
+        return DateUtil.formatTimesTampDate(create_time);
     }
 
     public String getCreate_time() {
-        return DateUtil.formatDefaultDate(create_time);
+        return DateUtil.formatTimesTampDate(create_time);
 
     }
 }

@@ -2,13 +2,10 @@ package com.wchm.website.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wchm.website.controller.AdminController;
 import com.wchm.website.entity.News;
 import com.wchm.website.mapper.NewsMapper;
 import com.wchm.website.service.NewsService;
 import com.wchm.website.util.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -22,8 +19,6 @@ import java.util.List;
 @Service
 class NewsServiceImpl implements NewsService {
 
-    public final static Logger log = LoggerFactory.getLogger(NewsServiceImpl.class);
-
     @Autowired
     NewsMapper newsMapper;
 
@@ -33,13 +28,13 @@ class NewsServiceImpl implements NewsService {
     }
     //新闻分页
     @Override
-    public Result queryNewsByPage(Integer pageNum, Integer pageSize, String title) {
+    public Result queryNewsByPage(Integer pageNum, Integer pageSize, String title,Integer lang) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<News> data;
         if (StringUtils.isEmpty(title)) {
             data = newsMapper.queryNewsByPage();
         } else {
-            data = newsMapper.queryNewsByPageTitle(title);
+            data = newsMapper.queryNewsByPageTitle(title,lang);
         }
         PageInfo<News> p = new PageInfo(data);
         return Result.create().success("查询成功", p);
@@ -61,7 +56,6 @@ class NewsServiceImpl implements NewsService {
     //保存新闻
     @Override
     public Result newsSave(News news) {
-        log.info("------新闻对象：" + news);
         long result = newsMapper.newsSave(news);
         if (result <= 0) {
             return Result.create().fail("添加失败");

@@ -14,7 +14,7 @@ public interface NoticeService {
 
     Result  queryNoticeList(Integer pageNum, Integer pageSize);
 
-    Result queryNoticeByPage(Integer pageNum, Integer pageSize, String title);
+    Result queryNoticeByPage(Integer pageNum, Integer pageSize, String title,Integer lang);
 
     Result noticeSave(Notice notice);
 

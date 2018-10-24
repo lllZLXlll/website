@@ -41,20 +41,20 @@ function queryPageData(admin_name) {
                         var state = dataList[i].state;
                         var operation_type = dataList[i].operation_type;
                         if (operation_type==1) {
-                            types = "登录";
+                            operation_type = "登录";
                         }else if(operation_type==2){
-                            types = "退出";
+                            operation_type = "退出";
                         }else if(operation_type==3){
-                            types = "导入数据";
+                            operation_type = "导入数据";
                         }else if(operation_type==4){
-                            types = "转账";
+                            operation_type = "转账";
                         }else if(operation_type==5){
-                            types = "确认转账";
+                            operation_type = "确认转账";
                         }
                         tableBody += tbody;
                         tableBody = tableBody.replace('data1', i + 1);
                         tableBody = tableBody.replace('data2', dataList[i].admin_name);
-                        tableBody = tableBody.replace('data3', types);
+                        tableBody = tableBody.replace('data3', operation_type);
                         tableBody = tableBody.replace('data4', dataList[i].money);
                         tableBody = tableBody.replace('data5', dataList[i].address);
                         tableBody = tableBody.replace('data6', dataList[i].create_time);

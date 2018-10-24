@@ -16,7 +16,7 @@ public interface NewsService {
     //
     List<News> queryNews();
     //分页查询
-    Result queryNewsByPage(Integer pageNum, Integer pageSize, String title);
+    Result queryNewsByPage(Integer pageNum, Integer pageSize, String title,Integer lang);
     //删除新闻
     Result delNewsByID(Integer id);
     //保存新闻

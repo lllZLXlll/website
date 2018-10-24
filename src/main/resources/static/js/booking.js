@@ -49,31 +49,30 @@ function queryPageData(user_name) {
                         tableBody += tbody;
                         var state = dataList[i].state;//状态
                         var investment = dataList[i].investment;
-
                         var currency = dataList[i].currency;//投资货币(1.BTC 2.ETH 3.TUSD)
                         if(currency==1){
-                            types="BTC";
+                            currency="BTC";
                         }else if (currency==2){
-                            types="ETH";
+                            currency="ETH";
                         }else if (currency==3){
-                            types="TUSD";
+                            currency="TUSD";
                         }
 
                         var park_eco = dataList[i].park_eco;
                         if(park_eco==1){
-                            park_eco_type="口口相传";
+                            park_eco="口口相传";
                         }else if (park_eco==2){
-                            park_eco_type="电报";
+                            park_eco="电报";
                         }else if (park_eco==3){
-                            park_eco_type="媒体出版物";
+                            park_eco="媒体出版物";
                         }else if (park_eco==4){
-                            park_eco_type="互联网";
+                            park_eco="互联网";
                         }else if (park_eco==5){
-                            park_eco_type="一次会议";
+                            park_eco="一次会议";
                         }else if (park_eco==6){
                             park_eco="我们目前投资者之一";
                         }else if (park_eco==7){
-                            park_eco_type="其他";
+                            park_eco="其他";
                         }
 
                         tableBody = tableBody.replace('data1', i + 1);
@@ -86,10 +85,10 @@ function queryPageData(user_name) {
                         tableBody = tableBody.replace('data8', state == 1 ? '有效' : '无效');
                         tableBody = tableBody.replace('data9', investment ==1 ? '个人投资' : '基金投资');
                         tableBody = tableBody.replace('data10', dataList[i].dollar);
-                        tableBody = tableBody.replace('data11', types);  //currency
+                        tableBody = tableBody.replace('data11', currency);  //currency
                         tableBody = tableBody.replace('data12', dataList[i].account);
                         tableBody = tableBody.replace('data13',  dataList[i].country);
-                        tableBody = tableBody.replace('data14', park_eco_type);
+                        tableBody = tableBody.replace('data14', park_eco);
                         tableBody = tableBody.replace('data15', dataList[i].feedback);
 
                     }
@@ -170,7 +169,7 @@ function newsSave(field) {
 
     $.ajax({
         type : 'post',
-        url : '/booking/save',
+        url : '/admin/news/save',
         dataType : 'json',
         contentType: "application/json",
         data: JSON.stringify(param),
@@ -230,6 +229,7 @@ function updateNews(field) {
         url: field.url,
         // create_time: field.create_time,
         state: field.state,
+
     };
 
     $.ajax({

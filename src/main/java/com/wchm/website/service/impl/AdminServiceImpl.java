@@ -137,10 +137,8 @@ class AdminServiceImpl implements AdminService {
     }
 
 
-
-
     @Override
-    public Community queryCommunity() {
+    public  List<Community> queryCommunity() {
         return communityMapper.queryCommunity();
     }
 

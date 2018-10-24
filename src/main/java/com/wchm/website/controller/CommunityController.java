@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Api(tags = "关注人数")
 @RestController
@@ -28,7 +29,7 @@ public class CommunityController {
     @ResponseBody
     @ApiOperation(value = "关注人数查询", response = Community.class)
     @UnToken
-    public Community community(HttpServletResponse response) {
+    public List<Community> community(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
         return adminService.queryCommunity();
     }

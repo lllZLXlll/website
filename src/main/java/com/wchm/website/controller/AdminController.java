@@ -58,7 +58,7 @@ public class AdminController {
     private CurrencyService currencyService;//代币池
 
     @Autowired
-    private CommunityService communityService;//社区
+    private CommunityService communityService;//社区关注人数
 
     @Autowired
     private OperationService operationService; //操作日志
@@ -149,8 +149,8 @@ public class AdminController {
     // 新闻列表数据
     @GetMapping("/news/data")
     @ResponseBody
-    public Result newsData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title) {
-        return newsService.queryNewsByPage(pageNum, pageSize, title);
+    public Result newsData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title,Integer lang) {
+        return newsService.queryNewsByPage(pageNum, pageSize, title,lang);
     }
 
     // 删除新闻
@@ -193,12 +193,6 @@ public class AdminController {
      * @param token
      * @return
      */
-    // 预售列表数据
-    @GetMapping("/booking/data")
-    @ResponseBody
-    public Result bookingData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String user_name) {
-        return bookingService.queryBookingByPage(pageNum, pageSize, user_name);
-    }
 
     // 预售列表跳转
     @GetMapping("/booking/list")
@@ -206,10 +200,11 @@ public class AdminController {
         return "booking-list";
     }
 
-    // 预售列表添加跳转
-    @GetMapping("/booking/add")
-    public String bookingAdd(@CookieValue("token") String token) {
-        return "booking-add";
+    // 预售列表数据
+    @GetMapping("/booking/data")
+    @ResponseBody
+    public Result bookingData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String user_name) {
+        return bookingService.queryBookingByPage(pageNum, pageSize, user_name);
     }
 
 
@@ -229,8 +224,8 @@ public class AdminController {
     // 公告列表数据
     @GetMapping("/notice/data")
     @ResponseBody
-    public Result noticeData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title) {
-        return noticeService.queryNoticeByPage(pageNum, pageSize, title);
+    public Result noticeData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title,Integer lang) {
+        return noticeService.queryNoticeByPage(pageNum, pageSize, title,lang);
     }
 
     // 添加公告跳转
@@ -354,37 +349,49 @@ public class AdminController {
 
 
     /**
-     * ------------------关注列表--------------
+     * ------------------关注人数列表--------------
      *
      * @param token
-     * @return
+     * @return   community
      */
-    // 关注列表跳转
+
     @GetMapping("/community/list")
     public String communityList(@CookieValue("token") String token) {
         return "community-list";
     }
 
-    // 关注列表数据
+
     @GetMapping("/community/data")
     @ResponseBody
-    public Result communityData(@CookieValue("token") String token) {
-        return communityService.communityData();
+    public Result communityData(@CookieValue("token") String token, Integer pageNum, Integer pageSize ) {
+        return communityService.queryCommunityByPage(pageNum, pageSize);
     }
 
-    // 查询关注信息
+
     @GetMapping("/community/info/{id}")
     public ModelAndView communityInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
         return communityService.communityInfo(id);
     }
 
-    // 修改关注信息
-    @PostMapping("/community/update")
-    @ResponseBody
-    public Result communityUpdate(@CookieValue("token") String token, @RequestBody Community community) {
-        return communityService.communityUpdate(community);
+
+    @GetMapping("/community/add")
+    public String communityAdd(@CookieValue("token") String token) {
+        return "community-add";
     }
 
+
+    @PostMapping("/community/save")
+    @ResponseBody
+    public Result communitySave(@CookieValue("token") String token, HttpServletRequest request,Community community) {
+        return communityService.communitySave(community);
+    }
+
+
+    @PostMapping("/community/update")
+    @ResponseBody
+    public Result communityUpdate(@CookieValue("token") String token, HttpServletRequest request,Community community) {
+        return communityService.communityUpdate(community);
+    }
 
 
     /**

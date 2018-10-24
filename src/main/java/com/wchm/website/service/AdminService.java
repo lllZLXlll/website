@@ -5,6 +5,8 @@ import com.wchm.website.entity.Operation;
 import com.wchm.website.util.Result;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface AdminService {
 
@@ -19,5 +21,5 @@ public interface AdminService {
     //保存
     Result operationSave(Operation operation);
 
-    Community queryCommunity();
+    List<Community> queryCommunity();
 }

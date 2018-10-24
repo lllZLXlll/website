@@ -42,6 +42,9 @@ public class Notice implements Serializable {
     @ApiModelProperty("是否展示（1:展示，0:不展示）")
     private Integer state;
 
+    @ApiModelProperty("语言（1:英文，0:中文）")
+    private Integer lang;
+
     public String getTime() {
         return DateUtil.formatDefaultDate(time);
     }
@@ -49,19 +52,5 @@ public class Notice implements Serializable {
     public String getCreate_time() {
         return DateUtil.formatDefaultDate(create_time);
 
-    }
-
-    @Override
-    public String toString() {
-        return "Notice{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", description='" + description + '\'' +
-                ", time=" + time +
-                ", timeInsert=" + timeInsert +
-                ", create_time=" + create_time +
-                ", state=" + state +
-                '}';
     }
 }

@@ -14,11 +14,15 @@ public interface NoticeMapper {
     @Select("SELECT * FROM website_notice ORDER BY create_time DESC")
     List<Notice> queryNoticeByPage();
 
-    @Select("SELECT * FROM website_notice WHERE title LIKE '%' #{title} '%' ORDER BY time DESC")
-    List<Notice> queryNoticeByPageTitle(@Param("title") String title);
+    @Select("<script> " +
+            "SELECT  * FROM website_notice" +
+            " WHERE title LIKE '%' #{title} '%' <when  test='lang != null'> and lang = #{lang}</when> " +
+            "ORDER BY time DESC " +
+            "</script>")
+    List<Notice> queryNoticeByPageTitle(@Param("title") String title,@Param("lang") Integer lang);
 
-    @Insert("INSERT INTO website_notice(title, content, time, description, create_time, state) " +
-            "VALUES(#{notice.title}, #{notice.content}, #{notice.timeInsert}, #{notice.description}, NOW(), #{notice.state})")
+    @Insert("INSERT INTO website_notice(title, content, time, description, create_time, state,lang) " +
+            "VALUES(#{notice.title}, #{notice.content}, #{notice.timeInsert}, #{notice.description}, NOW(), #{notice.state},#{notice.lang})")
     Long noticeSave(@Param("notice") Notice notice);
 
     @Delete("DELETE FROM website_notice WHERE id = #{id}")
@@ -29,7 +33,7 @@ public interface NoticeMapper {
 
     @Update(" UPDATE website_notice SET " +
             " title = #{notice.title}, content = #{notice.content}, description = #{notice.description}," +
-            " time = #{notice.timeInsert}, state = #{notice.state} " +
+            " time = #{notice.timeInsert}, state = #{notice.state} ,lang = #{notice.lang}" +
             " where id = #{notice.id} ")
     Long newsUpdate(@Param("notice") Notice notice);
 
