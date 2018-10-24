@@ -52,7 +52,7 @@ public class Booking implements Serializable {
 
     @ApiModelProperty("投资方式（1.个人投资/2.基金投资）")
     @JsonProperty("investment")
-    private Integer investment;
+    private String investment;
 
     @ApiModelProperty("预售投资金额")
     @JsonProperty("dollar")
