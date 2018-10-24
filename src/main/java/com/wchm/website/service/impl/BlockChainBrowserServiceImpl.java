@@ -72,7 +72,7 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
      */
     public List<com.wchm.website.vo.Transaction> queryIndexDataTransaction() {
         // API
-        String apiUrl = fomcatApiUrl(companyAddress, 1, 10);
+        String apiUrl = fomcatApiUrl(companyAddress, 1, 6);
 
         List<com.wchm.website.vo.Transaction> tran = new ArrayList<>();
         // 请求以太坊API返回数据

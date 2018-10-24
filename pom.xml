@@ -5,7 +5,7 @@
 
     <groupId>com.wchm</groupId>
     <artifactId>website</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.9</version>
     <packaging>jar</packaging>
 
     <name>website</name>
@@ -154,6 +154,11 @@
             <groupId>com.github.kevinsawicki</groupId>
             <artifactId>http-request</artifactId>
             <version>6.0</version>
+        </dependency>
+        <!-- web socket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
     </dependencies>
 

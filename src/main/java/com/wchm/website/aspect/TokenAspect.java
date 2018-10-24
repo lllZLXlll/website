@@ -32,7 +32,7 @@ public class TokenAspect {
     @Autowired
     private RedisService redisService;
 
-    @Pointcut("execution(public * com.wchm.website.controller.*.*(..))")
+    @Pointcut("execution(public * com.wchm.website.controller.AdminController.*(..))")
     public void addAdvice() {
     }
 

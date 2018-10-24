@@ -81,4 +81,10 @@ public class IndexController {
 //    }
 
 
+    @GetMapping("/socket")
+    public String webSocket() {
+        return "websocket";
+    }
+
+
 }

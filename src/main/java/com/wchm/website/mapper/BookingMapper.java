@@ -16,12 +16,14 @@ public interface BookingMapper {
     List<Booking> queryBookingByPageName(@Param("user_name") String user_name);
 
     //插入
-    @Insert({"INSERT INTO website_advance_booking(user_name, sur_name, mobile, email, address," +
-            " create_time,state,investment ,dollar,currency,account,country,park_eco,feedback) " +
+    @Insert("INSERT INTO website_advance_booking(" +
+            "   user_name, sur_name, mobile, email, address," +
+            "   create_time,state,investment ,dollar,currency," +
+            "   account,country,park_eco,feedback )" +
             "VALUES(" +
-            "#{booking.user_name}, #{booking.sur_name}, #{booking.mobile}," + " #{booking.email}, #{booking.address},#{booking.create_time},"+
-            " #{booking.state}, #{booking.investment},#{booking.dollar},"+ " #{booking.currency}, #{booking.account},#{booking.country},"+
-            " #{booking.park_eco}, #{booking.feedback},"})
+            "   #{booking.user_name}, #{booking.sur_name}, #{booking.mobile}, #{booking.email}, #{booking.address}, #{booking.create_time},"+
+            "   #{booking.state}, #{booking.investment}, #{booking.dollar}, #{booking.currency}, #{booking.account}, #{booking.country},"+
+            "   #{booking.park_eco}, #{booking.feedback})")
     Long bookingSave(@Param("booking") Booking booking);
 
 }
