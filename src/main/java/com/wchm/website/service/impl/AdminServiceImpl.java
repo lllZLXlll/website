@@ -28,8 +28,7 @@ class AdminServiceImpl implements AdminService {
     @Autowired
     RedisService redisService;
 
-    @Autowired
-    CommunityMapper communityMapper;
+
 
     @Autowired
     OperationMapper operationMapper;
@@ -137,9 +136,5 @@ class AdminServiceImpl implements AdminService {
     }
 
 
-    @Override
-    public  List<Community> queryCommunity() {
-        return communityMapper.queryCommunity();
-    }
 
 }

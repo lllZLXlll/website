@@ -213,5 +213,7 @@ function x_message_show(title,url,w,h){
         shadeClose: true,
         shade:0.4,
         title: title,
+        content: url
+
     });
 }

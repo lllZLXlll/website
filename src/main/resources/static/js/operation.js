@@ -205,9 +205,9 @@ function updateOperation(field) {
     })
 }
 
-function x_operation_show(admin_name,url,w,h){
-    if (admin_name == null || admin_name == '') {
-        admin_name=false;
+function x_operation_show(title,url,w,h){
+    if (title == null || title == '') {
+        title=false;
     };
     if (url == null || url == '') {
         url="404.html";
@@ -225,7 +225,7 @@ function x_operation_show(admin_name,url,w,h){
         maxmin: true,
         shadeClose: true,
         shade:0.4,
-        admin_name: admin_name,
+        title: title,
         content: url
     });
 }

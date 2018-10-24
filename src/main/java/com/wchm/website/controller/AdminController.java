@@ -208,6 +208,57 @@ public class AdminController {
     }
 
 
+    /**
+     * ------------------关注人数列表--------------
+     *
+     * @param token
+     * @return   community
+     */
+
+    @GetMapping("/community/list")
+    public String communityList(@CookieValue("token") String token) {
+        return "community-list";
+    }
+
+
+    @GetMapping("/community/data")
+    @ResponseBody
+    public Result communityData(@CookieValue("token") String token, Integer pageNum, Integer pageSize ) {
+        return communityService.queryCommunityByPage(pageNum, pageSize);
+    }
+
+
+    @GetMapping("/community/info/{id}")
+    public ModelAndView communityInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+        return communityService.communityInfo(id);
+    }
+
+
+    @GetMapping("/community/add")
+    public String communityAdd(@CookieValue("token") String token) {
+        return "community-add";
+    }
+
+
+    @PostMapping("/community/save")
+    @ResponseBody
+    public Result communitySave(@CookieValue("token") String token, HttpServletRequest request,Community community) {
+        return communityService.communitySave(community);
+    }
+
+
+    @PostMapping("/community/update")
+    @ResponseBody
+    public Result communityUpdate(@CookieValue("token") String token, HttpServletRequest request,Community community) {
+        return communityService.communityUpdate(community);
+    }
+
+
+    @PostMapping("/community/del")
+    @ResponseBody
+    public Result communityDel(@CookieValue("token") String token, Integer id) {
+        return communityService.delCommunityByID(id);
+    }
 
     /**
      * ------------------公告列表--------------
@@ -348,57 +399,7 @@ public class AdminController {
     }
 
 
-    /**
-     * ------------------关注人数列表--------------
-     *
-     * @param token
-     * @return   community
-     */
 
-    @GetMapping("/community/list")
-    public String communityList(@CookieValue("token") String token) {
-        return "community-list";
-    }
-
-
-    @GetMapping("/community/data")
-    @ResponseBody
-    public Result communityData(@CookieValue("token") String token, Integer pageNum, Integer pageSize ) {
-        return communityService.queryCommunityByPage(pageNum, pageSize);
-    }
-
-
-    @GetMapping("/community/info/{id}")
-    public ModelAndView communityInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
-        return communityService.communityInfo(id);
-    }
-
-
-    @GetMapping("/community/add")
-    public String communityAdd(@CookieValue("token") String token) {
-        return "community-add";
-    }
-
-
-    @PostMapping("/community/save")
-    @ResponseBody
-    public Result communitySave(@CookieValue("token") String token, HttpServletRequest request,Community community) {
-        return communityService.communitySave(community);
-    }
-
-
-    @PostMapping("/community/update")
-    @ResponseBody
-    public Result communityUpdate(@CookieValue("token") String token, HttpServletRequest request,Community community) {
-        return communityService.communityUpdate(community);
-    }
-
-
-    @PostMapping("/community/del")
-    @ResponseBody
-    public Result communityDel(@CookieValue("token") String token, Integer id) {
-        return communityService.delCommunityByID(id);
-    }
 
     /**
      * ------------------合作伙伴--------------

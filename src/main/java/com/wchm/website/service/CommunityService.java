@@ -1,6 +1,7 @@
 package com.wchm.website.service;
 
 import com.wchm.website.entity.Community;
+import com.wchm.website.entity.Team;
 import com.wchm.website.util.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,19 +16,17 @@ import java.util.List;
 @Service
 public interface CommunityService {
 
-    // 查询接口
+    //接口
     List<Community> queryCommunity();
-
-    // 分页
+    //分页
     Result queryCommunityByPage(Integer pageNum, Integer pageSize);
-    // 保存
+    //保存
     Result communitySave(Community community);
-
-    // 删除
+    //删除
     Result delCommunityByID(Integer id);
-
+    //
     ModelAndView communityInfo(Integer id);
-    // 修改
+    //修改
     Result communityUpdate(Community community);
 
 }
