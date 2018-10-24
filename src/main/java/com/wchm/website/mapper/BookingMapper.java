@@ -20,7 +20,7 @@ public interface BookingMapper {
             " create_time,state,investment ,dollar,currency,account,country,park_eco,feedback) " +
             "VALUES(" +
             "#{booking.user_name}, #{booking.sur_name}, #{booking.mobile}," + " #{booking.email}, #{booking.address},#{booking.create_time},"+
-            " #{booking.state}, #{booking.investment},#{booking.dollar}),"+ " #{booking.currency}, #{booking.account},#{booking.country}),"+
+            " #{booking.state}, #{booking.investment},#{booking.dollar},"+ " #{booking.currency}, #{booking.account},#{booking.country},"+
             " #{booking.park_eco}, #{booking.feedback},"})
     Long bookingSave(@Param("booking") Booking booking);
 

@@ -60,25 +60,25 @@ public class IndexController {
         return bookingService.bookingSave(booking);
     }
 
-    /**
-     * 白皮书下载
-     *
-     * @param response
-     * @param request
-     * @param number
-     * @return
-     * @throws IOException
-     */
-    @GetMapping("/paper")
-    @UnToken
-    @ApiOperation(value = "白皮书下载")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "number", value = "1中文版，2英文版", required = true)
-    })
-    public Result paperDate(HttpServletResponse response, HttpServletRequest request, String number) throws IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");//防止跨域
-        return paperService.paperSave(number, response, request);
-    }
+//    /**
+//     * 白皮书下载
+//     *
+//     * @param response
+//     * @param request
+//     * @param number
+//     * @return
+//     * @throws IOException
+//     */
+//    @GetMapping("/paper")
+//    @UnToken
+//    @ApiOperation(value = "白皮书下载")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "number", value = "1中文版，2英文版", required = true)
+//    })
+//    public Result paperDate(HttpServletResponse response, HttpServletRequest request, String number) throws IOException {
+//        response.setHeader("Access-Control-Allow-Origin", "*");//防止跨域
+//        return paperService.paperSave(number, response, request);
+//    }
 
 
 }
