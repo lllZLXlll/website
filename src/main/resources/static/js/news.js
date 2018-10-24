@@ -100,7 +100,7 @@ function queryPageData(title,lang) {
 // 搜索
 function newsSreach() {
     var title = $("#newsTitle").val();
-    var lang = $("#newslang").val();
+    var lang = $("#newsLang").val();
     queryPageData(title,lang);
 }
 

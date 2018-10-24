@@ -22,6 +22,7 @@ public interface CommunityMapper {
     @Delete("DELETE FROM website_community_follow_count WHERE id = #{id}")
     Long delCommunityByID(@Param("id") Integer id);
 
+
     // 插入
     @Insert("INSERT INTO website_community_follow_count(english_name, description, link, follow_number, state) " +
             "VALUES(#{community.english_name}, #{community.description}, #{community.link}, #{community.follow_number}, #{community.state})")

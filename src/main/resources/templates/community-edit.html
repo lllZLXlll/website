@@ -29,38 +29,53 @@
             <input type="hidden" name="id" id="id" th:value="${community.id}" />
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>第1个关注数量
+                    <span class="x-red">*</span>英文名
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="count1" name="count1" required="" lay-verify="required"
-                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.count1}"   />
+                    <input type="text" id="english_name" name="english_name" required="" lay-verify="required"
+                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.english_name}"   />
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>第2个关注数量
+                    <span class="x-red">*</span>中文描述
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="count2" name="count2" required="" lay-verify="required"
-                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.count2}"   />
+                    <input type="text" id="description" name="description" required="" lay-verify="required"
+                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.description}"   />
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>第3个关注数量
+                    <span class="x-red">*</span>链接
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="count3" name="count3" required="" lay-verify="required"
-                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.count3}"   />
+                    <input type="text" id="link" name="link" required="" lay-verify="required"
+                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.link}"   />
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>第4个关注数量
+                    <span class="x-red">*</span>关注数量
                 </label>
                 <div class="layui-input-inline">
-                    <input type="text" id="count4" name="count4" required="" lay-verify="required"
-                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.count4}"   />
+                    <input type="text" id="follow_number" name="follow_number" required="" lay-verify="required"
+                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${community.follow_number}"   />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 260px;">
+                    <span class="x-red">*</span>是否有效
+                </label>
+                <div class="layui-input-inline">
+                    <select name="state" th:if="${community.state == 1}">
+                        <option value="1">有效</option>
+                        <option value="0">隐藏</option>
+                    </select>
+                    <select name="state" th:if="${community.state == 0}">
+                        <option value="1">有效</option>
+                        <option value="0" selected>隐藏</option>
+                    </select>
                 </div>
             </div>
 

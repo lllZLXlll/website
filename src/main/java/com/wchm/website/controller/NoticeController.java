@@ -4,6 +4,8 @@ import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.Notice;
 import com.wchm.website.service.NoticeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,17 +37,26 @@ public class NoticeController {
     @ResponseBody
     @ApiOperation(value = "公告", response = Notice.class)
     @UnToken
-    public Object noticeInfo(Long id, HttpServletResponse response) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "lang", value = "1.英文版，0.中文版", required = true,paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "ID", required = true,paramType = "query"),
+    })
+    public Object queryNoticeInfo(Long id, HttpServletResponse response,Integer lang) {
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return noticeService.queryNoticeInfo(id);
+        return noticeService.queryNoticeInfo(id,lang);
     }
 
     @GetMapping("/list")
     @ResponseBody
     @ApiOperation(value = "公告分页查询", response = Notice.class)
     @UnToken
-    public Object noticeList(HttpServletResponse response,Integer pageNum, Integer pageSize) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "lang", value = "1.英文版，0.中文版", required = true,paramType = "query"),
+            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = true,paramType = "query")
+    })
+    public Object noticeList(HttpServletResponse response,Integer pageNum, Integer pageSize,Integer lang){
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return noticeService.queryNoticeList(pageNum,pageSize);
+        return noticeService.queryNoticeList(pageNum,pageSize,lang);
     }
 }

@@ -19,17 +19,19 @@ public class Community implements Serializable {
     @ApiModelProperty("ID")
     private Long id;
 
-    @ApiModelProperty("第1个关注人数")
-    private Integer count1;
+    @ApiModelProperty("英文名")
+    private String english_name;
 
-    @ApiModelProperty("第2个关注人数")
-    private Integer count2;
+    @ApiModelProperty("中文描述")
+    private String description;
 
-    @ApiModelProperty("第3个关注人数")
-    private Integer count3;
+    @ApiModelProperty("链接")
+    private String link;
 
-    @ApiModelProperty("第4个关注人数")
-    private Integer count4;
+    @ApiModelProperty("关注数量")
+    private Integer follow_number;
 
+    @ApiModelProperty("是否展示")
+    private Integer state;
 
 }

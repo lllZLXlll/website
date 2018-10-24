@@ -12,7 +12,7 @@ public interface NoticeService {
 
     List<Notice> queryNotices();
 
-    Result  queryNoticeList(Integer pageNum, Integer pageSize);
+    Result  queryNoticeList(Integer pageNum, Integer pageSize,Integer lang);
 
     Result queryNoticeByPage(Integer pageNum, Integer pageSize, String title,Integer lang);
 
@@ -24,5 +24,5 @@ public interface NoticeService {
 
     Result newsUpdate(Notice notice);
 
-    Result queryNoticeInfo(Long id);
+    Result queryNoticeInfo(Long id,Integer lang);
 }

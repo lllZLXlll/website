@@ -394,6 +394,12 @@ public class AdminController {
     }
 
 
+    @PostMapping("/community/del")
+    @ResponseBody
+    public Result communityDel(@CookieValue("token") String token, Integer id) {
+        return communityService.delCommunityByID(id);
+    }
+
     /**
      * ------------------合作伙伴--------------
      *

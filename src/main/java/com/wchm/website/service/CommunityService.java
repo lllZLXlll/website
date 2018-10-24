@@ -17,10 +17,12 @@ public interface CommunityService {
 
     // 查询接口
     List<Community> queryCommunity();
+
     // 分页
     Result queryCommunityByPage(Integer pageNum, Integer pageSize);
     // 保存
     Result communitySave(Community community);
+
     // 删除
     Result delCommunityByID(Integer id);
 

@@ -22,16 +22,13 @@ class NewsServiceImpl implements NewsService {
     @Autowired
     NewsMapper newsMapper;
 
-    @Override
-    public List<News> queryNews() {
-        return newsMapper.queryNews();
-    }
+
     //新闻分页
     @Override
     public Result queryNewsByPage(Integer pageNum, Integer pageSize, String title,Integer lang) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<News> data;
-        if (StringUtils.isEmpty(title)) {
+        if (StringUtils.isEmpty(title)&& lang==null) {
             data = newsMapper.queryNewsByPage();
         } else {
             data = newsMapper.queryNewsByPageTitle(title,lang);
@@ -39,6 +36,17 @@ class NewsServiceImpl implements NewsService {
         PageInfo<News> p = new PageInfo(data);
         return Result.create().success("查询成功", p);
     }
+
+    @Override
+    public Result queryNewsList(Integer pageNum, Integer pageSize, Integer lang) {
+        PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
+        List<News> data1;
+
+        data1 = newsMapper.queryNewsList(lang);
+        PageInfo<News> p = new PageInfo(data1);
+        return Result.create().success("查询成功", p);
+    }
+
     //删除新闻
     @Override
     public Result delNewsByID(Integer id) {
@@ -62,7 +70,7 @@ class NewsServiceImpl implements NewsService {
         }
         return Result.create().success("添加成功");
     }
-    //插入新闻
+
     @Override
     public ModelAndView newsInfo(Integer id) {
         News news = newsMapper.newsInfo(id);
@@ -70,6 +78,7 @@ class NewsServiceImpl implements NewsService {
         mav.getModel().put("news", news);
         return mav;
     }
+
 
     //修改新闻
     @Override
@@ -82,9 +91,20 @@ class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public Result newsInfoo(Long id) {
-        News news= newsMapper.queryNewsInfo(id);
+    public Result queryNewsInfo(Long id, Integer lang) {
+        News news= newsMapper.queryNewsInfo(id,lang);
+        return Result.create().success("查询成功",news);
+    }
+
+    @Override
+    public Result newsInfoo(Long id, Integer lang) {
+        News news= newsMapper.queryNewsInfo(id,lang);
         return Result.create().success("查询成功", news);
+    }
+
+    @Override
+    public List<News> queryNews() {
+        return newsMapper.queryNews();
     }
 
 }

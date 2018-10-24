@@ -31,9 +31,9 @@
     <body class="x-body">
       <div class="layui-row">
         <div class="layui-form layui-col-md12 x-so">
+          <span >&nbsp;&nbsp;&nbsp;公告标题：</span>
           <input type="text" id="noticeTitle" placeholder="请输入公告标题" autocomplete="off" class="layui-input">
-          <button class="layui-btn" onclick="noticeSreach()"><i class="layui-icon">&#xe615;</i></button>
-          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;语言:</span>
+          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;语言：</span>
           <div class="layui-input-inline">
             <select  id="lang">
               <option value="">全部</option>
@@ -41,6 +41,8 @@
               <option value="1">英文</option>
             </select>
          </div>
+          <span >&nbsp;&nbsp;&nbsp;</span>
+          <button class="layui-btn" onclick="noticeSreach()"><i class="layui-icon">&#xe615;</i></button>
       <xblock>
         <!--<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
         <button class="layui-btn" onclick="x_notice_show('添加公告','/admin/notice/add')"><i class="layui-icon"></i>添加</button>

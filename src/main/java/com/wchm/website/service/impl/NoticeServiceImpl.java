@@ -29,10 +29,10 @@ class NoticeServiceImpl implements NoticeService {
 
 
     @Override
-    public Result queryNoticeList(Integer pageNum, Integer pageSize) {
+    public Result queryNoticeList(Integer pageNum, Integer pageSize,Integer lang) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<Notice> data1;
-        data1 = noticeMapper.queryNoticeList();
+        data1 = noticeMapper.queryNoticeList(lang);
         PageInfo<Notice> p = new PageInfo(data1);
         return Result.create().success("查询成功", p);
     }
@@ -41,7 +41,7 @@ class NoticeServiceImpl implements NoticeService {
     public Result queryNoticeByPage(Integer pageNum, Integer pageSize, String title,Integer lang) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<Notice> data;
-        if (StringUtils.isEmpty(title)) {
+        if (StringUtils.isEmpty(title)&& lang==null) {
             data = noticeMapper.queryNoticeByPage();
         } else {
             data = noticeMapper.queryNoticeByPageTitle(title,lang);
@@ -90,9 +90,10 @@ class NoticeServiceImpl implements NoticeService {
         return Result.create().success("修改成功");
     }
 
+
     @Override
-    public Result queryNoticeInfo(Long id) {
-        Notice notice = noticeMapper.queryNoticeInfo(id);
+    public Result queryNoticeInfo(Long id, Integer lang) {
+        Notice notice = noticeMapper.queryNoticeInfo(id,lang);
         return Result.create().success("查询成功",notice);
     }
 
