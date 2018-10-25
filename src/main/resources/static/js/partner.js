@@ -166,9 +166,9 @@ function updatePartner(field) {
     })
 }
 
-function x_partner_show(partner_name,url,w,h){
-    if (partner_name == null ||  partner_name == '') {
-        partner_name=false;
+function x_partner_show(title,url,w,h){
+    if (title == null ||  title == '') {
+        title=false;
     };
     if (url == null || url == '') {
         url="404.html";
@@ -186,7 +186,7 @@ function x_partner_show(partner_name,url,w,h){
         maxmin: true,
         shadeClose: true,
         shade:0.4,
-        partner_name: partner_name,
+        title: title,
         content: url
     });
 }

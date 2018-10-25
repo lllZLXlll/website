@@ -21,5 +21,5 @@ public interface AdminService {
     //保存
     Result operationSave(Operation operation);
 
-    List<Community> queryCommunity();
+   // List<Community> queryCommunity();
 }

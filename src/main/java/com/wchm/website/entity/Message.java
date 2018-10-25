@@ -35,11 +35,11 @@ public class Message implements Serializable {
     private Integer state;
 
     public String getTime() {
-        return DateUtil.formatTimesTampDate(create_time);
+        return DateUtil.formatDefaultDate(create_time);
     }
 
     public String getCreate_time() {
-        return DateUtil.formatTimesTampDate(create_time);
+        return DateUtil.formatDefaultDate(create_time);
 
     }
 }
