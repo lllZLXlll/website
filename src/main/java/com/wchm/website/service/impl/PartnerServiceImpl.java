@@ -53,6 +53,15 @@ class PartnerServiceImpl implements PartnerService {
     //保存
     @Override
     public Result partnerSave(Partner partner) {
+        if (StringUtil.isEmpty(partner.getNumber())){
+            return Result.create().fail("序号不能为空");
+        }
+        if (StringUtil.isEmpty(partner.getPartner_name())){
+            return Result.create().fail("合作伙伴名称不能为空");
+        }
+        if (StringUtil.isEmpty(partner.getLink())){
+            return Result.create().fail("链接不能为空");
+        }
         long result = partnerMapper.partnerSave(partner);
         if (result <= 0) {
             return Result.create().fail("添加失败");
@@ -82,6 +91,15 @@ class PartnerServiceImpl implements PartnerService {
     //修改
     @Override
     public Result partnerUpdate(Partner partner) {
+        if (StringUtil.isEmpty(partner.getNumber())){
+            return Result.create().fail("序号不能为空");
+        }
+        if (StringUtil.isEmpty(partner.getPartner_name())){
+            return Result.create().fail("合作伙伴名称不能为空");
+        }
+        if (StringUtil.isEmpty(partner.getLink())){
+            return Result.create().fail("链接不能为空");
+        }
         long result = partnerMapper.partnerUpdate(partner);
         if (result <= 0) {
             return Result.create().fail("修改失败");

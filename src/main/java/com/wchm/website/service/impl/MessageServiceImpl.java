@@ -2,6 +2,7 @@ package com.wchm.website.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.entity.Message;
 import com.wchm.website.entity.Notice;
 import com.wchm.website.mapper.MessageMapper;
@@ -54,6 +55,13 @@ class MessageServiceImpl implements MessageService {
     //保存
     @Override
     public Result messageSave(Message message) {
+        if(StringUtil.isEmpty(message.getTitle())){
+            return Result.create().fail("消息标题不能为空");
+        }
+        if(StringUtil.isEmpty(message.getContent())){
+            return Result.create().fail("消息内容不能为空");
+        }
+
         long result = messageMapper.messageSave(message);
         if (result <= 0) {
             return Result.create().fail("添加失败");
@@ -84,6 +92,12 @@ class MessageServiceImpl implements MessageService {
     //修改公告
     @Override
     public Result messageUpdate(Message message) {
+        if(StringUtil.isEmpty(message.getTitle())){
+            return Result.create().fail("消息标题不能为空");
+        }
+        if(StringUtil.isEmpty(message.getContent())){
+            return Result.create().fail("消息内容不能为空");
+        }
         long result = messageMapper.messageUpdate(message);
         if (result <= 0) {
             return Result.create().fail("修改失败");

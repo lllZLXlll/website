@@ -63,6 +63,15 @@ class TeamServiceImpl implements TeamService {
     //修改团队
     @Override
     public Result teamUpdate(Team team) {
+        if (StringUtil.isEmpty(team.getNumber())){
+            return Result.create().fail("序号不能为空！");
+        }
+        if (StringUtil.isEmpty(team.getDescription())){
+            return Result.create().fail("描述不能为空！");
+        }
+        if (StringUtil.isEmpty(team.getNumber())){
+            return Result.create().fail("序号不能为空！");
+        }
         long result = teamMapper.teamUpdate(team);
         if (result <= 0) {
             return Result.create().fail("修改失败");
@@ -74,6 +83,18 @@ class TeamServiceImpl implements TeamService {
     //保存团队
     @Override
     public Result teamSave(Team team) {
+        if (StringUtil.isEmpty(team.getNumber())){
+            return Result.create().fail("序号不能为空！");
+        }
+        if (StringUtil.isEmpty(team.getDescription())){
+            return Result.create().fail("描述不能为空！");
+        }
+        if (StringUtil.isEmpty(team.getNumber())){
+            return Result.create().fail("序号不能为空！");
+        }
+   /*     if (StringUtil.isEmpty(team.getCreate_time())){
+            return Result.create().fail("时间不能为空！");
+        }*/
         long result = teamMapper.teamSave(team);
         if (result <= 0) {
             return Result.create().fail("添加失败");
