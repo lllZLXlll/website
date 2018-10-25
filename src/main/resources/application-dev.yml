@@ -85,7 +85,7 @@ wchm:
   # 公司钱包地址 测试地址
   company-address: "0xb4182216164d5c45f37ccad696f7e5c92abff03d"
   # 公司账户私钥 测试私钥
-  company-pri-key: "0x8702f95f29ed68e03ef4af5d8effbed5fd67356f69f602f98df322bf42a1fd47"
+  company-pri-key: ""
   # PCT代币地址
   contract-address: "0x183630c3AfA08957E588eaa26b748cc5C2D42DC6"
   # method-id
