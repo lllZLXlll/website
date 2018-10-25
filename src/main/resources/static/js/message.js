@@ -48,8 +48,8 @@ function queryPageData(title) {
                         tableBody = tableBody.replace('data1', i + 1);
                         tableBody = tableBody.replace('data2', dataList[i].title);
                         tableBody = tableBody.replace('data3', dataList[i].content);
-                        tableBody = tableBody.replace('data4', dataList[i].create_time);
-                        tableBody = tableBody.replace('data5', state == 1 ? '展示' : '隐藏');
+                        tableBody = tableBody.replace('data4', state == 1 ? '展示' : '隐藏');
+                        tableBody = tableBody.replace('data5', dataList[i].create_time);
                         tableBody = tableBody.replace('data6', '/admin/message/info/' + dataList[i].id);
                         tableBody = tableBody.replace('data7', dataList[i].id);
                     }
@@ -200,10 +200,10 @@ function x_message_show(title,url,w,h){
         url="404.html";
     };
     if (w == null || w == '') {
-        w=($(window).width()*0.9);
+        w=($(window).width()*0.5);
     };
     if (h == null || h == '') {
-        h=($(window).height() - 50);
+        h=($(window).height() - 150);
     };
     layer.open({
         type: 2,
