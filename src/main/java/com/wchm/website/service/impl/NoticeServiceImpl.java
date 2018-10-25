@@ -2,6 +2,7 @@ package com.wchm.website.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.entity.News;
 import com.wchm.website.entity.Notice;
 import com.wchm.website.mapper.NoticeMapper;
@@ -52,6 +53,21 @@ class NoticeServiceImpl implements NoticeService {
 
     @Override
     public Result noticeSave(Notice notice) {
+
+        if(StringUtil.isEmpty(notice.getTitle())){
+            return Result.create().fail("公告标题不能为空");
+        }
+
+        if(StringUtil.isEmpty(notice.getContent())){
+            return Result.create().fail("公告内容不能为空");
+        }
+        if(StringUtil.isEmpty(notice.getDescription())){
+            return Result.create().fail("公告描述不能为空");
+        }
+      /*  if(notice.getTime()==null){
+            return Result.create().fail("公告时间不能为空");
+        }*/
+
         long result = noticeMapper.noticeSave(notice);
         if (result <= 0) {
             return Result.create().fail("添加失败");
@@ -83,6 +99,20 @@ class NoticeServiceImpl implements NoticeService {
 
     @Override
     public Result newsUpdate(Notice notice) {
+
+        if(StringUtil.isEmpty(notice.getTitle())){
+            return Result.create().fail("公告标题不能为空");
+        }
+
+        if(StringUtil.isEmpty(notice.getContent())){
+            return Result.create().fail("公告内容不能为空");
+        }
+        if(StringUtil.isEmpty(notice.getDescription())){
+            return Result.create().fail("公告描述不能为空");
+        }
+      /*  if(notice.getTime()==null){
+            return Result.create().fail("公告时间不能为空");
+        }*/
         long result = noticeMapper.newsUpdate(notice);
         if (result <= 0) {
             return Result.create().fail("修改失败");

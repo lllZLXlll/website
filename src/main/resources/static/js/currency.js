@@ -212,18 +212,18 @@ function uploadExcel() {
 }
 
 
-function x_currency_show(user_name,url,w,h){
-    if (user_name == null || user_name == '') {
-        user_name=false;
+function x_currency_show(title,url,w,h){
+    if (title == null || title == '') {
+        title=false;
     };
     if (url == null || url == '') {
         url="404.html";
     };
     if (w == null || w == '') {
-        w=($(window).width()*0.9);
+        w=($(window).width()*0.5);
     };
     if (h == null || h == '') {
-        h=($(window).height() - 100);
+        h=($(window).height() - 150);
     };
     layer.open({
         type: 2,
@@ -237,9 +237,9 @@ function x_currency_show(user_name,url,w,h){
     });
 }
 
-function x_currency_show2(user_name,url,w,h){
-    if (user_name == null || user_name == '') {
-        user_name=false;
+function x_currency_show2(title,url,w,h){
+    if (title == null || title == '') {
+        title=false;
     };
     if (url == null || url == '') {
         url="404.html";
@@ -248,7 +248,7 @@ function x_currency_show2(user_name,url,w,h){
         w=($(window).width()*0.5);
     };
     if (h == null || h == '') {
-        h=($(window).height() - 250);
+        h=($(window).height() - 150);
     };
     layer.open({
         type: 2,

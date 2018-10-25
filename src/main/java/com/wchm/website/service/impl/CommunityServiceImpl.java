@@ -2,11 +2,13 @@ package com.wchm.website.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.entity.Community;
 import com.wchm.website.mapper.CommunityMapper;
 import com.wchm.website.service.CommunityService;
 import com.wchm.website.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -46,6 +48,19 @@ class CommunityServiceImpl implements CommunityService {
      */
     @Override
     public Result communitySave(Community community) {
+        if(StringUtil.isEmpty(community.getEnglish_name())){
+            return Result.create().fail("英文名不能为空");
+        }
+        if(StringUtil.isEmpty(community.getDescription())){
+            return Result.create().fail("中文描述不能为空");
+        }
+        if(StringUtil.isEmpty(community.getLink())){
+            return Result.create().fail("链接不能为空");
+        }
+        if(community.getFollow_number()==null){
+            return Result.create().fail("关注数量不能为空");
+        }
+
         long result = communityMapper.communitySave(community);
         if (result <= 0) {
             return Result.create().fail("添加失败");
@@ -87,6 +102,18 @@ class CommunityServiceImpl implements CommunityService {
      */
     @Override
     public Result communityUpdate(Community community) {
+        if(StringUtil.isEmpty(community.getEnglish_name())){
+            return Result.create().fail("英文名不能为空");
+        }
+        if(StringUtil.isEmpty(community.getDescription())){
+            return Result.create().fail("中文描述不能为空");
+        }
+        if(StringUtil.isEmpty(community.getLink())){
+            return Result.create().fail("链接不能为空");
+        }
+        if(community.getFollow_number()==null){
+            return Result.create().fail("关注数量不能为空");
+        }
         long result = communityMapper.communityUpdate(community);
         if (result <= 0) {
             return Result.create().fail("修改失败");

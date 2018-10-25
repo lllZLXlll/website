@@ -2,6 +2,7 @@ package com.wchm.website.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.entity.News;
 import com.wchm.website.mapper.NewsMapper;
 import com.wchm.website.service.NewsService;
@@ -64,6 +65,23 @@ class NewsServiceImpl implements NewsService {
     //保存新闻
     @Override
     public Result newsSave(News news) {
+        if(StringUtil.isEmpty(news.getTitle())){
+            return Result.create().fail("消息标题不能为空");
+        }
+        if(StringUtil.isEmpty(news.getContent())){
+            return Result.create().fail("内容不能为空");
+        }
+    /*    if (StringUtil.isEmpty(news.getCreate_time())){
+            return Result.create().fail("时间不能为空！");
+        }*/
+        if(StringUtil.isEmpty(news.getIcon())){
+            return Result.create().fail("图片地址不能为空");
+        }
+        if(StringUtil.isEmpty(news.getUrl())){
+            return Result.create().fail("原文地址不能为空");
+
+        }
+
         long result = newsMapper.newsSave(news);
         if (result <= 0) {
             return Result.create().fail("添加失败");
@@ -83,6 +101,22 @@ class NewsServiceImpl implements NewsService {
     //修改新闻
     @Override
     public Result newsUpdate(News news) {
+        if(StringUtil.isEmpty(news.getTitle())){
+            return Result.create().fail("消息标题不能为空");
+        }
+        if(StringUtil.isEmpty(news.getContent())){
+            return Result.create().fail("内容不能为空");
+        }
+      /*  if (StringUtil.isEmpty(news.getCreate_time())){
+            return Result.create().fail("时间不能为空！");
+        }*/
+
+        if(StringUtil.isEmpty(news.getIcon())){
+            return Result.create().fail("图片地址不能为空");
+        }
+        if(StringUtil.isEmpty(news.getUrl())){
+            return Result.create().fail("原文地址不能为空");
+        }
         long result = newsMapper.newsUpdate(news);
         if (result <= 0) {
             return Result.create().fail("修改失败");
