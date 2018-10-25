@@ -1,5 +1,6 @@
 package com.wchm.website.entity;
 
+import com.wchm.website.entity.shiro.Role;
 import com.wchm.website.util.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,6 +31,9 @@ public class Admin implements Serializable {
 
     @ApiModelProperty("创建时间")
     private Date create_time;
+
+    //用户的角色   一对多关系
+    private List<Role> roleList;
 
     public String getCreate_time() {
         return DateUtil.formatDefaultDate(create_time);

@@ -29,4 +29,5 @@ public interface AdminMapper {
     Long operationSave(@Param("operation") Operation operation);
 
 
+    Admin findAdminByName(String username);
 }

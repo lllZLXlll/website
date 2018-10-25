@@ -10,6 +10,9 @@ import com.wchm.website.util.Result;
 import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "后台")
 @Controller
@@ -699,6 +703,42 @@ public class AdminController {
     @ResponseBody
     public Result currencyRecordData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, Integer id) {
         return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
+    }
+
+    @RequestMapping("/test")
+    @UnToken
+    public String logintest(HttpServletRequest request, Map<String ,String> map){
+        System.out.println("user login .....");
+        String exception = (String) request.getAttribute("shiroLoginFailure");
+        System.out.println("exception=" + exception);
+        String msg = "";
+        if (exception != null) {
+            if (UnknownAccountException.class.getName().equals(exception)) {
+                System.out.println("UnknownAccountException -- > 账号不存在：");
+                msg = "unknownAccount";
+            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
+                msg = "incorrectPassword";
+            } else if ("kaptchaValidateFailed".equals(exception)) {
+                System.out.println("kaptchaValidateFailed -- > 验证码错误");
+                msg = "kaptchaValidateFailed -- > 验证码错误";
+            } else {
+                msg = "else >> "+exception;
+                System.out.println("else -- >" + exception);
+            }
+        }
+        map.put("msg", msg);
+        //认证成功由shiro框架自行处理
+        return "login";
+    }
+
+
+    //访问此连接时会触发MyShiroRealm中的权限分配方法
+    @RequestMapping("/permission")
+    @RequiresPermissions("student:test")
+    @UnToken
+    public String test2(){
+        System.out.println("permission  test");
+        return "login";
     }
 
 }

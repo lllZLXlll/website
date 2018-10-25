@@ -1,11 +1,9 @@
 package com.wchm.website.service;
 
-import com.wchm.website.entity.Community;
+import com.wchm.website.entity.Admin;
 import com.wchm.website.entity.Operation;
 import com.wchm.website.util.Result;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface AdminService {
@@ -21,5 +19,6 @@ public interface AdminService {
     //保存
     Result operationSave(Operation operation);
 
-   // List<Community> queryCommunity();
+    Admin findAdminByName(String username);
+
 }
