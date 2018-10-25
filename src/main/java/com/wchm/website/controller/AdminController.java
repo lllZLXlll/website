@@ -242,14 +242,14 @@ public class AdminController {
 
     @PostMapping("/community/save")
     @ResponseBody
-    public Result communitySave(@CookieValue("token") String token, HttpServletRequest request,Community community) {
+    public Result communitySave(@CookieValue("token") String token, @RequestBody Community community) {
         return communityService.communitySave(community);
     }
 
 
     @PostMapping("/community/update")
     @ResponseBody
-    public Result communityUpdate(@CookieValue("token") String token, HttpServletRequest request,Community community) {
+    public Result communityUpdate(@CookieValue("token") String token, @RequestBody Community community) {
         return communityService.communityUpdate(community);
     }
 
