@@ -28,7 +28,7 @@
     }
     function connect() {
         // 以后换成测试或正式的地址+/endpointSang
-        var socket = new SockJS('http://localhost:8080/endpointSang');
+        var socket = new SockJS('/endpointSang');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             setConnected(true);

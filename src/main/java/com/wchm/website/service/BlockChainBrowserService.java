@@ -27,7 +27,7 @@ public interface BlockChainBrowserService {
     /**
      * 区块链首页-最新交易记录
      */
-    List<Transaction> queryIndexDataTransaction() throws Exception;
+    List<Transaction> queryIndexDataTransaction();
 
     /**
      * 区块链首页-最新区块
