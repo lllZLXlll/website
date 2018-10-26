@@ -18,6 +18,8 @@ public interface TeamService {
 
     //接口
     List<Team> queryTeam();
+
+    Result  queryTeamList(Integer pageNum, Integer pageSize);
     //分页
     Result queryTeamByPage(Integer pageNum, Integer pageSize, String team_name);
     //保存

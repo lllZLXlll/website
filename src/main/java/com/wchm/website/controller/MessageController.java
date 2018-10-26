@@ -1,8 +1,8 @@
 package com.wchm.website.controller;
 
 import com.wchm.website.annotation.UnToken;
-import com.wchm.website.entity.Partner;
-import com.wchm.website.service.PartnerService;
+import com.wchm.website.entity.Message;
+import com.wchm.website.service.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,26 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
-@Api(tags = "合作伙伴")
+@Api(tags = "消息")
 @RestController
-@RequestMapping("/partner")
-public class PartnerController {
+@RequestMapping("/message")
+public class MessageController {
 
     @Autowired
-    private PartnerService partnerService;
+    private MessageService messageService;
 
     @GetMapping("")
     @ResponseBody
-    @ApiOperation(value = "合作伙伴查询", response = Partner.class)
+    @ApiOperation(value = "消息中心首页", response = Message.class)
     @UnToken
-    public Object partner(HttpServletResponse response) {
+    public Object Message(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        return partnerService.queryPartner();
+        return messageService.queryMessage();
     }
 
     @GetMapping("/list")
     @ResponseBody
-    @ApiOperation(value = "合作伙伴分页查询", response = Partner.class)
+    @ApiOperation(value = "消息分页查询", response = Message.class)
     @UnToken
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
@@ -43,7 +43,19 @@ public class PartnerController {
     public Object messageList(HttpServletResponse response,Integer pageNum,
                               Integer pageSize){
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return partnerService.queryPartnerList(pageNum,pageSize);
+        return messageService.queryMessageList(pageNum,pageSize);
     }
+
+    /*@GetMapping("/info")
+    @ResponseBody
+    @UnToken
+    @ApiOperation(value = "消息", response = Message.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "ID", required = true,paramType = "query"),
+    })
+    public Object messageInfo(HttpServletResponse response,Long id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return messageService.messageInfoo(id);
+    }*/
 
 }

@@ -13,11 +13,12 @@ public interface TeamMapper {
     @Select("SELECT * FROM team WHERE id = #{id}")
     Team queryteamInfo(@Param("id") Long id);*/
 
-    @Select("SELECT * FROM website_team WHERE state = 1 ORDER BY create_time DESC LIMIT 3")
+    @Select("SELECT * FROM website_team WHERE state = 1 ORDER BY create_time DESC ")
     List<Team> queryTeam();
 
     @Select("SELECT * FROM website_team ORDER BY create_time DESC")
     List<Team> queryTeamByPage();
+
 
     //查询
     @Select("SELECT * FROM website_team WHERE team_name LIKE '%' #{team_name} '%' ORDER BY create_time DESC")

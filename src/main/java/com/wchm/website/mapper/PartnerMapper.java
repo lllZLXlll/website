@@ -12,7 +12,7 @@ public interface PartnerMapper {
    @Select("SELECT * FROM team WHERE id = #{id}")
     Team queryteamInfo(@Param("id") Long id);*/
 
-    @Select("SELECT * FROM website_partner WHERE state = 1 ORDER BY create_time DESC LIMIT 3")
+    @Select("SELECT * FROM website_partner WHERE state = 1 ORDER BY create_time DESC ")
     List<Partner> queryPartner();
 
     @Select("SELECT * FROM website_partner ORDER BY create_time DESC")

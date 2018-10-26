@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "公告")
+@ApiModel(value = "消息")
 public class Message implements Serializable {
 
     private static final long serialVersionUID = -3886597091176783725L;

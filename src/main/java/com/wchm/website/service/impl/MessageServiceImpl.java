@@ -24,20 +24,29 @@ class MessageServiceImpl implements MessageService {
     @Autowired
     MessageMapper messageMapper;
 
+
     @Override
     public List<Message> queryMessage() {
-        return null;
+        return messageMapper.queryMessage();
     }
 
     @Override
     public Result queryMessageList(Integer pageNum, Integer pageSize) {
-        return null;
+        PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
+        List<Message> data1;
+        data1 = messageMapper.queryMessageByPage();
+        PageInfo<Message> p = new PageInfo(data1);
+        return Result.create().success("查询成功", p);
     }
 
-    @Override
-    public Result queryMessageInfo(Long id) {
-        return null;
-    }
+
+   /* @Override
+    public Result messageInfoo(Long id) {
+        Message message= messageMapper.queryMessageInfo(id);
+        return Result.create().success("查询成功", message);
+    }*/
+
+
     //条件查询
     @Override
     public Result queryMessageByPage(Integer pageNum, Integer pageSize, String title) {
@@ -104,8 +113,5 @@ class MessageServiceImpl implements MessageService {
         }
         return Result.create().success("修改成功");
     }
-
-
-
 
 }

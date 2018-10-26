@@ -21,6 +21,8 @@ public interface PartnerService {
     // 分页
     Result queryPartnerByPage(Integer pageNum, Integer pageSize, String partner_name);
 
+    Result  queryPartnerList(Integer pageNum, Integer pageSize);
+
     // 保存
     Result partnerSave(Partner partner);
 

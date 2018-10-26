@@ -7,14 +7,20 @@ import java.util.List;
 
 public interface MessageMapper {
 
-    /*@Select("SELECT * FROM website_team WHERE state = 1 ORDER BY create_time DESC LIMIT 3")
-    List<Team> queryTeam();
 
-    @Select("SELECT * FROM team WHERE id = #{id}")
-    Team queryteamInfo(@Param("id") Long id);*/
 
-    @Select("SELECT * FROM website_message WHERE state = 1 ORDER BY create_time DESC LIMIT 3")
+    @Select("SELECT * FROM website_message WHERE state = 1 ORDER BY create_time DESC ")
     List<Message> queryMessage();
+
+
+    @Select("SELECT * FROM website_message WHERE id = #{id}")
+    Message messageInfo(@Param("id") Integer id);
+
+/*    @Select("SELECT * FROM website_message WHERE id = #{id}")
+    Message queryMessageInfo(@Param("id") Long id);*/
+
+/*    @Select("SELECT * FROM website_message WHERE state = 1 and title = #{title} ORDER BY create_time DESC")
+    List<Message> queryMessageList(@Param("title") String title);*/
 
     @Select("SELECT * FROM website_message ORDER BY create_time DESC")
     List<Message> queryMessageByPage();
@@ -32,14 +38,11 @@ public interface MessageMapper {
             "VALUES(#{message.title}, #{message.content}, #{message.state},#{message.create_time})")
     Long messageSave(@Param("message") Message message);
 
-
-    @Select("SELECT * FROM website_message WHERE id = #{id}")
-    Message messageInfo(@Param("id") Integer id);
-
     //修改
     @Update(" UPDATE website_message SET " +
             " title = #{message.title}, content = #{message.content}, " +
             "  state = #{message.state}, " + " create_time = #{message.create_time} " +
             " where id = #{message.id} ")
     Long messageUpdate(@Param("message") Message message);
-}
+
+ }

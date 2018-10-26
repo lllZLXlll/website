@@ -25,7 +25,16 @@ class TeamServiceImpl implements TeamService {
 
     @Override
     public List<Team> queryTeam() {
-        return null;
+        return teamMapper.queryTeam();
+    }
+
+    @Override
+    public Result queryTeamList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
+        List<Team> data;
+        data = teamMapper.queryTeamByPage();
+        PageInfo<Team> p = new PageInfo(data);
+        return Result.create().success("查询成功", p);
     }
 
     //团队分页
