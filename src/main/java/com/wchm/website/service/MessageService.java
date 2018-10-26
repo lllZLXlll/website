@@ -11,9 +11,11 @@ import java.util.List;
 @Service
 public interface MessageService {
 
-    List<Message> queryMessage();
+    List<Message> queryMessage();//
 
-    Result  queryMessageList(Integer pageNum, Integer pageSize);
+  /*  Result queryMessageList(Integer pageNum, Integer pageSize, String title);//
+
+    Result messageInfoo(Long id); //*/
 
     Result queryMessageByPage(Integer pageNum, Integer pageSize, String title);
 
@@ -25,5 +27,5 @@ public interface MessageService {
 
     Result messageUpdate(Message message);
 
-    Result queryMessageInfo(Long id);
+
 }

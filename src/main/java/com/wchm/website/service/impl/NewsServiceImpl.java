@@ -42,7 +42,6 @@ class NewsServiceImpl implements NewsService {
     public Result queryNewsList(Integer pageNum, Integer pageSize, Integer lang) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<News> data1;
-
         data1 = newsMapper.queryNewsList(lang);
         PageInfo<News> p = new PageInfo(data1);
         return Result.create().success("查询成功", p);
