@@ -41,6 +41,8 @@ class CommunityServiceImpl implements CommunityService {
         return Result.create().success("查询成功", p);
     }
 
+
+
     /**
      * 保存
      * @param community
