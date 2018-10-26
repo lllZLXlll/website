@@ -7,6 +7,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -22,7 +24,7 @@ public class WebSocketComponent {
     private BlockChainBrowserService blockChainBrowserService;
 
     @Autowired
-    private SimpMessagingTemplate simpMessageSendingOperations; // 消息发送模板
+    private SimpMessagingTemplate messagingTemplate; // 消息发送模板
 
     /**
      * 查询最新交易记录6条，返回前端，如果没有最新的则不返回，
@@ -33,9 +35,8 @@ public class WebSocketComponent {
         List<Transaction> trans = blockChainBrowserService.queryIndexDataTransaction();
 
         if (trans != null && !trans.isEmpty()) {
-            simpMessageSendingOperations.convertAndSend("/topic/getTransactionRecord", trans);
+            messagingTemplate.convertAndSend("/topic/getTransactionRecord", trans);
         }
-
     }
 
 }

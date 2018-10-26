@@ -11,7 +11,7 @@ import javax.servlet.MultipartConfigElement;
  * spring boot 配置文件上传大小限制
  */
 @Configuration
-public class WebAppConfig extends WebMvcConfigurerAdapter {
+public class    WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {

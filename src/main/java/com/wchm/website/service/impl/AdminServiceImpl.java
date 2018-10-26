@@ -135,6 +135,10 @@ class AdminServiceImpl implements AdminService {
         return Result.create().success("退出成功");
     }
 
+    @Override
+    public Admin findAdminByName(String username) {
+        return adminMapper.findAdminByName(username);
+    }
 
 
 }
