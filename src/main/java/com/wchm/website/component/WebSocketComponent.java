@@ -30,7 +30,7 @@ public class WebSocketComponent {
      * 查询最新交易记录6条，返回前端，如果没有最新的则不返回，
      */
 
-    @Scheduled(fixedRate = 1000 * 10) // 每隔10秒向客户端发送一次数据
+//    @Scheduled(fixedRate = 1000 * 10) // 每隔10秒向客户端发送一次数据
     public void sendMessage() {
         List<Transaction> trans = blockChainBrowserService.queryIndexDataTransaction();
 
