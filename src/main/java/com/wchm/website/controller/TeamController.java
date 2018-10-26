@@ -2,7 +2,9 @@ package com.wchm.website.controller;
 
 import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.Partner;
+import com.wchm.website.entity.Team;
 import com.wchm.website.service.PartnerService;
+import com.wchm.website.service.TeamService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,26 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
-@Api(tags = "合作伙伴")
+@Api(tags = "团队")
 @RestController
-@RequestMapping("/partner")
-public class PartnerController {
+@RequestMapping("/team")
+public class TeamController {
 
     @Autowired
-    private PartnerService partnerService;
+    private TeamService teamService;
 
     @GetMapping("")
     @ResponseBody
-    @ApiOperation(value = "合作伙伴查询", response = Partner.class)
+    @ApiOperation(value = "团队查询", response = Team.class)
     @UnToken
     public Object partner(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        return partnerService.queryPartner();
+        return teamService.queryTeam();
     }
 
     @GetMapping("/list")
     @ResponseBody
-    @ApiOperation(value = "合作伙伴分页查询", response = Partner.class)
+    @ApiOperation(value = "团队分页查询", response = Team.class)
     @UnToken
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
@@ -43,7 +45,6 @@ public class PartnerController {
     public Object messageList(HttpServletResponse response,Integer pageNum,
                               Integer pageSize){
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return partnerService.queryPartnerList(pageNum,pageSize);
+        return teamService.queryTeamList(pageNum,pageSize);
     }
-
 }

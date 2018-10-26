@@ -32,4 +32,30 @@ public class MessageController {
         return messageService.queryMessage();
     }
 
+    @GetMapping("/list")
+    @ResponseBody
+    @ApiOperation(value = "消息分页查询", response = Message.class)
+    @UnToken
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = true,paramType = "query")
+    })
+    public Object messageList(HttpServletResponse response,Integer pageNum,
+                              Integer pageSize){
+        response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
+        return messageService.queryMessageList(pageNum,pageSize);
+    }
+
+    /*@GetMapping("/info")
+    @ResponseBody
+    @UnToken
+    @ApiOperation(value = "消息", response = Message.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "ID", required = true,paramType = "query"),
+    })
+    public Object messageInfo(HttpServletResponse response,Long id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return messageService.messageInfoo(id);
+    }*/
+
 }

@@ -30,16 +30,17 @@ class MessageServiceImpl implements MessageService {
         return messageMapper.queryMessage();
     }
 
-   /* @Override
-    public Result queryMessageList(Integer pageNum, Integer pageSize, String title) {
+    @Override
+    public Result queryMessageList(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<Message> data1;
-        data1 = messageMapper.queryMessageList(title);
+        data1 = messageMapper.queryMessageByPage();
         PageInfo<Message> p = new PageInfo(data1);
         return Result.create().success("查询成功", p);
     }
 
-    @Override
+
+   /* @Override
     public Result messageInfoo(Long id) {
         Message message= messageMapper.queryMessageInfo(id);
         return Result.create().success("查询成功", message);

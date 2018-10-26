@@ -13,9 +13,7 @@ public interface MessageService {
 
     List<Message> queryMessage();//
 
-  /*  Result queryMessageList(Integer pageNum, Integer pageSize, String title);//
-
-    Result messageInfoo(Long id); //*/
+    Result queryMessageList(Integer pageNum, Integer pageSize);//
 
     Result queryMessageByPage(Integer pageNum, Integer pageSize, String title);
 

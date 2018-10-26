@@ -29,6 +29,15 @@ class PartnerServiceImpl implements PartnerService {
         return partnerMapper.queryPartner();
     }
 
+    @Override
+    public Result queryPartnerList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
+        List<Partner> data1;
+        data1 = partnerMapper.queryPartnerByPage();
+        PageInfo<Partner> p = new PageInfo(data1);
+        return Result.create().success("查询成功", p);
+    }
+
     /**
      * 分页
      *
