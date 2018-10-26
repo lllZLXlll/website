@@ -18,7 +18,7 @@ import java.util.Properties;
  * shiro 权限框架配置类
  */
 
-//@Configuration
+@Configuration
 public class ShiroConfig {
     public ShiroConfig() {
         System.out.println("ShiroConfig  init ....");

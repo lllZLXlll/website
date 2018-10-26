@@ -58,7 +58,11 @@ spring:
       charset: utf-8
 
 mybatis:
-  mapper-locations: classpath:mapper/**.xml
+  mapper-locations: classpath*:mapper/xml/*.xml
+  type-aliases-package: com.wchm.website.entity
+  config-location:
+
+
 
 # 配置jasypt安全框架加解密用的“盐”
 jasypt:

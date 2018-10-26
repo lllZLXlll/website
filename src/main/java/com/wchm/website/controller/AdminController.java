@@ -713,7 +713,13 @@ public class AdminController {
 
     @RequestMapping("/test")
     @UnToken
+    @ResponseBody
     public String logintest(HttpServletRequest request, Map<String ,String> map){
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken("wchm", "wchm2018");
+        subject.login(token);
+
+
         System.out.println("user login .....");
         String exception = (String) request.getAttribute("shiroLoginFailure");
         System.out.println("exception=" + exception);
@@ -734,7 +740,10 @@ public class AdminController {
         }
         map.put("msg", msg);
         //认证成功由shiro框架自行处理
-        return "login";
+
+
+
+        return "ok";
     }
 
 
@@ -748,12 +757,40 @@ public class AdminController {
 
 
     public static void main(String[] args) {
-        // 构建环境
+        /*// 构建环境
         DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
+
+        // 添加用户，和权限
         SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();
+        simpleAccountRealm.addAccount("zlx", "123", "admin", "user");
+
         defaultSecurityManager.setRealm(simpleAccountRealm);
 
         // 认证请求
+        SecurityUtils.setSecurityManager(defaultSecurityManager);
+        Subject subject = SecurityUtils.getSubject();
+
+        UsernamePasswordToken token = new UsernamePasswordToken("zlx", "123");
+        subject.login(token);
+
+        System.out.println(subject.isAuthenticated());
+
+        subject.checkRoles("admin", "user");*/
+
+        // 构建环境
+        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
+
+        // inirealm
+
+
+        // 认证请求
+        SecurityUtils.setSecurityManager(defaultSecurityManager);
+        Subject subject = SecurityUtils.getSubject();
+
+        UsernamePasswordToken token = new UsernamePasswordToken("zlx", "123");
+        subject.login(token);
+
+        System.out.println(subject.isAuthenticated());
 
 
     }

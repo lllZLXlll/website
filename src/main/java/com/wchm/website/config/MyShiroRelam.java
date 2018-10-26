@@ -13,8 +13,9 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class MyShiroRelam extends AuthorizingRealm {
     @Autowired
     private AdminService AdminService;
@@ -46,12 +47,11 @@ public class MyShiroRelam extends AuthorizingRealm {
         //从数据库查询出User信息及用户关联的角色，权限信息，以备权限分配时使用
         Admin admin = AdminService.findAdminByName(username);
         if (null == admin) return null;
-        System.out.println("username: " + admin.getUsername() + " ; password : " + admin.getPassword());
 
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 admin, // 用户
                 admin.getPassword(), // 密码
-                getName()  //realm name
+                getName()  // realm name
         );
         return authenticationInfo;
     }
