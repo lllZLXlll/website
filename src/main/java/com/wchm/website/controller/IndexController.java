@@ -82,7 +82,7 @@ public class IndexController {
 
 
     @GetMapping("/socket")
-    public String webSocket() {
+    public String webSocket(HttpServletResponse response) {
         return "websocket";
     }
 

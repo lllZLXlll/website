@@ -10,9 +10,15 @@ import com.wchm.website.util.Result;
 import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.realm.SimpleAccountRealm;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -734,11 +740,22 @@ public class AdminController {
 
     //访问此连接时会触发MyShiroRealm中的权限分配方法
     @RequestMapping("/permission")
-    @RequiresPermissions("student:test")
+    @RequiresPermissions("admin:abc")
     @UnToken
-    public String test2(){
+    public void test2(){
         System.out.println("permission  test");
-        return "login";
+    }
+
+
+    public static void main(String[] args) {
+        // 构建环境
+        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
+        SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();
+        defaultSecurityManager.setRealm(simpleAccountRealm);
+
+        // 认证请求
+
+
     }
 
 }
