@@ -51,9 +51,7 @@ public class IndexController {
     @PostMapping("/booking/save")
     @ResponseBody
     @UnToken
-    public Result bookingSave(HttpServletResponse response,
-                              @RequestBody Booking booking
-    ) {
+    public Result bookingSave(HttpServletResponse response, @RequestBody Booking booking) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         booking.setCreate_time(new Date());
         booking.setState(1);

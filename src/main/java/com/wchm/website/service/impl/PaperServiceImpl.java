@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 /**
- * 预售ServiceImpl
+ * 白皮书ServiceImpl
  */
 @Service
 class PaperServiceImpl implements PaperService {
