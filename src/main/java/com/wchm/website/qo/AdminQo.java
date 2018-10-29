@@ -1,7 +1,5 @@
-package com.wchm.website.entity;
+package com.wchm.website.qo;
 
-import com.wchm.website.entity.shiro.Role;
-import com.wchm.website.util.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,16 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "管理员")
-public class Admin implements Serializable {
+@ApiModel(value = "用户请求对象")
+public class AdminQo implements Serializable {
 
-    private static final long serialVersionUID = 7727618151563725625L;
+    private static final long serialVersionUID = 7378187502422162944L;
 
     @ApiModelProperty("ID")
     private Long id;
@@ -29,20 +25,13 @@ public class Admin implements Serializable {
     @ApiModelProperty("密码")
     private String password;
 
-    @ApiModelProperty("创建时间")
-    private Date create_time;
-
     @ApiModelProperty("移动电话")
     private String mobile;
 
     @ApiModelProperty("启用:1，禁用:0")
     private Integer state;
 
-    //用户的角色   一对多关系
-    private List<Role> roleList;
+    @ApiModelProperty("角色ID")
+    private Long roleId;
 
-    public String getCreate_time() {
-        return DateUtil.formatDefaultDate(create_time);
-
-    }
 }

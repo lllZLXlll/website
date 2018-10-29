@@ -15,7 +15,9 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.subject.Subject;
@@ -97,14 +99,13 @@ public class AdminController {
     @PostMapping("/login/to")
     @ResponseBody
     @UnToken
-    public Result loginTo(@Param("username") String username, @Param("password") String password) {
+    public Result loginTo(HttpServletRequest request, String username, String password) {
         // 账号或者密码为空
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             return Result.create().fail("00001", "账号或密码为空");
         }
 
-        // 查询数据库是否有此用户
-        Result result = adminService.queryUserNameAndPwd(username, password);
+        Result result = adminService.queryUserNameAndPwd(request, username, password);
 
         return result;
     }
@@ -505,49 +506,18 @@ public class AdminController {
      * @return
      */
     // 操作日志列表跳转
+    @RequiresRoles(value = "admin") // 需要管理员权限
     @GetMapping("/operation/list")
     public String operationList(@CookieValue("token") String token) {
         return "operation-list";
     }
 
     // 操作日志列表数据
+    @RequiresRoles(value = "admin")
     @GetMapping("/operation/data")
     @ResponseBody
     public Result operationData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String admin_name) {
         return operationService.queryOperationByPage(pageNum, pageSize, admin_name);
-    }
-
-    // 添加操作日志跳转
-    @GetMapping("/operation/add")
-    public String operationAdd(@CookieValue("token") String token) {
-        return "operation-add";
-    }
-
-    // 添加操作日志跳转
-    @PostMapping("/operation/save")
-    @ResponseBody
-    public Result operationSave(@CookieValue("token") String token, @RequestBody Operation operation) {
-        return operationService.operationSave(operation);
-    }
-
-    // 删除操作日志
-    @PostMapping("/operation/del")
-    @ResponseBody
-    public Result operationDel(@CookieValue("token") String token, Integer id) {
-        return operationService.delOperationByID(id);
-    }
-
-    // 查询操作日志信息
-    @GetMapping("/operation/info/{id}")
-    public ModelAndView operationInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
-        return operationService.operationInfo(id);
-    }
-
-    // 修改操作日志信息
-    @PostMapping("/operation/update")
-    @ResponseBody
-    public Result operationUpdate(@CookieValue("token") String token, @RequestBody Operation operation) {
-        return operationService.operationUpdate(operation);
     }
 
     /**
@@ -711,88 +681,24 @@ public class AdminController {
         return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
     }
 
-    @RequestMapping("/test")
-    @UnToken
-    @ResponseBody
-    public String logintest(HttpServletRequest request, Map<String ,String> map){
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken("wchm", "wchm2018");
-        subject.login(token);
-
-
-        System.out.println("user login .....");
-        String exception = (String) request.getAttribute("shiroLoginFailure");
-        System.out.println("exception=" + exception);
-        String msg = "";
-        if (exception != null) {
-            if (UnknownAccountException.class.getName().equals(exception)) {
-                System.out.println("UnknownAccountException -- > 账号不存在：");
-                msg = "unknownAccount";
-            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
-                msg = "incorrectPassword";
-            } else if ("kaptchaValidateFailed".equals(exception)) {
-                System.out.println("kaptchaValidateFailed -- > 验证码错误");
-                msg = "kaptchaValidateFailed -- > 验证码错误";
-            } else {
-                msg = "else >> "+exception;
-                System.out.println("else -- >" + exception);
-            }
-        }
-        map.put("msg", msg);
-        //认证成功由shiro框架自行处理
-
-
-
-        return "ok";
-    }
 
 
     //访问此连接时会触发MyShiroRealm中的权限分配方法
-    @RequestMapping("/permission")
-    @RequiresPermissions("admin:abc")
+    @GetMapping("/test")
+//    @RequiresPermissions({"index:update", "index:add"}) // 访上问此接口需要的权限
+    @RequiresRoles(value = {"admin", "user"}, logical = Logical.OR) // 访问此接口需要的角色，AND:且，OR:或
+    @ResponseBody
     @UnToken
-    public void test2(){
+    public String test2(){
         System.out.println("permission  test");
+        return "test";
     }
 
-
-    public static void main(String[] args) {
-        /*// 构建环境
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-
-        // 添加用户，和权限
-        SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();
-        simpleAccountRealm.addAccount("zlx", "123", "admin", "user");
-
-        defaultSecurityManager.setRealm(simpleAccountRealm);
-
-        // 认证请求
-        SecurityUtils.setSecurityManager(defaultSecurityManager);
-        Subject subject = SecurityUtils.getSubject();
-
-        UsernamePasswordToken token = new UsernamePasswordToken("zlx", "123");
-        subject.login(token);
-
-        System.out.println(subject.isAuthenticated());
-
-        subject.checkRoles("admin", "user");*/
-
-        // 构建环境
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-
-        // inirealm
-
-
-        // 认证请求
-        SecurityUtils.setSecurityManager(defaultSecurityManager);
-        Subject subject = SecurityUtils.getSubject();
-
-        UsernamePasswordToken token = new UsernamePasswordToken("zlx", "123");
-        subject.login(token);
-
-        System.out.println(subject.isAuthenticated());
-
-
+    // 没有权限页面
+    @GetMapping("/403")
+    @UnToken
+    public String to403(){
+        return "403";
     }
 
 }

@@ -18,11 +18,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyShiroRelam extends AuthorizingRealm {
     @Autowired
-    private AdminService AdminService;
+    private AdminService adminService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("用户权限配置。。。。。。。。。。");
         // 访问@RequirePermission注解的url时触发
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         Admin adminInfo = (Admin) principals.getPrimaryPrincipal();
@@ -45,7 +44,7 @@ public class MyShiroRelam extends AuthorizingRealm {
         System.out.println(token.getCredentials());
 
         //从数据库查询出User信息及用户关联的角色，权限信息，以备权限分配时使用
-        Admin admin = AdminService.findAdminByName(username);
+        Admin admin = adminService.findAdminByName(username);
         if (null == admin) return null;
 
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(

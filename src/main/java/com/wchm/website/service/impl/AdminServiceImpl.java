@@ -12,11 +12,17 @@ import com.wchm.website.service.RedisService;
 import com.wchm.website.util.Result;
 import com.wchm.website.util.UUIDUtil;
 import net.sf.json.JSONObject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
 import javax.management.ValueExp;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -34,22 +40,29 @@ class AdminServiceImpl implements AdminService {
     OperationMapper operationMapper;
     //    @Transactional
     @Override
-    public Result queryUserNameAndPwd(String username, String password) {
-        Admin admin = adminMapper.queryUserNameAndPwd(username);
+    public Result queryUserNameAndPwd(HttpServletRequest request, String username, String password) {
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+            subject.login(token);
+            String exception = (String) request.getAttribute("shiroLoginFailure");
+
+            if (exception != null) {
+                return Result.create().fail("登录失败");
+            }
+        } catch (UnknownAccountException e) {
+            return Result.create().fail("账号不存在");
+        } catch (IncorrectCredentialsException e) {
+            return Result.create().fail("密码错误");
+        } catch (Exception e) {
+            return Result.create().fail("登录失败");
+        }
+
+        Admin admin = adminMapper.findAdminByName(username);
 
         //使用JSONObject转换JSON对象
         JSONObject jsonObject = JSONObject.fromObject(admin);
         String str = jsonObject.toString();
-
-        // 账号错
-        if (admin == null) {
-            return Result.create().fail("00002", "账号错误");
-        }
-
-        // 密码错
-        if (!admin.getPassword().equals(password)) {
-            return Result.create().fail("00003", "密码错误");
-        }
 
         // 生成token给前台保存到浏览器头部中
         Map<String, String> data = new HashMap<>();
@@ -57,10 +70,7 @@ class AdminServiceImpl implements AdminService {
         data.put("token", token);
         data.put("admin_name", admin.getUsername());
 
-        // 暂时没有用redis，只能先将token保存在数据库中
-        /* adminMapper.updateAdminToken(admin.getId(), token);*/
-
-        //把将token和username存入redis里面，json转换成对象存入redis里面
+        // 将admin和角色权限信息的json字符串存入redis里面
         redisService.setHours(token, str, 3);
 
         Operation operation =new Operation();
@@ -70,8 +80,6 @@ class AdminServiceImpl implements AdminService {
         operation.setState(1);
         operationMapper.operationSave(operation);
         return  Result.create().success("登录成功", data);
-
-
     }
 
     /**
