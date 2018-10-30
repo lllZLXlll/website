@@ -3,4 +3,4 @@ spring:
   profiles:
     active: dev
 #    active: test
-#    active: pro
+#    active: profiles
