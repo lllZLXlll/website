@@ -26,4 +26,7 @@ public interface BookingMapper {
             "   #{booking.park_eco}, #{booking.feedback})")
     Long bookingSave(@Param("booking") Booking booking);
 
+    // 查询导出Excel数据
+    @Select("select * from website_advance_booking")
+     List<Booking> bookingInfor();
 }

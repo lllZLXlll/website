@@ -3,21 +3,18 @@ package com.wchm.website.controller;
 import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.*;
+import com.wchm.website.entity.Currency;
 import com.wchm.website.service.*;
-import com.wchm.website.util.DateUtil;
-import com.wchm.website.util.ExcelUtils;
-import com.wchm.website.util.Result;
-import com.wchm.website.util.UploadUtil;
+import com.wchm.website.util.*;
 import io.swagger.annotations.Api;
 import org.apache.ibatis.annotations.Param;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +26,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api(tags = "后台")
 @Controller
@@ -112,7 +111,7 @@ public class AdminController {
     // 退出
     @GetMapping("/login/out")
     @ResponseBody
-    public Result loginOut(@CookieValue("token") String token ) {
+    public Result loginOut(@CookieValue("token") String token) {
         return adminService.loginOut(token);
     }
 
@@ -143,7 +142,6 @@ public class AdminController {
     }
 
 
-
     /**
      * ------------------新闻--------------
      *
@@ -159,8 +157,8 @@ public class AdminController {
     // 新闻列表数据
     @GetMapping("/news/data")
     @ResponseBody
-    public Result newsData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title,Integer lang) {
-        return newsService.queryNewsByPage(pageNum, pageSize, title,lang);
+    public Result newsData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title, Integer lang) {
+        return newsService.queryNewsByPage(pageNum, pageSize, title, lang);
     }
 
     // 删除新闻
@@ -217,12 +215,87 @@ public class AdminController {
         return bookingService.queryBookingByPage(pageNum, pageSize, user_name);
     }
 
+    @ResponseBody
+    @UnToken
+    @GetMapping("/UserExcelDownloads")
+    public void bookingExcel(HttpServletResponse response) throws IOException {
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("预售表单");
+
+        // 查询数据库
+        List<Booking> classmateList = bookingService.bookingInfor();
+        // 设置要导出的文件的名字
+        String fileName = "预售表单" + ".xls";
+
+        // 新增数据行，并且设置单元格数据
+        int rowNum = 1;
+        String[] headers = {"序号", "名字", "姓氏", "手机号码", "邮箱", "钱包地址",
+                "创建时间", "投资方式", "预售投资金额", "投资货币", "电脑账号",
+                "所在国家", "反馈意见"};
+        //headers表示excel表中第一行的表头
+        HSSFRow row = sheet.createRow(0);
+
+        // 在excel表中添加表头
+        for (int i = 0; i < headers.length; i++) {
+            HSSFCell cell = row.createCell(i);
+            HSSFRichTextString text = new HSSFRichTextString(headers[i]);
+            cell.setCellValue(text);
+        }
+
+        // 在表中存放查询到的数据放入对应的列
+        for (Booking booking : classmateList) {
+
+            // 投资方式（1.个人投资/2.基金投资）
+            String investment = booking.getInvestment();
+            if (investment.equals("1")) {
+                investment = "个人投资";
+            } else if (investment.equals("2")) {
+                investment = "基金投资";
+            }
+
+            // 投资货币(1.BTC 2.ETH 3.TUSD)
+            String currency = booking.getCurrency();
+            if (currency.equals("1")) {
+                currency = "BTC";
+            } else if (currency.equals("2")) {
+                currency = "ETH";
+            } else if (currency.equals("3")) {
+                currency = "TUSD";
+            }
+
+            HSSFRow row1 = sheet.createRow(rowNum);
+            row1.createCell(0).setCellValue(booking.getId());
+            row1.createCell(1).setCellValue(booking.getUser_name());
+            row1.createCell(2).setCellValue(booking.getSur_name());
+            row1.createCell(3).setCellValue(booking.getMobile());
+            row1.createCell(4).setCellValue(booking.getEmail());
+            row1.createCell(5).setCellValue(booking.getAddress());
+            row1.createCell(6).setCellValue(booking.getCreate_time());
+            //    row1.createCell(7).setCellValue(booking.getState()+"");
+            row1.createCell(7).setCellValue(investment);
+            row1.createCell(8).setCellValue(booking.getDollar());
+            row1.createCell(9).setCellValue(currency);
+            row1.createCell(10).setCellValue(booking.getAccount());
+            row1.createCell(11).setCellValue(booking.getCountry());
+            //    row1.createCell(12).setCellValue(booking.getPark_eco());
+            row1.createCell(12).setCellValue(booking.getFeedback());
+
+            rowNum++;
+        }
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
+        response.flushBuffer();
+        workbook.write(response.getOutputStream());
+
+    }
+
 
     /**
      * ------------------关注人数列表--------------
      *
      * @param token
-     * @return   community
+     * @return community
      */
 
     @GetMapping("/community/list")
@@ -233,7 +306,7 @@ public class AdminController {
 
     @GetMapping("/community/data")
     @ResponseBody
-    public Result communityData(@CookieValue("token") String token, Integer pageNum, Integer pageSize ) {
+    public Result communityData(@CookieValue("token") String token, Integer pageNum, Integer pageSize) {
         return communityService.queryCommunityByPage(pageNum, pageSize);
     }
 
@@ -285,8 +358,8 @@ public class AdminController {
     // 公告列表数据
     @GetMapping("/notice/data")
     @ResponseBody
-    public Result noticeData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title,Integer lang) {
-        return noticeService.queryNoticeByPage(pageNum, pageSize, title,lang);
+    public Result noticeData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title, Integer lang) {
+        return noticeService.queryNoticeByPage(pageNum, pageSize, title, lang);
     }
 
     // 添加公告跳转
@@ -407,8 +480,6 @@ public class AdminController {
     public Result teamDel(@CookieValue("token") String token, Integer id) {
         return teamService.delTeamByID(id);
     }
-
-
 
 
     /**
@@ -714,7 +785,7 @@ public class AdminController {
     @RequestMapping("/test")
     @UnToken
     @ResponseBody
-    public String logintest(HttpServletRequest request, Map<String ,String> map){
+    public String logintest(HttpServletRequest request, Map<String, String> map) {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken("wchm", "wchm2018");
         subject.login(token);
@@ -734,13 +805,12 @@ public class AdminController {
                 System.out.println("kaptchaValidateFailed -- > 验证码错误");
                 msg = "kaptchaValidateFailed -- > 验证码错误";
             } else {
-                msg = "else >> "+exception;
+                msg = "else >> " + exception;
                 System.out.println("else -- >" + exception);
             }
         }
         map.put("msg", msg);
         //认证成功由shiro框架自行处理
-
 
 
         return "ok";
@@ -751,7 +821,7 @@ public class AdminController {
     @RequestMapping("/permission")
     @RequiresPermissions("admin:abc")
     @UnToken
-    public void test2(){
+    public void test2() {
         System.out.println("permission  test");
     }
 

@@ -22,6 +22,9 @@ class BookingServiceImpl implements BookingService {
     @Autowired
     BookingMapper bookingMapper;
 
+    @Autowired
+    BookingService bookingService;
+
     //条件查询
     @Override
     public Result queryBookingByPage(Integer pageNum, Integer pageSize, String user_name) {
@@ -35,6 +38,7 @@ class BookingServiceImpl implements BookingService {
         PageInfo<Booking> p = new PageInfo(data);
         return Result.create().success("查询成功", p);
     }
+
 
     @Override
     public Result bookingSave(Booking booking) {
@@ -59,6 +63,25 @@ class BookingServiceImpl implements BookingService {
         }
         return Result.create().success("添加成功");
     }
+
+
+    /**
+     * Excel 导出
+     * @return
+     */
+    @Override
+    public List<Booking> bookingInfor() {
+        return bookingMapper.bookingInfor();
+    }
+
+
+
+
+
+
+
+
+
 
 
 }
