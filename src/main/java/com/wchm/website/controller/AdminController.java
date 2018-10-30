@@ -8,6 +8,14 @@ import com.wchm.website.util.Result;
 import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
@@ -21,8 +29,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Api(tags = "后台")
@@ -218,7 +228,7 @@ public class AdminController {
 
     @RequiresRoles(value = "admin")
     @ResponseBody
-    @GetMapping("/UserExcelDownloads")
+    @GetMapping("/booking/excel")
     public void bookingExcel(HttpServletResponse response) throws IOException {
 
         HSSFWorkbook workbook = new HSSFWorkbook();
@@ -230,14 +240,20 @@ public class AdminController {
         String fileName = "预售表单" + ".xls";
 
         // 新增数据行，并且设置单元格数据
+
+
         int rowNum = 1;
         String[] headers = {"序号", "名字", "姓氏", "手机号码", "邮箱", "钱包地址",
                 "创建时间", "投资方式", "预售投资金额", "投资货币", "电脑账号",
                 "所在国家", "反馈意见"};
         //headers表示excel表中第一行的表头
         HSSFRow row = sheet.createRow(0);
+        row.setHeightInPoints(20);//目的是想把行高设置成20px
 
-        // 在excel表中添加表头
+     //   HSSFFont font = workbook.createFont();
+     //   font.setFontName("黑体");
+     //   font.setFontHeightInPoints((short) 16);//设置字体大小   
+        //  在excel表中添加表头
         for (int i = 0; i < headers.length; i++) {
             HSSFCell cell = row.createCell(i);
             HSSFRichTextString text = new HSSFRichTextString(headers[i]);
@@ -246,7 +262,6 @@ public class AdminController {
 
         // 在表中存放查询到的数据放入对应的列
         for (Booking booking : classmateList) {
-
             // 投资方式（1.个人投资/2.基金投资）
             String investment = booking.getInvestment();
             if (investment.equals("1")) {
@@ -285,7 +300,7 @@ public class AdminController {
             rowNum++;
         }
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
         response.flushBuffer();
         workbook.write(response.getOutputStream());
 
