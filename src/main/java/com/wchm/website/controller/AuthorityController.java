@@ -6,7 +6,6 @@ import com.wchm.website.service.AuthorityService;
 import com.wchm.website.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -187,8 +186,7 @@ public class AuthorityController {
     @ApiOperation(value = "编辑用户")
     @ResponseBody
     public Result roleUpdate(@RequestBody Role role) {
-        return authorityService.roleUpdate(role.getId() , role.getRolename(), role.getRoledesc());
+        return authorityService.roleUpdate(role.getId(), role.getRolename(), role.getRoledesc());
     }
-
 
 }

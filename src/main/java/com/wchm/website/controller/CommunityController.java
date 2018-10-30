@@ -1,6 +1,5 @@
 package com.wchm.website.controller;
 
-import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.Community;
 import com.wchm.website.service.CommunityService;
 import io.swagger.annotations.Api;
@@ -26,7 +25,6 @@ public class CommunityController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation(value = "关注人数查询", response = Community.class)
-    @UnToken
     public Object partner(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return communityService.queryCommunity();
@@ -35,14 +33,13 @@ public class CommunityController {
     @GetMapping("/list")
     @ResponseBody
     @ApiOperation(value = "关注人数分页查询", response = Community.class)
-    @UnToken
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
-            @ApiImplicitParam(name = "pageSize", value = "条数", required = true,paramType = "query")
+            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = true, paramType = "query")
     })
-    public Object messageList(HttpServletResponse response,Integer pageNum,
-                              Integer pageSize){
+    public Object messageList(HttpServletResponse response, Integer pageNum,
+                              Integer pageSize) {
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return communityService.queryCommunityByPage(pageNum,pageSize);
+        return communityService.queryCommunityByPage(pageNum, pageSize);
     }
 }

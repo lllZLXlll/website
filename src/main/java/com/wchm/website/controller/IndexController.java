@@ -1,21 +1,16 @@
 package com.wchm.website.controller;
 
-import com.github.pagehelper.util.StringUtil;
-import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.Booking;
-import com.wchm.website.entity.News;
 import com.wchm.website.service.BookingService;
 import com.wchm.website.service.PaperService;
 import com.wchm.website.util.Result;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Date;
 
 @Api(tags = "官网首页")
@@ -50,7 +45,6 @@ public class IndexController {
     @ApiOperation(value = "预售表单信息提交")
     @PostMapping("/booking/save")
     @ResponseBody
-    @UnToken
     public Result bookingSave(HttpServletResponse response, @RequestBody Booking booking) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         booking.setCreate_time(new Date());
@@ -68,7 +62,6 @@ public class IndexController {
 //     * @throws IOException
 //     */
 //    @GetMapping("/paper")
-//    @UnToken
 //    @ApiOperation(value = "白皮书下载")
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(name = "number", value = "1中文版，2英文版", required = true)

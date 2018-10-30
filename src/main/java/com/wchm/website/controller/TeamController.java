@@ -1,9 +1,6 @@
 package com.wchm.website.controller;
 
-import com.wchm.website.annotation.UnToken;
-import com.wchm.website.entity.Partner;
 import com.wchm.website.entity.Team;
-import com.wchm.website.service.PartnerService;
 import com.wchm.website.service.TeamService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,7 +25,6 @@ public class TeamController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation(value = "团队查询", response = Team.class)
-    @UnToken
     public Object partner(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return teamService.queryTeam();
@@ -37,14 +33,13 @@ public class TeamController {
     @GetMapping("/list")
     @ResponseBody
     @ApiOperation(value = "团队分页查询", response = Team.class)
-    @UnToken
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
-            @ApiImplicitParam(name = "pageSize", value = "条数", required = true,paramType = "query")
+            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = true, paramType = "query")
     })
-    public Object messageList(HttpServletResponse response,Integer pageNum,
-                              Integer pageSize){
+    public Object messageList(HttpServletResponse response, Integer pageNum,
+                              Integer pageSize) {
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return teamService.queryTeamList(pageNum,pageSize);
+        return teamService.queryTeamList(pageNum, pageSize);
     }
 }

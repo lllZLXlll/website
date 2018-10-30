@@ -12,14 +12,11 @@ public interface AdminService {
 
     Result queryUserNameAndPwd(HttpServletRequest request, String username, String passwrod);
 
-    Result queryUserByToken(String token);
+    Result queryUserIsAuthenticated();
 
     Result queryIndexData();
 
-    Result loginOut(String token);
-
-    //保存
-    Result operationSave(Operation operation);
+    Result loginOut();
 
     Admin findAdminByName(String username);
 
