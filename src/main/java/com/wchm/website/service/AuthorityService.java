@@ -20,7 +20,7 @@ public interface AuthorityService {
     /**
      * 查询角色列表数据
      */
-    Result queryRoleData();
+    Result queryRoleData(Integer pageNum, Integer pageSize);
 
     /**
      * 添加跳转，查询所有角色数据
@@ -41,4 +41,19 @@ public interface AuthorityService {
      * 编辑用户
      */
     Result userUpdate(AdminQo adminQo);
+
+    /**
+     * 保存角色
+     */
+    Result saveRole(String rolename, String roledesc);
+
+    /**
+     * 编辑角色-跳转-查询角色信息
+     */
+    ModelAndView roleInfo(Long id);
+
+    /**
+     * 编辑角色
+     */
+    Result roleUpdate(Long id, String rolename, String roledesc);
 }

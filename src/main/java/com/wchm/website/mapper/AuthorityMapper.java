@@ -26,9 +26,6 @@ public interface AuthorityMapper {
     @Select("SELECT * FROM website_role ORDER BY id")
     List<Role> queryRoleData();
 
-    @Select("SELECT * FROM website_role ORDER BY id")
-    List<Role> queryRoleAll();
-
     @Insert("INSERT INTO website_admin(" +
             "   username, password, mobile, state, create_time" +
             ") VALUES(" +
@@ -60,4 +57,19 @@ public interface AuthorityMapper {
             "   rid = #{roleId} " +
             "WHERE uid = #{adminId}")
     Long updateAdminRole(@Param("adminId") Long adminId, @Param("roleId") Long roleId);
+
+    @Insert("INSERT INTO website_role(" +
+            "   rolename, roledesc" +
+            ") VALUES(" +
+            "   #{rolename}, #{roledesc}" +
+            ")")
+    Long saveRole(@Param("rolename") String rolename, @Param("roledesc") String roledesc);
+
+    @Select("SELECT * FROM website_role WHERE id = #{id}")
+    Role queryRoleInfo(@Param("id") Long id);
+
+    @Update("UPDATE website_role SET" +
+            "   rolename = #{rolename}, roledesc = #{roledesc} " +
+            "WHERE id = #{id}")
+    Long roleUpdate(@Param("id") Long id, @Param("rolename") String rolename, @Param("roledesc") String roledesc);
 }

@@ -1,5 +1,6 @@
 package com.wchm.website.controller;
 
+import com.wchm.website.entity.shiro.Role;
 import com.wchm.website.qo.AdminQo;
 import com.wchm.website.service.AuthorityService;
 import com.wchm.website.util.Result;
@@ -109,7 +110,6 @@ public class AuthorityController {
         return authorityService.userUpdate(adminQo);
     }
 
-    // TODO 一下部分还没有做
     /**
      * 查询角色列表数据-跳转
      *
@@ -128,16 +128,66 @@ public class AuthorityController {
      * @return
      */
     @RequiresRoles(value = "admin")
-    @GetMapping("/role/list")
+    @GetMapping("/role/data")
     @ResponseBody
     @ApiOperation(value = "查询角色列表数据-跳转")
-    public Result queryRole() {
+    public Result queryRole(Integer pageNum, Integer pageSize) {
         try {
-            return authorityService.queryRoleData();
+            return authorityService.queryRoleData(pageNum, pageSize);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.create().fail("查询数据失败，请稍后重试");
         }
+    }
+
+    /**
+     * 添加角色-跳转
+     *
+     * @return
+     */
+    @RequiresRoles(value = "admin")
+    @GetMapping("/role/add")
+    @ApiOperation(value = "添加角色-跳转")
+    public String addRole() {
+        return "role-add";
+    }
+
+    /**
+     * 添加角色
+     *
+     * @return
+     */
+    @RequiresRoles(value = "admin")
+    @PostMapping("/role/save")
+    @ApiOperation(value = "添加角色")
+    @ResponseBody
+    public Result saveRole(@RequestBody Role role) {
+        return authorityService.saveRole(role.getRolename(), role.getRoledesc());
+    }
+
+    /**
+     * 编辑用户-跳转
+     *
+     * @return
+     */
+    @RequiresRoles(value = "admin")
+    @GetMapping("/role/info/{id}")
+    @ApiOperation(value = "编辑用户-跳转")
+    public ModelAndView roleInfo(@PathVariable("id") Long id) {
+        return authorityService.roleInfo(id);
+    }
+
+    /**
+     * 编辑用户
+     *
+     * @return
+     */
+    @RequiresRoles(value = "admin")
+    @PostMapping("/role/update")
+    @ApiOperation(value = "编辑用户")
+    @ResponseBody
+    public Result roleUpdate(@RequestBody Role role) {
+        return authorityService.roleUpdate(role.getId() , role.getRolename(), role.getRoledesc());
     }
 
 

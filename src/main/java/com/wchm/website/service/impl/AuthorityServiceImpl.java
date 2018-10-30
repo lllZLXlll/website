@@ -37,19 +37,11 @@ public class AuthorityServiceImpl implements AuthorityService {
         return Result.create().success(p);
     }
 
-    /**
-     * 查询角色列表数据
-     */
-    @Override
-    public Result queryRoleData() {
-        return Result.create().success(authorityMapper.queryRoleData());
-    }
-
     @Override
     public ModelAndView addUser() {
         ModelAndView mav = new ModelAndView("user-add");
 
-        List<Role> roleList = authorityMapper.queryRoleAll();
+        List<Role> roleList = authorityMapper.queryRoleData();
 
         mav.getModel().put("roleList", roleList);
         return mav;
@@ -96,7 +88,7 @@ public class AuthorityServiceImpl implements AuthorityService {
         Long roleId = authorityMapper.queryUserRoleId(adminVo.getId());
 
         // 角色列表
-        List<Role> roleList = authorityMapper.queryRoleAll();
+        List<Role> roleList = authorityMapper.queryRoleData();
 
         adminVo.setRoleList(roleList);
         adminVo.setRoleId(roleId);
@@ -126,6 +118,62 @@ public class AuthorityServiceImpl implements AuthorityService {
         result = authorityMapper.updateAdminRole(adminQo.getId(), adminQo.getRoleId());
         if (result <= 0) {
             return Result.create().fail("修改用户角色关系失败");
+        }
+
+        return Result.create().success("修改成功");
+    }
+
+    /**
+     * 查询角色列表数据
+     */
+    @Override
+    public Result queryRoleData(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
+        List<Role> data = authorityMapper.queryRoleData();
+        PageInfo<Admin> p = new PageInfo(data);
+        return Result.create().success(p);
+    }
+
+    @Override
+    public Result saveRole(String rolename, String roledesc) {
+        if (StringUtils.isEmpty(rolename)) {
+            return Result.create().fail("角色名称不能为空");
+        }
+        if (StringUtils.isEmpty(roledesc)) {
+            return Result.create().fail("角色描述不能为空");
+        }
+
+        // 增加一个角色
+        long result = authorityMapper.saveRole(rolename, roledesc);
+        if (result <= 0) {
+            return Result.create().fail("添加角色失败");
+        }
+
+        return Result.create().success("添加角色成功");
+    }
+
+    @Override
+    public ModelAndView roleInfo(Long id) {
+        ModelAndView mav = new ModelAndView("role-edit");
+
+        // 基本信息
+        Role role = authorityMapper.queryRoleInfo(id);
+
+        mav.getModel().put("role", role);
+        return mav;
+    }
+
+    @Override
+    public Result roleUpdate(Long id, String rolename, String roledesc) {
+        if (StringUtils.isEmpty(rolename)) {
+            return Result.create().fail("角色名称不能为空");
+        }
+        if (StringUtils.isEmpty(roledesc)) {
+            return Result.create().fail("角色描述不能为空");
+        }
+        long result = authorityMapper.roleUpdate(id, rolename, roledesc);
+        if (result <= 0) {
+            return Result.create().fail("修改失败");
         }
 
         return Result.create().success("修改成功");

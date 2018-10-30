@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
-    private int id;
+    private Long id;
     private String rolename;//角色名称
     private String roledesc;//角色描述
 
