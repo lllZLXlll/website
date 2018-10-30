@@ -30,6 +30,37 @@ public class AuthorityController {
     AuthorityService authorityService;
 
     /**
+     * 没有权限页面
+     *
+     * @return
+     */
+    @GetMapping("/403")
+    public String to403() {
+        return "403";
+    }
+
+    /**
+     * 找不到资源
+     *
+     * @return
+     */
+    @GetMapping("/404")
+    public String to404() {
+        return "404";
+    }
+
+    /**
+     * 异常页面
+     *
+     * @return
+     */
+    @GetMapping("/500")
+    public String to500() {
+        return "error";
+    }
+
+
+    /**
      * 查询用户列表数据-跳转
      *
      * @return

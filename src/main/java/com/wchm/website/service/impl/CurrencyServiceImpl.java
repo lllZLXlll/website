@@ -264,8 +264,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                 return Result.create().fail("没有找到此用户信息！");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("-----error-----给用户转账出现异常，带币池表id：" + id + "，转账金额：" + money + "-----");
+            log.error("-----error-----给用户转账出现异常，带币池表id：" + id + "，转账金额：" + money + "-----", e);
             throw new RuntimeException("转账失败，转账出现异常，请联系技术！");
         }
         return Result.create().success("转账成功！");
