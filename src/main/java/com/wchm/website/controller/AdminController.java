@@ -6,16 +6,7 @@ import com.wchm.website.entity.Currency;
 import com.wchm.website.service.*;
 import com.wchm.website.util.*;
 import io.swagger.annotations.Api;
-import org.apache.ibatis.annotations.Param;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
@@ -26,16 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.*;
 
 @Api(tags = "后台")
 @Controller
@@ -201,6 +189,16 @@ public class AdminController {
      * @return
      */
 
+    // TODO 切面类配置 com.wchm.website.controller.AdminController
+
+    // 5个通知类型，（后置通知）
+
+    // 获取接口请求路径 /booking/list
+
+
+
+    // 自定义注解，获取注解中的value值，知道操作类型，获取用户名，插入数据库
+
     // 预售列表跳转
     @GetMapping("/booking/list")
     public String bookingList() {
@@ -221,6 +219,7 @@ public class AdminController {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("预售表单");
 
+
         // 查询数据库
         List<Booking> classmateList = bookingService.bookingInfor();
         // 设置要导出的文件的名字
@@ -230,16 +229,18 @@ public class AdminController {
 
 
         int rowNum = 1;
-        String[] headers = {"序号", "名字", "姓氏", "手机号码", "邮箱", "钱包地址",
+        String[] headers = {"序号","姓氏" , "名字", "手机号码", "邮箱", "钱包地址",
                 "创建时间", "投资方式", "预售投资金额", "投资货币", "电脑账号",
                 "所在国家", "反馈意见"};
         //headers表示excel表中第一行的表头
         HSSFRow row = sheet.createRow(0);
         row.setHeightInPoints(20);//目的是想把行高设置成20px
 
-     //   HSSFFont font = workbook.createFont();
-     //   font.setFontName("黑体");
-     //   font.setFontHeightInPoints((short) 16);//设置字体大小   
+        HSSFFont fontStyle = workbook.createFont();
+        fontStyle.setFontName("黑体");
+        fontStyle.setFontHeightInPoints((short) 20);
+
+
         //  在excel表中添加表头
         for (int i = 0; i < headers.length; i++) {
             HSSFCell cell = row.createCell(i);
@@ -247,6 +248,8 @@ public class AdminController {
             cell.setCellValue(text);
         }
 
+
+        int i =1;
         // 在表中存放查询到的数据放入对应的列
         for (Booking booking : classmateList) {
             // 投资方式（1.个人投资/2.基金投资）
@@ -266,9 +269,26 @@ public class AdminController {
             } else if (currency.equals("3")) {
                 currency = "TUSD";
             }
+            //park_eco"parkEco(1.口口相传2.电报 3.媒体出版物 4.互联网 5.一次会议 6.我们目前投资者之一 7.其他)"
+            String park_eco = booking.getPark_eco();
+            if(park_eco.equals("1")){
+                park_eco="口口相传";
+            }else if(park_eco.equals("2")){
+                park_eco="电报";
+            }else if(park_eco.equals("3")){
+                park_eco="媒体出版物";
+            }else if(park_eco.equals("4")){
+                park_eco="互联网";
+            }else if(park_eco.equals("5")){
+                park_eco="一次会议";
+            }else if(park_eco.equals("6")){
+                park_eco="我们目前投资者之一";
+            }else if(park_eco.equals("7")){
+                park_eco="其他";
+            }
 
             HSSFRow row1 = sheet.createRow(rowNum);
-            row1.createCell(0).setCellValue(booking.getId());
+            row1.createCell(0).setCellValue(i++);
             row1.createCell(1).setCellValue(booking.getUser_name());
             row1.createCell(2).setCellValue(booking.getSur_name());
             row1.createCell(3).setCellValue(booking.getMobile());
@@ -281,8 +301,8 @@ public class AdminController {
             row1.createCell(9).setCellValue(currency);
             row1.createCell(10).setCellValue(booking.getAccount());
             row1.createCell(11).setCellValue(booking.getCountry());
-            //    row1.createCell(12).setCellValue(booking.getPark_eco());
-            row1.createCell(12).setCellValue(booking.getFeedback());
+            row1.createCell(12).setCellValue(park_eco);
+            row1.createCell(13).setCellValue(booking.getFeedback());
 
             rowNum++;
         }

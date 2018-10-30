@@ -76,7 +76,7 @@ class AdminServiceImpl implements AdminService {
 
         Operation operation = new Operation();
         operation.setAdmin_name(admin.getUsername());
-        operation.setOperation_type("1");
+        operation.setOperation_type("登入");
         operation.setCreate_time(new Date());
         operation.setState(1);
         operationMapper.operationSave(operation);
@@ -137,7 +137,7 @@ class AdminServiceImpl implements AdminService {
         //退出操作插入日志记录
         Operation operation = new Operation();
         operation.setAdmin_name(admin.getUsername());
-        operation.setOperation_type("2");
+        operation.setOperation_type("退出");
         operation.setCreate_time(new Date());
         operation.setState(1);
         operationMapper.operationSave(operation);

@@ -27,6 +27,6 @@ public interface BookingMapper {
     Long bookingSave(@Param("booking") Booking booking);
 
     // 查询导出Excel数据
-    @Select("select * from website_advance_booking")
+    @Select("select * from website_advance_booking ORDER BY create_time DESC")
      List<Booking> bookingInfor();
 }
