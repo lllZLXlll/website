@@ -1,20 +1,13 @@
 package com.wchm.website.controller;
 
-import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.entity.*;
-import com.wchm.website.entity.Currency;
 import com.wchm.website.service.*;
-import com.wchm.website.util.*;
+import com.wchm.website.util.DateUtil;
+import com.wchm.website.util.ExcelUtils;
+import com.wchm.website.util.Result;
+import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
-import org.apache.ibatis.annotations.Param;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
@@ -29,10 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.*;
 
 @Api(tags = "后台")
 @Controller
@@ -212,7 +203,6 @@ public class AdminController {
     }
 
     @ResponseBody
-    @UnToken
     @GetMapping("/UserExcelDownloads")
     public void bookingExcel(HttpServletResponse response) throws IOException {
 
