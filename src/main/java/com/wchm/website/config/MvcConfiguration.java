@@ -43,9 +43,9 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         super.configureMessageConverters(converters);
-        //解决中文乱码
+        // 解决中文乱码
         converters.add(responseBodyConverter());
-        //解决 添加解决中文乱码后 上述配置之后，返回json数据直接报错 500：no convertter for return value of type
+        // 解决 添加解决中文乱码后 上述配置之后，返回json数据直接报错 500：no convertter for return value of type
         converters.add(messageConverter());
     }
 }

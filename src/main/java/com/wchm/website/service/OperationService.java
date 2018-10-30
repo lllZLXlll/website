@@ -19,14 +19,5 @@ public interface OperationService {
     //分页
     Result queryOperationByPage(Integer pageNum, Integer pageSize, String admin_name);
 
- /*   //保存
-    Result operationSave(Operation operation);
-    //删除
-    Result delOperationByID(Integer id);
-    //
-    ModelAndView operationInfo(Integer id);
-    //修改
-    Result operationUpdate(Operation operation);
-*/
 
 }
