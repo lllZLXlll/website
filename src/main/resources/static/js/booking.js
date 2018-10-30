@@ -206,7 +206,7 @@ function CheckUrl(str) {
 }
 
 function downloadfile(){
-    window.location.href="/admin/UserExcelDownloads";
+    window.location.href="/admin/booking/excel";
 }
 
 // 修改
