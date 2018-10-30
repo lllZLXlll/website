@@ -10,7 +10,6 @@ import com.wchm.website.service.OperationService;
 import com.wchm.website.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -36,6 +35,11 @@ class OperationServiceImpl implements OperationService {
         }
         PageInfo<Partner> p = new PageInfo(data);
         return Result.create().success("查询成功", p);
+    }
+
+    @Override
+    public Long operationSave(Operation operation) {
+        return operationMapper.operationSave(operation);
     }
 
 }

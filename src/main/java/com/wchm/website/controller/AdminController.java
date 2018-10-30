@@ -8,15 +8,6 @@ import com.wchm.website.util.Result;
 import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
@@ -45,9 +35,6 @@ public class AdminController {
 
     @Value("${wchm.update-image-absolutely}")
     private String absolutely;
-
-    @Autowired
-    private RedisService redisService;
 
     public final static Logger log = LoggerFactory.getLogger(AdminController.class);
 
@@ -81,16 +68,9 @@ public class AdminController {
     @Autowired
     private MessageService messageService; //消息中心
 
-
     @GetMapping("")
     public String admin() {
         return "login";
-    }
-
-    // 没有权限页面
-    @GetMapping("/403")
-    public String to403() {
-        return "403";
     }
 
     // 登录
@@ -250,9 +230,9 @@ public class AdminController {
         HSSFRow row = sheet.createRow(0);
         row.setHeightInPoints(20);//目的是想把行高设置成20px
 
-     //   HSSFFont font = workbook.createFont();
-     //   font.setFontName("黑体");
-     //   font.setFontHeightInPoints((short) 16);//设置字体大小   
+        //   HSSFFont font = workbook.createFont();
+        //   font.setFontName("黑体");
+        //   font.setFontHeightInPoints((short) 16);//设置字体大小   
         //  在excel表中添加表头
         for (int i = 0; i < headers.length; i++) {
             HSSFCell cell = row.createCell(i);
@@ -482,7 +462,7 @@ public class AdminController {
             String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
             team.setHead(imgPath);
         } catch (Exception e) {
-            log.error("上传图片异常");
+            log.error("上传图片异常", e);
             e.printStackTrace();
         }
         String idStr = request.getParameter("id");
@@ -574,7 +554,7 @@ public class AdminController {
             String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
             partner.setPicture(imgPath);
         } catch (Exception e) {
-            log.error("上传图片异常");
+            log.error("上传图片异常", e);
             e.printStackTrace();
         }
         String idStr = request.getParameter("id");
@@ -678,6 +658,61 @@ public class AdminController {
     }
 
     /**
+     * 带币池转账
+     *
+     * @param id    <p>带币池表id</p>
+     * @param money <p>需要转账的代币</p>
+     * @return
+     */
+    @RequiresRoles(value = "admin")
+    @GetMapping("/currency/transfers/{id}/{money}")
+    @ResponseBody
+    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
+        try {
+            return currencyService.currencyTransfer(id, money);
+        } catch (Exception e) {
+            return Result.create().fail(e.getMessage());
+        }
+    }
+
+
+//    // 修改带币池信息
+//    @PostMapping("/currency/update")
+//    @ResponseBody
+//    public Result currencyUpdate(@RequestBody Currency currency) {
+//        return currencyService.currencyUpdate(currency);
+//    }
+
+    //带币池用户导入
+    @RequiresRoles(value = "admin")
+    @PostMapping("/currency/excel")
+    @ResponseBody
+    public Result excelImport(HttpServletRequest request) {
+        try {
+            List<Currency> list = ExcelUtils.readFromExcel(request);
+            if (list == null) {
+                return Result.create().fail("导入失败");
+            }
+            for (Currency currency : list) {
+                currencyService.excelImport(currency);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage() + "-----error-----代币池导入数据失败", e);
+            return Result.create().fail("导入失败，请联系技术，切勿重复操作！");
+        }
+        return Result.create().success("导入成功");
+    }
+
+    // 带币池转账列表数据
+    @RequiresRoles(value = "admin")
+    @GetMapping("/currency/record/data")
+    @ResponseBody
+    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
+        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
+    }
+
+
+    /**
      * ------------------消息中心列表--------------
      *
      * @return
@@ -733,60 +768,6 @@ public class AdminController {
     @ResponseBody
     public Result messageUpdate(@RequestBody Message message) {
         return messageService.messageUpdate(message);
-    }
-
-    /**
-     * 带币池转账
-     *
-     * @param id    <p>带币池表id</p>
-     * @param money <p>需要转账的代币</p>
-     * @return
-     */
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/transfers/{id}/{money}")
-    @ResponseBody
-    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
-        try {
-            return currencyService.currencyTransfer(id, money);
-        } catch (Exception e) {
-            return Result.create().fail(e.getMessage());
-        }
-    }
-
-
-//    // 修改带币池信息
-//    @PostMapping("/currency/update")
-//    @ResponseBody
-//    public Result currencyUpdate(@RequestBody Currency currency) {
-//        return currencyService.currencyUpdate(currency);
-//    }
-
-    //带币池用户导入
-    @RequiresRoles(value = "admin")
-    @PostMapping("/currency/excel")
-    @ResponseBody
-    public Result excelImport(HttpServletRequest request) {
-        try {
-            List<Currency> list = ExcelUtils.readFromExcel(request);
-            if (list == null) {
-                return Result.create().fail("导入失败");
-            }
-            for (Currency currency : list) {
-                currencyService.excelImport(currency);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.create().fail("导入失败，请联系技术，切勿重复操作！");
-        }
-        return Result.create().success("导入成功");
-    }
-
-    // 带币池转账列表数据
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/record/data")
-    @ResponseBody
-    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
-        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
     }
 
 }

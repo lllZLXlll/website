@@ -40,6 +40,7 @@ function queryPageData(admin_name) {
                     for (var i = 0; i < dataList.length; i++) {
                         var state = dataList[i].state;
                         var operation_type = dataList[i].operation_type;
+                        var money = dataList[i].money;
                         if (operation_type==1) {
                             operation_type = "登录";
                         }else if(operation_type==2){
@@ -55,10 +56,10 @@ function queryPageData(admin_name) {
                         tableBody = tableBody.replace('data1', i + 1);
                         tableBody = tableBody.replace('data2', dataList[i].admin_name);
                         tableBody = tableBody.replace('data3', operation_type);
-                        tableBody = tableBody.replace('data4', dataList[i].money);
-                        tableBody = tableBody.replace('data5', dataList[i].address);
-                        tableBody = tableBody.replace('data6', dataList[i].create_time);
-                        tableBody = tableBody.replace('data7', state == 1 ? '成功' : '失败');
+                        tableBody = tableBody.replace('data4', dataList[i].create_time);
+                        tableBody = tableBody.replace('data5', state == 1 ? '成功' : '失败');
+                        tableBody = tableBody.replace('data6', money == 0 ? "" : money);
+                        tableBody = tableBody.replace('data7', dataList[i].address);
                     }
                     $("#operationTbody").html(tableBody);
 
