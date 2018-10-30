@@ -1,7 +1,6 @@
 package com.wchm.website.controller;
 
 import com.github.pagehelper.util.StringUtil;
-import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.*;
 import com.wchm.website.entity.Currency;
 import com.wchm.website.service.*;
@@ -16,6 +15,8 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.*;
 
 @Api(tags = "后台")
@@ -80,14 +82,12 @@ public class AdminController {
 
 
     @GetMapping("")
-    @UnToken
     public String admin() {
         return "login";
     }
 
     // 登录
     @GetMapping("/login")
-    @UnToken
     public String login() {
         return "login";
     }
@@ -95,15 +95,13 @@ public class AdminController {
     // 登录
     @PostMapping("/login/to")
     @ResponseBody
-    @UnToken
-    public Result loginTo(@Param("username") String username, @Param("password") String password) {
+    public Result loginTo(HttpServletRequest request, String username, String password) {
         // 账号或者密码为空
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             return Result.create().fail("00001", "账号或密码为空");
         }
 
-        // 查询数据库是否有此用户
-        Result result = adminService.queryUserNameAndPwd(username, password);
+        Result result = adminService.queryUserNameAndPwd(request, username, password);
 
         return result;
     }
@@ -111,21 +109,21 @@ public class AdminController {
     // 退出
     @GetMapping("/login/out")
     @ResponseBody
-    public Result loginOut(@CookieValue("token") String token) {
-        return adminService.loginOut(token);
+    public Result loginOut() {
+        return adminService.loginOut();
     }
 
     // 首页跳转初始化
     @PostMapping("/index/init")
     @ResponseBody
-    public Result indexInit(@CookieValue("token") String token) {
-        return adminService.queryUserByToken(token);
+    public Result indexInit() {
+        return adminService.queryUserIsAuthenticated();
     }
 
     // 首页跳转初始化
     @PostMapping("/index/data")
     @ResponseBody
-    public Result indexData(@CookieValue("token") String token) {
+    public Result indexData() {
         return adminService.queryIndexData();
     }
 
@@ -137,7 +135,7 @@ public class AdminController {
 
     // 欢迎页跳转
     @GetMapping("/welcome")
-    public String welcome(@CookieValue("token") String token) {
+    public String welcome() {
         return "welcome";
     }
 
@@ -145,52 +143,51 @@ public class AdminController {
     /**
      * ------------------新闻--------------
      *
-     * @param token
      * @return
      */
     // 新闻列表跳转
     @GetMapping("/news/list")
-    public String newsList(@CookieValue("token") String token) {
+    public String newsList() {
         return "news-list";
     }
 
     // 新闻列表数据
     @GetMapping("/news/data")
     @ResponseBody
-    public Result newsData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title, Integer lang) {
+    public Result newsData(Integer pageNum, Integer pageSize, String title, Integer lang) {
         return newsService.queryNewsByPage(pageNum, pageSize, title, lang);
     }
 
     // 删除新闻
     @PostMapping("/news/del")
     @ResponseBody
-    public Result newsDel(@CookieValue("token") String token, Integer id) {
+    public Result newsDel(Integer id) {
         return newsService.delNewsByID(id);
     }
 
     // 添加新闻跳转
     @GetMapping("/news/add")
-    public String newsAdd(@CookieValue("token") String token) {
+    public String newsAdd() {
         return "news-add";
     }
 
     // 添加新闻跳转
     @PostMapping("/news/save")
     @ResponseBody
-    public Result newsSave(@CookieValue("token") String token, @RequestBody News news) {
+    public Result newsSave(@RequestBody News news) {
         return newsService.newsSave(news);
     }
 
     // 查询新闻信息
     @GetMapping("/news/info/{id}")
-    public ModelAndView newsInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView newsInfo(@PathVariable("id") Integer id) {
         return newsService.newsInfo(id);
     }
 
     // 修改新闻信息
     @PostMapping("/news/update")
     @ResponseBody
-    public Result newsUpdate(@CookieValue("token") String token, @RequestBody News news) {
+    public Result newsUpdate(@RequestBody News news) {
         return newsService.newsUpdate(news);
     }
 
@@ -198,20 +195,19 @@ public class AdminController {
     /**
      * ----------------预售列表数据----------------
      *
-     * @param token
      * @return
      */
 
     // 预售列表跳转
     @GetMapping("/booking/list")
-    public String bookingList(@CookieValue("token") String token) {
+    public String bookingList() {
         return "booking-list";
     }
 
     // 预售列表数据
     @GetMapping("/booking/data")
     @ResponseBody
-    public Result bookingData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String user_name) {
+    public Result bookingData(Integer pageNum, Integer pageSize, String user_name) {
         return bookingService.queryBookingByPage(pageNum, pageSize, user_name);
     }
 
@@ -294,104 +290,102 @@ public class AdminController {
     /**
      * ------------------关注人数列表--------------
      *
-     * @param token
      * @return community
      */
 
     @GetMapping("/community/list")
-    public String communityList(@CookieValue("token") String token) {
+    public String communityList() {
         return "community-list";
     }
 
 
     @GetMapping("/community/data")
     @ResponseBody
-    public Result communityData(@CookieValue("token") String token, Integer pageNum, Integer pageSize) {
+    public Result communityData(Integer pageNum, Integer pageSize) {
         return communityService.queryCommunityByPage(pageNum, pageSize);
     }
 
 
     @GetMapping("/community/info/{id}")
-    public ModelAndView communityInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView communityInfo(@PathVariable("id") Integer id) {
         return communityService.communityInfo(id);
     }
 
 
     @GetMapping("/community/add")
-    public String communityAdd(@CookieValue("token") String token) {
+    public String communityAdd() {
         return "community-add";
     }
 
 
     @PostMapping("/community/save")
     @ResponseBody
-    public Result communitySave(@CookieValue("token") String token, @RequestBody Community community) {
+    public Result communitySave(@RequestBody Community community) {
         return communityService.communitySave(community);
     }
 
 
     @PostMapping("/community/update")
     @ResponseBody
-    public Result communityUpdate(@CookieValue("token") String token, @RequestBody Community community) {
+    public Result communityUpdate(@RequestBody Community community) {
         return communityService.communityUpdate(community);
     }
 
 
     @PostMapping("/community/del")
     @ResponseBody
-    public Result communityDel(@CookieValue("token") String token, Integer id) {
+    public Result communityDel(Integer id) {
         return communityService.delCommunityByID(id);
     }
 
     /**
      * ------------------公告列表--------------
      *
-     * @param token
      * @return
      */
     // 公告列表跳转
     @GetMapping("/notice/list")
-    public String noticeList(@CookieValue("token") String token) {
+    public String noticeList() {
         return "notice-list";
     }
 
     // 公告列表数据
     @GetMapping("/notice/data")
     @ResponseBody
-    public Result noticeData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title, Integer lang) {
+    public Result noticeData(Integer pageNum, Integer pageSize, String title, Integer lang) {
         return noticeService.queryNoticeByPage(pageNum, pageSize, title, lang);
     }
 
     // 添加公告跳转
     @GetMapping("/notice/add")
-    public String noticeAdd(@CookieValue("token") String token) {
+    public String noticeAdd() {
         return "notice-add";
     }
 
     // 添加公告跳转
     @PostMapping("/notice/save")
     @ResponseBody
-    public Result noticeSave(@CookieValue("token") String token, @RequestBody Notice notice) {
+    public Result noticeSave(@RequestBody Notice notice) {
         return noticeService.noticeSave(notice);
     }
 
     // 删除公告
     @PostMapping("/notice/del")
     @ResponseBody
-    public Result noticeDel(@CookieValue("token") String token, Integer id) {
+    public Result noticeDel(Integer id) {
         return noticeService.delNoticeByID(id);
     }
 
     // 查询公告信息
     @GetMapping("/notice/info/{id}")
-    public ModelAndView noticeInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView noticeInfo(@PathVariable("id") Integer id) {
         return noticeService.noticeInfo(id);
     }
 
     // 修改公告信息
     @PostMapping("/notice/update")
     @ResponseBody
-    public Result newsUpdate(@CookieValue("token") String token, @RequestBody Notice notice) {
+    public Result newsUpdate(@RequestBody Notice notice) {
         return noticeService.newsUpdate(notice);
     }
 
@@ -399,38 +393,37 @@ public class AdminController {
     /**
      * ------------------团队数据--------------
      *
-     * @param token
      * @return
      */
     // 团队列表跳转
     @GetMapping("/team/list")
-    public String teamList(@CookieValue("token") String token) {
+    public String teamList() {
         return "team-list";
     }
 
     // 团队列表数据
     @GetMapping("/team/data")
     @ResponseBody
-    public Result teamData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String team_name) {
+    public Result teamData(Integer pageNum, Integer pageSize, String team_name) {
         return teamService.queryTeamByPage(pageNum, pageSize, team_name);
     }
 
     // 查询团队信息
     @GetMapping("/team/info/{id}")
-    public ModelAndView teamInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView teamInfo(@PathVariable("id") Integer id) {
         return teamService.teamInfo(id);
     }
 
     // 添加团队跳转
     @GetMapping("/team/add")
-    public String teamAdd(@CookieValue("token") String token) {
+    public String teamAdd() {
         return "team-add";
     }
 
     // 添加团队
     @PostMapping("/team/save")
     @ResponseBody
-    public Result teamSave(@CookieValue("token") String token, HttpServletRequest request) {
+    public Result teamSave(HttpServletRequest request) {
         Team team = fomartTeam(request);
         return teamService.teamSave(team);
     }
@@ -438,7 +431,7 @@ public class AdminController {
     // 修改团队信息
     @PostMapping("/team/update")
     @ResponseBody
-    public Result teamUpdate(@CookieValue("token") String token, HttpServletRequest request) {
+    public Result teamUpdate(HttpServletRequest request) {
         Team team = fomartTeam(request);
         return teamService.teamUpdate(team);
     }
@@ -477,7 +470,7 @@ public class AdminController {
     // 删除团队
     @PostMapping("/team/del")
     @ResponseBody
-    public Result teamDel(@CookieValue("token") String token, Integer id) {
+    public Result teamDel(Integer id) {
         return teamService.delTeamByID(id);
     }
 
@@ -485,39 +478,37 @@ public class AdminController {
     /**
      * ------------------合作伙伴--------------
      *
-     * @param token
      * @return
      */
     // 合作伙伴列表跳转
     @GetMapping("/partner/list")
-    public String partnerList(@CookieValue("token") String token) {
+    public String partnerList() {
         return "partner-list";
     }
 
     // 合作伙伴列表数据
     @GetMapping("/partner/data")
     @ResponseBody
-    public Result partnerData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String partner_name) {
+    public Result partnerData(Integer pageNum, Integer pageSize, String partner_name) {
         return partnerService.queryPartnerByPage(pageNum, pageSize, partner_name);
     }
 
     // 查询合作伙伴信息
     @GetMapping("/partner/info/{id}")
-    public ModelAndView partnerInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView partnerInfo(@PathVariable("id") Integer id) {
         return partnerService.partnerInfo(id);
     }
 
     // 添加合作伙伴跳转
     @GetMapping("/partner/add")
-    public String partnerAdd(@CookieValue("token") String token) {
+    public String partnerAdd() {
         return "partner-add";
     }
 
     // 添加合作伙伴
     @PostMapping("/partner/save")
     @ResponseBody
-    @UnToken
-    public Result partnerSave(@CookieValue("token") String token, HttpServletRequest request) {
+    public Result partnerSave(HttpServletRequest request) {
         Partner partner = fomartPartner(request);
         return partnerService.partnerSave(partner);
     }
@@ -525,7 +516,7 @@ public class AdminController {
     // 修改合作伙伴信息
     @PostMapping("/partner/update")
     @ResponseBody
-    public Result partnerUpdate(@CookieValue("token") String token, HttpServletRequest request) {
+    public Result partnerUpdate(HttpServletRequest request) {
         Partner partner = fomartPartner(request);
         return partnerService.partnerUpdate(partner);
     }
@@ -564,7 +555,7 @@ public class AdminController {
     // 删除合作伙伴
     @PostMapping("/partner/del")
     @ResponseBody
-    public Result partnerDel(@CookieValue("token") String token, Integer id) {
+    public Result partnerDel(Integer id) {
         return partnerService.delPartnerByID(id);
     }
 
@@ -572,176 +563,136 @@ public class AdminController {
     /**
      * ------------------操作日志列表--------------
      *
-     * @param token
      * @return
      */
     // 操作日志列表跳转
+    @RequiresRoles(value = "admin") // 需要管理员权限
     @GetMapping("/operation/list")
-    public String operationList(@CookieValue("token") String token) {
+    public String operationList() {
         return "operation-list";
     }
 
     // 操作日志列表数据
+    @RequiresRoles(value = "admin")
     @GetMapping("/operation/data")
     @ResponseBody
-    public Result operationData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String admin_name) {
+    public Result operationData(Integer pageNum, Integer pageSize, String admin_name) {
         return operationService.queryOperationByPage(pageNum, pageSize, admin_name);
-    }
-
-    // 添加操作日志跳转
-    @GetMapping("/operation/add")
-    public String operationAdd(@CookieValue("token") String token) {
-        return "operation-add";
-    }
-
-    // 添加操作日志跳转
-    @PostMapping("/operation/save")
-    @ResponseBody
-    public Result operationSave(@CookieValue("token") String token, @RequestBody Operation operation) {
-        return operationService.operationSave(operation);
-    }
-
-    // 删除操作日志
-    @PostMapping("/operation/del")
-    @ResponseBody
-    public Result operationDel(@CookieValue("token") String token, Integer id) {
-        return operationService.delOperationByID(id);
-    }
-
-    // 查询操作日志信息
-    @GetMapping("/operation/info/{id}")
-    public ModelAndView operationInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
-        return operationService.operationInfo(id);
-    }
-
-    // 修改操作日志信息
-    @PostMapping("/operation/update")
-    @ResponseBody
-    public Result operationUpdate(@CookieValue("token") String token, @RequestBody Operation operation) {
-        return operationService.operationUpdate(operation);
     }
 
     /**
      * ------------------代币池列表--------------
      *
-     * @param token
      * @return
      */
     // 带币池列表跳转
     @GetMapping("/currency/list")
-    public String currencyList(@CookieValue("token") String token) {
+    public String currencyList() {
         return "currency-list";
     }
 
     // 带币池列表数据
     @GetMapping("/currency/data")
     @ResponseBody
-    public Result currencyData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String user_name) {
+    public Result currencyData(Integer pageNum, Integer pageSize, String user_name) {
         return currencyService.queryCurrencyByPage(pageNum, pageSize, user_name);
     }
 
     // 添加带币池跳转
     @GetMapping("/currency/add")
-    public String currencyAdd(@CookieValue("token") String token) {
+    public String currencyAdd() {
         return "currency-add";
     }
 
     // 添加带币池跳转
     @PostMapping("/currency/save")
     @ResponseBody
-    public Result currencySave(@CookieValue("token") String token, @RequestBody Currency currency) {
+    public Result currencySave(@RequestBody Currency currency) {
         return currencyService.currencySave(currency);
     }
 
 //    // 删除带币池
 //    @PostMapping("/currency/del")
 //    @ResponseBody
-//    public Result currencyDel(@CookieValue("token") String token, Integer id) {
+//    public Result currencyDel(Integer id) {
 //        return currencyService.delCurrencyByID(id);
 //    }
 
     // 转账详情列表跳转
     @GetMapping("/currency/record/{id}")
-    public ModelAndView recordInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView recordInfo(@PathVariable("id") Integer id) {
         return currencyService.recordInfo(id);
     }
 
     // 转账跳转
     @GetMapping("/currency/transfer/{id}")
-    public ModelAndView currencyInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView currencyInfo(@PathVariable("id") Integer id) {
         return currencyService.currencyInfo(id);
     }
 
     /**
      * ------------------消息中心列表--------------
      *
-     * @param token
      * @return
      */
     // 消息中心表跳转
     @GetMapping("/message/list")
-    public String messageList(@CookieValue("token") String token) {
+    public String messageList() {
         return "message-list";
     }
 
     // 消息中心列表数据
     @GetMapping("/message/data")
     @ResponseBody
-    public Result messageData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, String title) {
+    public Result messageData(Integer pageNum, Integer pageSize, String title) {
         return messageService.queryMessageByPage(pageNum, pageSize, title);
     }
 
     // 添加消息中心跳转
     @GetMapping("/message/add")
-    public String messageAdd(@CookieValue("token") String token) {
+    public String messageAdd() {
         return "message-add";
     }
 
     // 添加消息中心跳转
     @PostMapping("/message/save")
     @ResponseBody
-    public Result messageSave(@CookieValue("token") String token, @RequestBody Message message) {
+    public Result messageSave(@RequestBody Message message) {
         return messageService.messageSave(message);
     }
 
     // 删除消息中心
     @PostMapping("/message/del")
     @ResponseBody
-    public Result messageDel(@CookieValue("token") String token, Integer id) {
+    public Result messageDel(Integer id) {
         return messageService.delMessageByID(id);
     }
 
     // 查询消息中心信息
     @GetMapping("/message/info/{id}")
-    public ModelAndView messageInfo(@CookieValue("token") String token, @PathVariable("id") Integer id) {
+    public ModelAndView messageInfo(@PathVariable("id") Integer id) {
         return messageService.messageInfo(id);
     }
 
     // 修改消息中心信息
     @PostMapping("/message/update")
     @ResponseBody
-    public Result messageUpdate(@CookieValue("token") String token, @RequestBody Message message) {
+    public Result messageUpdate(@RequestBody Message message) {
         return messageService.messageUpdate(message);
     }
 
     /**
      * 带币池转账
      *
-     * @param token <p>登录令牌</p>
      * @param id    <p>带币池表id</p>
      * @param money <p>需要转账的代币</p>
      * @return
      */
     @GetMapping("/currency/transfers/{id}/{money}")
     @ResponseBody
-    @UnToken
-    public Result currencyTransfer(@CookieValue("token") String token, @PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
+    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
         try {
-            String redisStr = redisService.get(token);
-            if (StringUtil.isEmpty(redisStr)) {
-                return Result.create().fail("登录失效");
-            }
-            return currencyService.currencyTransfer(token, id, money);
+            return currencyService.currencyTransfer(id, money);
         } catch (Exception e) {
             return Result.create().fail(e.getMessage());
         }
@@ -751,14 +702,13 @@ public class AdminController {
 //    // 修改带币池信息
 //    @PostMapping("/currency/update")
 //    @ResponseBody
-//    public Result currencyUpdate(@CookieValue("token") String token, @RequestBody Currency currency) {
+//    public Result currencyUpdate(@RequestBody Currency currency) {
 //        return currencyService.currencyUpdate(currency);
 //    }
 
     //带币池用户导入
     @PostMapping("/currency/excel")
     @ResponseBody
-    @UnToken
     public Result excelImport(HttpServletRequest request) {
         try {
             List<Currency> list = ExcelUtils.readFromExcel(request);
@@ -778,91 +728,25 @@ public class AdminController {
     // 带币池转账列表数据
     @GetMapping("/currency/record/data")
     @ResponseBody
-    public Result currencyRecordData(@CookieValue("token") String token, Integer pageNum, Integer pageSize, Integer id) {
+    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
         return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
-    }
-
-    @RequestMapping("/test")
-    @UnToken
-    @ResponseBody
-    public String logintest(HttpServletRequest request, Map<String, String> map) {
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken("wchm", "wchm2018");
-        subject.login(token);
-
-
-        System.out.println("user login .....");
-        String exception = (String) request.getAttribute("shiroLoginFailure");
-        System.out.println("exception=" + exception);
-        String msg = "";
-        if (exception != null) {
-            if (UnknownAccountException.class.getName().equals(exception)) {
-                System.out.println("UnknownAccountException -- > 账号不存在：");
-                msg = "unknownAccount";
-            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
-                msg = "incorrectPassword";
-            } else if ("kaptchaValidateFailed".equals(exception)) {
-                System.out.println("kaptchaValidateFailed -- > 验证码错误");
-                msg = "kaptchaValidateFailed -- > 验证码错误";
-            } else {
-                msg = "else >> " + exception;
-                System.out.println("else -- >" + exception);
-            }
-        }
-        map.put("msg", msg);
-        //认证成功由shiro框架自行处理
-
-
-        return "ok";
     }
 
 
     //访问此连接时会触发MyShiroRealm中的权限分配方法
-    @RequestMapping("/permission")
-    @RequiresPermissions("admin:abc")
-    @UnToken
-    public void test2() {
+    @GetMapping("/test")
+//    @RequiresPermissions({"index:update", "index:add"}) // 访上问此接口需要的权限
+    @RequiresRoles(value = {"admin", "user"}, logical = Logical.OR) // 访问此接口需要的角色，AND:且，OR:或
+    @ResponseBody
+    public String test2() {
         System.out.println("permission  test");
+        return "test";
     }
 
-
-    public static void main(String[] args) {
-        /*// 构建环境
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-
-        // 添加用户，和权限
-        SimpleAccountRealm simpleAccountRealm = new SimpleAccountRealm();
-        simpleAccountRealm.addAccount("zlx", "123", "admin", "user");
-
-        defaultSecurityManager.setRealm(simpleAccountRealm);
-
-        // 认证请求
-        SecurityUtils.setSecurityManager(defaultSecurityManager);
-        Subject subject = SecurityUtils.getSubject();
-
-        UsernamePasswordToken token = new UsernamePasswordToken("zlx", "123");
-        subject.login(token);
-
-        System.out.println(subject.isAuthenticated());
-
-        subject.checkRoles("admin", "user");*/
-
-        // 构建环境
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-
-        // inirealm
-
-
-        // 认证请求
-        SecurityUtils.setSecurityManager(defaultSecurityManager);
-        Subject subject = SecurityUtils.getSubject();
-
-        UsernamePasswordToken token = new UsernamePasswordToken("zlx", "123");
-        subject.login(token);
-
-        System.out.println(subject.isAuthenticated());
-
-
+    // 没有权限页面
+    @GetMapping("/403")
+    public String to403() {
+        return "403";
     }
 
 }

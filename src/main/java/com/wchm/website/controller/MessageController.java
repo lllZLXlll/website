@@ -1,6 +1,5 @@
 package com.wchm.website.controller;
 
-import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.Message;
 import com.wchm.website.service.MessageService;
 import io.swagger.annotations.Api;
@@ -26,7 +25,6 @@ public class MessageController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation(value = "消息中心首页", response = Message.class)
-    @UnToken
     public Object Message(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return messageService.queryMessage();
@@ -35,20 +33,18 @@ public class MessageController {
     @GetMapping("/list")
     @ResponseBody
     @ApiOperation(value = "消息分页查询", response = Message.class)
-    @UnToken
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true,paramType = "query"),
-            @ApiImplicitParam(name = "pageSize", value = "条数", required = true,paramType = "query")
+            @ApiImplicitParam(name = "pageNum", value = "当前页", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = true, paramType = "query")
     })
-    public Object messageList(HttpServletResponse response,Integer pageNum,
-                              Integer pageSize){
+    public Object messageList(HttpServletResponse response, Integer pageNum,
+                              Integer pageSize) {
         response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
-        return messageService.queryMessageList(pageNum,pageSize);
+        return messageService.queryMessageList(pageNum, pageSize);
     }
 
     /*@GetMapping("/info")
     @ResponseBody
-    @UnToken
     @ApiOperation(value = "消息", response = Message.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "ID", required = true,paramType = "query"),

@@ -21,7 +21,7 @@ import java.util.Properties;
 @Configuration
 public class ShiroConfig {
     public ShiroConfig() {
-        System.out.println("ShiroConfig  init ....");
+        System.out.println("Shiro Config  init ....");
     }
 
     /**
@@ -29,7 +29,7 @@ public class ShiroConfig {
      */
     @Bean
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
-        System.out.println("ShiroConfiguration.shirFilter()");
+        System.out.println("Shiro 过滤器配置 ...");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 拦截器.
@@ -57,7 +57,7 @@ public class ShiroConfig {
          *
          */
         filterChainDefinitionMap.put("/**", "anon");
-//        filterChainDefinitionMap.put("/admin/**", "authc");
+        filterChainDefinitionMap.put("/admin/**", "authc");
         // 默认会自动寻找Web工程根目录下的"/login.jsp"页面，这里设置跳转到登陆请求
         shiroFilterFactoryBean.setLoginUrl("/admin/login");
         // 登录成功后要跳转的链接
@@ -86,7 +86,8 @@ public class ShiroConfig {
     @Bean
     public MyShiroRelam myShiroRealm() {
         MyShiroRelam myShiroRelam = new MyShiroRelam();
-        myShiroRelam.setCredentialsMatcher(hashedCredentialsMatcher());
+        // 这里没有用md5加密，已在前端加密了密码，后端无需再加密。
+//        myShiroRelam.setCredentialsMatcher(hashedCredentialsMatcher());
         return myShiroRelam;
     }
 

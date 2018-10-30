@@ -2,7 +2,6 @@ package com.wchm.website.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteStreams;
-import com.wchm.website.annotation.UnToken;
 import io.swagger.annotations.Api;
 import org.apache.tomcat.util.http.fileupload.FileItemFactory;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
@@ -46,7 +45,6 @@ public class UploadController {
 
     @PostMapping(value = "/fileUpload")
     @ResponseBody
-    @UnToken
     public Map<String, Object> fileUpload(HttpServletRequest request, HttpServletResponse response) throws Exception {
 //        String path2 = request.getServletContext().getRealPath("/");
         String savePath = absolutely + notice;
@@ -169,7 +167,6 @@ public class UploadController {
 
     @PostMapping(value = "/fileManager")
     @ResponseBody
-    @UnToken
     public void fileManager(HttpServletRequest request,
                             HttpServletResponse response) throws ServletException, IOException {
         ServletContext application = request.getSession().getServletContext();

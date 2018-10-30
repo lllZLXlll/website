@@ -52,9 +52,9 @@ $(function () {
             success: function (data) {
                 if (data && data.code == '00000' && data.status == 'success') {
                     // 登录成功，保存token到浏览器中
-                    document.cookie = "";
-                    saveCookie("token", data.data.token);
-                    saveCookie("admin_name", data.data.admin_name);
+                    // document.cookie = "";
+                    // saveCookie("token", data.data.token);
+                    // saveCookie("admin_name", data.data.admin_name);
                     // 访问管理后台首页
                     goToIndex();
                 } else {

@@ -37,5 +37,5 @@ public interface CurrencyService {
     Result queryCurrencyRecordByPage(Integer pageNum, Integer pageSize, Integer id);
 
     // 转账
-    Result currencyTransfer(String token, Long id, BigDecimal money) throws RuntimeException;
+    Result currencyTransfer(Long id, BigDecimal money) throws RuntimeException;
 }

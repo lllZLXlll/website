@@ -1,6 +1,5 @@
 package com.wchm.website.controller;
 
-import com.wchm.website.annotation.UnToken;
 import com.wchm.website.service.BlockChainBrowserService;
 import com.wchm.website.util.Result;
 import com.wchm.website.vo.BlockChainVo;
@@ -36,7 +35,6 @@ public class BlockChainBrowserController {
      * @return
      */
     @GetMapping("")
-    @UnToken
     @ResponseBody
     @ApiOperation(value = "区块链首页查询", response = BlockChainVo.class)
     public Result queryIndexData() {
@@ -54,7 +52,6 @@ public class BlockChainBrowserController {
      * @return
      */
     @GetMapping("/trans")
-    @UnToken
     @ResponseBody
     @ApiOperation(value = "区块链首页-最新交易记录", response = Transaction.class)
     public Result queryIndexDataTransaction() {
@@ -73,7 +70,6 @@ public class BlockChainBrowserController {
 //     * @return
 //     */
 //    @GetMapping("/block")
-//    @UnToken
 //    @ResponseBody
 //    @ApiOperation(value = "区块链首页-最新区块", response = Block.class)
 //    public Result queryIndexDataBlock() {
@@ -102,7 +98,6 @@ public class BlockChainBrowserController {
      * @return
      */
     @GetMapping("/search")
-    @UnToken
     @ResponseBody
     @ApiOperation(value = "区块链搜索框查询数据", response = DetailsVo.class)
     @ApiImplicitParams({

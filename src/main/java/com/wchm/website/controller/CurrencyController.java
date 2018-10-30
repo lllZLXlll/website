@@ -1,6 +1,5 @@
 package com.wchm.website.controller;
 
-import com.wchm.website.annotation.UnToken;
 import com.wchm.website.entity.Currency;
 import com.wchm.website.service.CurrencyService;
 import io.swagger.annotations.Api;
@@ -24,7 +23,6 @@ public class CurrencyController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation(value = "首页获取带币池页面", response = Currency.class)
-    @UnToken
     public Object team(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");//防止跨域
         return currencyService.queryCurrency();

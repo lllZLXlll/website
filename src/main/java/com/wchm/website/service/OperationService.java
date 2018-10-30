@@ -16,9 +16,6 @@ import java.util.List;
 @Service
 public interface OperationService {
 
-      //接口
-      List<Operation> queryOperation();
-
     //分页
     Result queryOperationByPage(Integer pageNum, Integer pageSize, String admin_name);
 

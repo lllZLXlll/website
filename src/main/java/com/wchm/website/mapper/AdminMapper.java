@@ -32,21 +32,14 @@ public interface AdminMapper {
      * @param username
      * @return
      */
-//    @Select("SELECT" +
-//            "   a.id u_id, username, password, " +
-//            "   r.id r_id, rolename, roledesc, " +
-//            "   p.id p_id , modelname, permission " +
-//            "FROM website_admin a " +
-//            "   INNER JOIN website_admin_role ar ON a.id = ar.uid " +
-//            "   INNER JOIN website_role r ON ar.rid = r.id " +
-//            "   INNER JOIN website_role_permission rp ON r.id = rp.rid " +
-//            "   INNER JOIN website_permission p ON rp.pid = p.id " +
-//            "   WHERE a.username = #{username} ")
-
     @Select("SELECT * " +
             "FROM website_admin " +
             "WHERE username = #{username} ")
     @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "password", column = "password"),
+            @Result(property = "create_time", column = "create_time"),
             @Result(
                     property = "roleList", column = "id",
                     many = @Many(select = "com.wchm.website.mapper.AdminMapper.findRoleByAdminId")
@@ -54,8 +47,11 @@ public interface AdminMapper {
     })
     Admin findAdminByName(@Param("username") String username);
 
-    @Select("SELECT * FROM website_admin_role WHERE uid = #{uid}")
+    @Select("SELECT t2.* FROM website_admin_role t1 JOIN website_role t2 ON t1.rid = t2.id WHERE t1.uid = #{uid}")
     @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "rolename", column = "rolename"),
+            @Result(property = "roledesc", column = "roledesc"),
             @Result(
                     property = "permissionList", column = "id",
                     many = @Many(select = "com.wchm.website.mapper.AdminMapper.findPermissionByRoleId")
@@ -63,7 +59,7 @@ public interface AdminMapper {
     })
     List<Role> findRoleByAdminId(@Param("uid") Long uid);
 
-    @Select("SELECT * FROM website_role_permission WHERE rid = #{rid}")
+    @Select("SELECT t2.* FROM website_role_permission t1 JOIN website_permission t2 ON t1.pid = t2.id WHERE rid = #{rid}")
     List<Permission> findPermissionByRoleId(@Param("rid") Long rid);
 
 }

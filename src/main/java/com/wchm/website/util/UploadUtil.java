@@ -1,13 +1,8 @@
 package com.wchm.website.util;
 
 import com.google.common.io.ByteStreams;
-import com.wchm.website.annotation.UnToken;
-import org.apache.tomcat.util.http.fileupload.FileItemFactory;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +29,6 @@ public class UploadUtil {
      */
     @PostMapping(value = "/imageUpload")
     @ResponseBody
-    @UnToken
     public static String imageUpload(HttpServletRequest request, String relative, String absolutely) throws Exception {
 
         // 获取图片保存目录

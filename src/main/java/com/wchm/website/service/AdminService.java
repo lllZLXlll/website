@@ -5,19 +5,18 @@ import com.wchm.website.entity.Operation;
 import com.wchm.website.util.Result;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public interface AdminService {
 
-    Result queryUserNameAndPwd(String username, String passwrod);
+    Result queryUserNameAndPwd(HttpServletRequest request, String username, String passwrod);
 
-    Result queryUserByToken(String token);
+    Result queryUserIsAuthenticated();
 
     Result queryIndexData();
 
-    Result loginOut(String token);
-
-    //保存
-    Result operationSave(Operation operation);
+    Result loginOut();
 
     Admin findAdminByName(String username);
 

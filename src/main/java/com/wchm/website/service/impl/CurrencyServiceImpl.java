@@ -13,6 +13,8 @@ import com.wchm.website.mapper.OperationMapper;
 import com.wchm.website.service.CurrencyService;
 import com.wchm.website.service.RedisService;
 import com.wchm.website.util.Result;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,11 +184,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Transactional // 开启事务
     @Override
-    public Result currencyTransfer(String token, Long id, BigDecimal money) throws RuntimeException {
+    public Result currencyTransfer(Long id, BigDecimal money) throws RuntimeException {
         try {
             // 获得admin
-            String value = redisService.get(token);
-            Admin admin = (Admin) redisService.strToBean(Admin.class, value);
+            Subject currentUser = SecurityUtils.getSubject();
+            Admin admin = (Admin) currentUser.getPrincipals().getPrimaryPrincipal();
+
             // 根据id查询信息
             Currency currency = currencyMapper.queryCurrencyById(id);
             // 判断是否有此信息
