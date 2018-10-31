@@ -1,5 +1,6 @@
 package com.wchm.website.controller;
 
+import com.wchm.website.Aspect.MyLog;
 import com.wchm.website.entity.*;
 import com.wchm.website.service.*;
 import com.wchm.website.util.DateUtil;
@@ -20,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
@@ -67,6 +67,7 @@ public class AdminController {
 
     @Autowired
     private MessageService messageService; //消息中心
+
 
     @GetMapping("")
     public String admin() {
@@ -147,6 +148,7 @@ public class AdminController {
     }
 
     // 删除新闻
+    @MyLog(value = "删除新闻")
     @RequiresRoles(value = "admin")
     @PostMapping("/news/del")
     @ResponseBody
@@ -162,6 +164,7 @@ public class AdminController {
     }
 
     // 添加新闻跳转
+    @MyLog("添加新闻")
     @RequiresRoles(value = "admin")
     @PostMapping("/news/save")
     @ResponseBody
@@ -177,6 +180,7 @@ public class AdminController {
     }
 
     // 修改新闻信息
+    @MyLog("修改新闻")
     @RequiresRoles(value = "admin")
     @PostMapping("/news/update")
     @ResponseBody
@@ -190,16 +194,6 @@ public class AdminController {
      *
      * @return
      */
-
-    // TODO 切面类配置 com.wchm.website.controller.AdminController
-
-    // 5个通知类型，（后置通知）
-
-    // 获取接口请求路径 /booking/list
-
-
-
-    // 自定义注解，获取注解中的value值，知道操作类型，获取用户名，插入数据库
 
     // 预售列表跳转
     @RequiresRoles(value = "admin")
@@ -216,6 +210,8 @@ public class AdminController {
         return bookingService.queryBookingByPage(pageNum, pageSize, user_name);
     }
 
+    // 导出预售表单
+    @MyLog("导出预售表单")
     @RequiresRoles(value = "admin")
     @ResponseBody
     @GetMapping("/booking/excel")
@@ -224,15 +220,12 @@ public class AdminController {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("预售表单");
 
-
         // 查询数据库
         List<Booking> classmateList = bookingService.bookingInfor();
         // 设置要导出的文件的名字
         String fileName = "预售表单" + ".xls";
 
         // 新增数据行，并且设置单元格数据
-
-
         int rowNum = 1;
         String[] headers = {"序号","姓氏" , "名字", "手机号码", "邮箱", "钱包地址",
                 "创建时间", "投资方式", "预售投资金额", "投资货币", "电脑账号",
@@ -240,7 +233,6 @@ public class AdminController {
         //headers表示excel表中第一行的表头
         HSSFRow row = sheet.createRow(0);
         row.setHeightInPoints(20);//目的是想把行高设置成20px
-
 
         HSSFFont fontStyle = workbook.createFont();
         fontStyle.setFontName("黑体");
@@ -251,8 +243,6 @@ public class AdminController {
             HSSFRichTextString text = new HSSFRichTextString(headers[i]);
             cell.setCellValue(text);
         }
-
-
         int i =1;
         // 在表中存放查询到的数据放入对应的列
         for (Booking booking : classmateList) {
@@ -397,6 +387,7 @@ public class AdminController {
     }
 
     // 添加公告跳转
+    @MyLog("添加公告")
     @RequiresRoles(value = "admin")
     @PostMapping("/notice/save")
     @ResponseBody
@@ -405,6 +396,7 @@ public class AdminController {
     }
 
     // 删除公告
+    @MyLog("删除公告")
     @RequiresRoles(value = "admin")
     @PostMapping("/notice/del")
     @ResponseBody
@@ -420,6 +412,7 @@ public class AdminController {
     }
 
     // 修改公告信息
+    @MyLog("修改公告")
     @RequiresRoles(value = "admin")
     @PostMapping("/notice/update")
     @ResponseBody
@@ -555,6 +548,7 @@ public class AdminController {
     }
 
     // 添加合作伙伴
+    @MyLog("添加合作伙伴")
     @RequiresRoles(value = "admin")
     @PostMapping("/partner/save")
     @ResponseBody
@@ -564,6 +558,7 @@ public class AdminController {
     }
 
     // 修改合作伙伴信息
+    @MyLog("修改合作伙伴")
     @RequiresRoles(value = "admin")
     @PostMapping("/partner/update")
     @ResponseBody
@@ -604,6 +599,7 @@ public class AdminController {
     }
 
     // 删除合作伙伴
+    @MyLog("删除合作伙伴")
     @RequiresRoles(value = "admin")
     @PostMapping("/partner/del")
     @ResponseBody
@@ -695,6 +691,7 @@ public class AdminController {
      * @param money <p>需要转账的代币</p>
      * @return
      */
+    @MyLog("带币池转账")
     @RequiresRoles(value = "admin")
     @GetMapping("/currency/transfers/{id}/{money}")
     @ResponseBody
@@ -715,6 +712,7 @@ public class AdminController {
 //    }
 
     //带币池用户导入
+    @MyLog("代币池用户导入")
     @RequiresRoles(value = "admin")
     @PostMapping("/currency/excel")
     @ResponseBody
