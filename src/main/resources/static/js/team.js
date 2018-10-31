@@ -74,11 +74,11 @@ function queryPageData(team_name) {
                         }
                     })
                 } else {
-                    var tableBody = '<tr><td colspan="10" style="text-align: center;">暂无数据</td></tr>';
+                    var tableBody = '<tr><td colspan="9" style="text-align: center;">暂无数据</td></tr>';
                     $("#teamTbody").html(tableBody);
                 }
             } else {
-                var tableBody = '<tr><td colspan="10" style="text-align: center;">查询数据异常</td></tr>';
+                var tableBody = '<tr><td colspan="9" style="text-align: center;">查询数据异常</td></tr>';
                 $("#teamTbody").html(tableBody);
             }
         }

@@ -74,11 +74,11 @@ function queryPageData(id) {
                         }
                     })
                 } else {
-                    var tableBody = '<tr><td colspan="9" style="text-align: center;">暂无数据</td></tr>';
+                    var tableBody = '<tr><td colspan="10" style="text-align: center;">暂无数据</td></tr>';
                     $("#currencyRecordTbody").html(tableBody);
                 }
             } else {
-                var tableBody = '<tr><td colspan="9" style="text-align: center;">查询数据异常</td></tr>';
+                var tableBody = '<tr><td colspan="10" style="text-align: center;">查询数据异常</td></tr>';
                 $("#currencyRecordTbody").html(tableBody);
             }
         }
