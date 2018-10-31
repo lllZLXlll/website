@@ -1,6 +1,6 @@
 package com.wchm.website.controller;
 
-import com.wchm.website.Aspect.MyLog;
+import com.wchm.website.annotation.MyLog;
 import com.wchm.website.entity.*;
 import com.wchm.website.service.*;
 import com.wchm.website.util.DateUtil;
@@ -152,7 +152,7 @@ public class AdminController {
     @RequiresRoles(value = "admin")
     @PostMapping("/news/del")
     @ResponseBody
-    public Result newsDel(Integer id) {
+    public Result newsDel(Integer id) throws Exception {
         return newsService.delNewsByID(id);
     }
 
