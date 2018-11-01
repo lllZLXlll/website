@@ -82,7 +82,7 @@ wchm:
   # 白皮书文件地址
   paper-absolutely: /usr/local/website/upload/paper/
   # 公司钱包地址 测试地址
-  company-address: "0xb4182216164d5c45f37ccad696f7e5c92abff03d"
+  company-address: ""
   # 公司账户私钥 测试私钥
   company-pri-key: ""
   # PCT代币地址

@@ -54,6 +54,9 @@ class AdminServiceImpl implements AdminService {
             return Result.create().fail("登录失败");
         }
 
+        // 设置session过期时间 30分钟
+        SecurityUtils.getSubject().getSession().setTimeout(1000 * 60 * 30);
+
         Admin admin = adminMapper.findAdminByName(username);
         admin.setPassword(null);
 
