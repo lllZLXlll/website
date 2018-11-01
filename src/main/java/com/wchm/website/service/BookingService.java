@@ -4,6 +4,8 @@ import com.wchm.website.entity.Booking;
 import com.wchm.website.util.Result;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -17,4 +19,5 @@ public interface BookingService {
 
     List<Booking> bookingInfor();
 
+    Object bookingExport(HttpServletResponse response) throws IOException;
 }

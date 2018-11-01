@@ -49,11 +49,7 @@ class NewsServiceImpl implements NewsService {
 
     //删除新闻
     @Override
-    public Result delNewsByID(Integer id) throws Exception  {
-
-        if(id!=null){
-            throw new Exception("异常");
-        }
+    public Result delNewsByID(Integer id){
         if (id == null || id <= 0) {
             return Result.create().fail("ID不能为空");
         }
