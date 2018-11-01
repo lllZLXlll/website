@@ -2,6 +2,8 @@ package com.wchm.website.mapper;
 
 import com.wchm.website.entity.Currency;
 import com.wchm.website.entity.CurrencyRecord;
+import com.wchm.website.entity.ExtractApplyfor;
+import com.wchm.website.vo.CurrencyAccountVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -54,5 +56,31 @@ public interface CurrencyMapper {
 
     @Select("SELECT * FROM website_currency_pool WHERE id = #{id} AND state = 1 ORDER BY id DESC")
     Currency queryCurrencyById(@Param("id") Long id);
+
+    @Select("SELECT *, " +
+            "   CASE  " +
+            "       WHEN LENGTH(new_address) < 42 THEN " +
+            "           old_address " +
+            "   ELSE " +
+            "       new_address " +
+            "   END address " +
+            "FROM ( " +
+            "   SELECT " +
+            "       currency, " +
+            "       surplus, " +
+            "       proportion, " +
+            "       CONCAT(DATE_FORMAT(lock_begin_time, '%Y.%m.%d'), '-', DATE_FORMAT(lock_end_time, '%Y.%m.%d')) lock_time, " +
+            "       lock_describe, " +
+            "       t1.address old_address, " +
+            "       t2.address new_address " +
+            "   FROM " +
+            "       website_currency_pool t1 " +
+            "   JOIN eacoo_users t2 ON t1.mobile = t2.mobile " +
+            "   WHERE t2.uid = #{id} " +
+            ") t")
+    CurrencyAccountVo queryCurrencyAccount(@Param("id") Long userId);
+
+    @Select("SELECT * FROM website_extract_applyfor WHERE uid = #{uid} AND state = 1 ")
+    List<ExtractApplyfor> queryApplyforListByUid(@Param("uid") Long userId);
 }
 

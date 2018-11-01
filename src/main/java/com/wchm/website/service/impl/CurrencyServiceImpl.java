@@ -3,16 +3,16 @@ package com.wchm.website.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
-import com.wchm.website.entity.Admin;
-import com.wchm.website.entity.Currency;
-import com.wchm.website.entity.CurrencyRecord;
-import com.wchm.website.entity.Operation;
+import com.wchm.website.entity.*;
 import com.wchm.website.mapper.CurrencyMapper;
 import com.wchm.website.mapper.CurrencyRecordMapper;
 import com.wchm.website.mapper.OperationMapper;
 import com.wchm.website.service.CurrencyService;
 import com.wchm.website.service.RedisService;
+import com.wchm.website.util.HttpUtils;
 import com.wchm.website.util.Result;
+import com.wchm.website.vo.CurrencyAccountVo;
+import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -76,10 +76,44 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Autowired
     RedisService redisService;
 
+    // 前端查询用户的锁仓信息，提现记录
     @Override
-    public List<Currency> queryCurrency() {
-        return null;
+    public Result queryCurrencyAccount(String token) {
+        // TODO 测试数据
+        token = "eyJpdiI6IlptUmhhMmx1Wld3N2FXNXFZV3BrYWc9PSIsInZhbHVlIjoiWUhYMk5kdlwvOFdCa1oya1lcL284eTFURjNDZUlsYzY2UDFPVndtZWZBc0JkdElwTlhMaVZCTWNxVjhKTDBNWnNwdkNCY2g2d3dQZmtsZlVkY2NQNGtxUT09In0=";
+
+        // 请求php接口解密token，拿到用户id
+        // TODO api是测试环境，上正式之后要替换掉
+        String phpApi = "http://bbs.gezanjia.com/api/v1/sign";
+
+        String response = HttpUtils.post(phpApi, "token", token);
+        JSONObject json = JSONObject.fromObject(response);
+        String state = json.getString("status");
+        String message = json.getString("message");
+        json = json.getJSONObject("data");
+
+        // TODO 测试完成之后去掉注释
+//        if (!"1".equals(state)) {
+//            return Result.create().fail(message);
+//        }
+
+//        long userId = Long.parseLong(json.getString("uid"));
+        long userId = 114; // TODO 测试数据
+
+        // 通过用户id查询信息
+        CurrencyAccountVo vo = currencyMapper.queryCurrencyAccount(userId);
+
+        // 查询提现记录
+        List<ExtractApplyfor> extractList = currencyMapper.queryApplyforListByUid(userId);
+        vo.setExtractList(extractList);
+
+        return Result.create().success(vo);
     }
+
+    //  TODO 未做工作，用户点击确认提交申请，需要新增一条提现申请记录到website_extract_applyfor，需要计算出要发放的代币金额
+
+
+
 
     /**
      * 分页

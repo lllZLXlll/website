@@ -648,21 +648,39 @@ public class AdminController {
         return currencyService.queryCurrencyByPage(pageNum, pageSize, user_name);
     }
 
-    // 添加带币池跳转
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/add")
-    public String currencyAdd() {
-        return "currency-add";
-    }
+    /**
+     * TODO 第一期的锁仓不需要程序转账，这部分做好的代码保留到第二期可能用得上。
+     */
 
-    // 添加带币池跳转
-    @RequiresRoles(value = "admin")
-    @PostMapping("/currency/save")
-    @ResponseBody
-    public Result currencySave(@RequestBody Currency currency) {
-        return currencyService.currencySave(currency);
-    }
-
+//    // 转账详情列表跳转
+//    @RequiresRoles(value = "admin")
+//    @GetMapping("/currency/record/{id}")
+//    public ModelAndView recordInfo(@PathVariable("id") Integer id) {
+//        return currencyService.recordInfo(id);
+//    }
+//
+//    // 转账跳转
+//    @RequiresRoles(value = "admin")
+//    @GetMapping("/currency/transfer/{id}")
+//    public ModelAndView currencyInfo(@PathVariable("id") Integer id) {
+//        return currencyService.currencyInfo(id);
+//    }
+//
+//    // 添加带币池跳转
+//    @RequiresRoles(value = "admin")
+//    @GetMapping("/currency/add")
+//    public String currencyAdd() {
+//        return "currency-add";
+//    }
+//
+//    // 添加带币池跳转
+//    @RequiresRoles(value = "admin")
+//    @PostMapping("/currency/save")
+//    @ResponseBody
+//    public Result currencySave(@RequestBody Currency currency) {
+//        return currencyService.currencySave(currency);
+//    }
+//
 //    // 删除带币池
 //    @PostMapping("/currency/del")
 //    @ResponseBody
@@ -670,75 +688,61 @@ public class AdminController {
 //        return currencyService.delCurrencyByID(id);
 //    }
 
-    // 转账详情列表跳转
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/record/{id}")
-    public ModelAndView recordInfo(@PathVariable("id") Integer id) {
-        return currencyService.recordInfo(id);
-    }
-
-    // 转账跳转
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/transfer/{id}")
-    public ModelAndView currencyInfo(@PathVariable("id") Integer id) {
-        return currencyService.currencyInfo(id);
-    }
-
-    /**
-     * 带币池转账
-     *
-     * @param id    <p>带币池表id</p>
-     * @param money <p>需要转账的代币</p>
-     * @return
-     */
-    @MyLog("带币池转账")
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/transfers/{id}/{money}")
-    @ResponseBody
-    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
-        try {
-            return currencyService.currencyTransfer(id, money);
-        } catch (Exception e) {
-            return Result.create().fail(e.getMessage());
-        }
-    }
-
-
+//    /**
+//     * 带币池转账
+//     *
+//     * @param id    <p>带币池表id</p>
+//     * @param money <p>需要转账的代币</p>
+//     * @return
+//     */
+//    @MyLog("带币池转账")
+//    @RequiresRoles(value = "admin")
+//    @GetMapping("/currency/transfers/{id}/{money}")
+//    @ResponseBody
+//    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
+//        try {
+//            return currencyService.currencyTransfer(id, money);
+//        } catch (Exception e) {
+//            return Result.create().fail(e.getMessage());
+//        }
+//    }
+//
+//
 //    // 修改带币池信息
 //    @PostMapping("/currency/update")
 //    @ResponseBody
 //    public Result currencyUpdate(@RequestBody Currency currency) {
 //        return currencyService.currencyUpdate(currency);
 //    }
-
-    //带币池用户导入
-    @MyLog("代币池用户导入")
-    @RequiresRoles(value = "admin")
-    @PostMapping("/currency/excel")
-    @ResponseBody
-    public Result excelImport(HttpServletRequest request) {
-        try {
-            List<Currency> list = ExcelUtils.readFromExcel(request);
-            if (list == null) {
-                return Result.create().fail("导入失败");
-            }
-            for (Currency currency : list) {
-                currencyService.excelImport(currency);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage() + "-----error-----代币池导入数据失败", e);
-            return Result.create().fail("导入失败，请联系技术，切勿重复操作！");
-        }
-        return Result.create().success("导入成功");
-    }
-
-    // 带币池转账列表数据
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/record/data")
-    @ResponseBody
-    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
-        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
-    }
+//
+//    //带币池用户导入
+//    @MyLog("代币池用户导入")
+//    @RequiresRoles(value = "admin")
+//    @PostMapping("/currency/excel")
+//    @ResponseBody
+//    public Result excelImport(HttpServletRequest request) {
+//        try {
+//            List<Currency> list = ExcelUtils.readFromExcel(request);
+//            if (list == null) {
+//                return Result.create().fail("导入失败");
+//            }
+//            for (Currency currency : list) {
+//                currencyService.excelImport(currency);
+//            }
+//        } catch (Exception e) {
+//            log.error(e.getMessage() + "-----error-----代币池导入数据失败", e);
+//            return Result.create().fail("导入失败，请联系技术，切勿重复操作！");
+//        }
+//        return Result.create().success("导入成功");
+//    }
+//
+//    // 带币池转账列表数据
+//    @RequiresRoles(value = "admin")
+//    @GetMapping("/currency/record/data")
+//    @ResponseBody
+//    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
+//        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
+//    }
 
 
     /**

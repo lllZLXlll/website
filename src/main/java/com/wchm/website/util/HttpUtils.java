@@ -42,4 +42,23 @@ public class HttpUtils {
                 .body();
     }
 
+
+    /**
+     * post请求
+     *
+     * @param url  <p>请求地址</p>
+     * @param headerKey <p>请求头key</p>
+     * @param headerValue <p>请求头values</p>
+     * @return <p>返回响应的json字符串</p>
+     */
+    public static String post(String url, String headerKey, String headerValue) {
+        return HttpRequest.post(url)
+                .trustAllCerts() // 信任所有证书
+                .trustAllHosts() // 信任所有地址
+                .header(headerKey, headerValue)
+                .connectTimeout(5000) // 设置请求超时时间
+                .readTimeout(5000) // 设置读取超时时间
+                .body();
+    }
+
 }

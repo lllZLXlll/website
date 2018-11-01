@@ -14,16 +14,21 @@ import java.util.List;
 
 @Service
 public interface CurrencyService {
-    //接口
-    List<Currency> queryCurrency();
+    // 前端查询用户的锁仓信息，提现记录
+    Result queryCurrencyAccount(String token);
+
     //分页
     Result queryCurrencyByPage(Integer pageNum, Integer pageSize, String user_name);
+
     //保存
     Result currencySave(Currency currency);
+
     //删除
     Result delCurrencyByID(Integer id);
+
     //
     ModelAndView currencyInfo(Integer id);
+
     //修改
     Result currencyUpdate(Currency currency);
 
