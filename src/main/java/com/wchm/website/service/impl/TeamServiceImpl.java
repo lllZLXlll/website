@@ -5,12 +5,19 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.wchm.website.entity.Team;
 import com.wchm.website.mapper.TeamMapper;
+import com.wchm.website.service.PartnerService;
 import com.wchm.website.service.TeamService;
+import com.wchm.website.util.DateUtil;
 import com.wchm.website.util.Result;
+import com.wchm.website.util.UploadUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /*
@@ -21,6 +28,14 @@ class TeamServiceImpl implements TeamService {
 
     @Autowired
     TeamMapper teamMapper;
+
+    @Value("${wchm.update-image-relative}")
+    private String relative;
+
+    @Value("${wchm.update-image-absolutely}")
+    private String absolutely;
+
+    public final static Logger log = LoggerFactory.getLogger(TeamService.class);
 
 
     @Override
@@ -87,6 +102,32 @@ class TeamServiceImpl implements TeamService {
         }
         return Result.create().success("修改成功");
     }
+
+    @Override
+    public Team fomartPartner(HttpServletRequest request) {
+        Team team = new Team();
+        try {
+            String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
+            team.setHead(imgPath);
+        } catch (Exception e) {
+            log.error("上传图片异常", e);
+            e.printStackTrace();
+        }
+        String idStr = request.getParameter("id");
+        Long id = null;
+        if (idStr != null) {
+            id = Long.parseLong(idStr);
+        }
+
+        team.setId(id);
+        team.setNumber(request.getParameter("number"));
+        team.setTeam_name(request.getParameter("team_name"));
+        team.setDescription(request.getParameter("description"));
+        team.setCreate_time(DateUtil.parseDefaultDate(request.getParameter("create_time")));
+        team.setState(Integer.parseInt(request.getParameter("state")));
+        return team;
+    }
+
 
 
     //保存团队

@@ -3,14 +3,21 @@ package com.wchm.website.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
+import com.wchm.website.controller.AdminController;
 import com.wchm.website.entity.Partner;
 import com.wchm.website.mapper.PartnerMapper;
 import com.wchm.website.service.PartnerService;
+import com.wchm.website.util.DateUtil;
 import com.wchm.website.util.Result;
+import com.wchm.website.util.UploadUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -19,6 +26,14 @@ class PartnerServiceImpl implements PartnerService {
 
     @Autowired
     PartnerMapper partnerMapper;
+
+    @Value("${wchm.update-image-relative}")
+    private String relative;
+
+    @Value("${wchm.update-image-absolutely}")
+    private String absolutely;
+
+    public final static Logger log = LoggerFactory.getLogger(PartnerService.class);
 
     /**
      *
@@ -115,6 +130,35 @@ class PartnerServiceImpl implements PartnerService {
         }
         return Result.create().success("修改成功");
     }
+    /**
+     * 上传图片，并把表单数据封装到对象中
+     * 合作伙伴图片管理
+     *
+     * @param request
+     * @return
+     */
+    public Partner fomartPartner(HttpServletRequest request) {
+        Partner partner = new Partner();
+        try {
+            String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
+            partner.setPicture(imgPath);
+        } catch (Exception e) {
+            log.error("上传图片异常", e);
+            e.printStackTrace();
+        }
+        String idStr = request.getParameter("id");
+        Long id = null;
+        if (idStr != null) {
+            id = Long.parseLong(idStr);
+        }
 
+        partner.setId(id);
+        partner.setNumber(request.getParameter("number"));
+        partner.setPartner_name(request.getParameter("partner_name"));
+        partner.setLink(request.getParameter("link"));
+        partner.setCreate_time(DateUtil.parseDefaultDate(request.getParameter("create_time")));
+        partner.setState(Integer.parseInt(request.getParameter("state")));
+        return partner;
+    }
 
 }

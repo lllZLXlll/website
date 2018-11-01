@@ -8,6 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 团队成员service
  * 所有关于团队成员的增删该查操作都放在此service
@@ -30,5 +32,7 @@ public interface TeamService {
     ModelAndView teamInfo(Integer id);
     //修改
     Result teamUpdate(Team team);
+
+    Object fomartPartner(HttpServletRequest request);
 
 }

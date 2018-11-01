@@ -3,12 +3,9 @@ package com.wchm.website.controller;
 import com.wchm.website.annotation.MyLog;
 import com.wchm.website.entity.*;
 import com.wchm.website.service.*;
-import com.wchm.website.util.DateUtil;
 import com.wchm.website.util.ExcelUtils;
 import com.wchm.website.util.Result;
-import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
-import org.apache.poi.hssf.usermodel.*;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.util.List;
 
 @Api(tags = "后台")
@@ -371,7 +367,7 @@ public class AdminController {
     @PostMapping("/team/save")
     @ResponseBody
     public Result teamSave(HttpServletRequest request) {
-        Team team = fomartTeam(request);
+        Team team = (Team) teamService.fomartPartner(request);
         return teamService.teamSave(team);
     }
 
@@ -380,40 +376,10 @@ public class AdminController {
     @PostMapping("/team/update")
     @ResponseBody
     public Result teamUpdate(HttpServletRequest request) {
-        Team team = fomartTeam(request);
+        Team team = (Team) teamService.fomartPartner(request);
         return teamService.teamUpdate(team);
     }
 
-    /**
-     * 上传图片，并把表单数据封装到对象中
-     * 团队头像管理
-     *
-     * @param request
-     * @return
-     */
-    private Team fomartTeam(HttpServletRequest request) {
-        Team team = new Team();
-        try {
-            String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
-            team.setHead(imgPath);
-        } catch (Exception e) {
-            log.error("上传图片异常", e);
-            e.printStackTrace();
-        }
-        String idStr = request.getParameter("id");
-        Long id = null;
-        if (idStr != null) {
-            id = Long.parseLong(idStr);
-        }
-
-        team.setId(id);
-        team.setNumber(request.getParameter("number"));
-        team.setTeam_name(request.getParameter("team_name"));
-        team.setDescription(request.getParameter("description"));
-        team.setCreate_time(DateUtil.parseDefaultDate(request.getParameter("create_time")));
-        team.setState(Integer.parseInt(request.getParameter("state")));
-        return team;
-    }
 
     // 删除团队
     @RequiresRoles(value = "admin")
@@ -464,7 +430,7 @@ public class AdminController {
     @PostMapping("/partner/save")
     @ResponseBody
     public Result partnerSave(HttpServletRequest request) {
-        Partner partner = fomartPartner(request);
+        Partner partner = (Partner) partnerService.fomartPartner(request);
         return partnerService.partnerSave(partner);
     }
 
@@ -474,40 +440,10 @@ public class AdminController {
     @PostMapping("/partner/update")
     @ResponseBody
     public Result partnerUpdate(HttpServletRequest request) {
-        Partner partner = fomartPartner(request);
+        Partner partner = (Partner) partnerService.fomartPartner(request);
         return partnerService.partnerUpdate(partner);
     }
 
-    /**
-     * 上传图片，并把表单数据封装到对象中
-     * 合作伙伴图片管理
-     *
-     * @param request
-     * @return
-     */
-    private Partner fomartPartner(HttpServletRequest request) {
-        Partner partner = new Partner();
-        try {
-            String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
-            partner.setPicture(imgPath);
-        } catch (Exception e) {
-            log.error("上传图片异常", e);
-            e.printStackTrace();
-        }
-        String idStr = request.getParameter("id");
-        Long id = null;
-        if (idStr != null) {
-            id = Long.parseLong(idStr);
-        }
-
-        partner.setId(id);
-        partner.setNumber(request.getParameter("number"));
-        partner.setPartner_name(request.getParameter("partner_name"));
-        partner.setLink(request.getParameter("link"));
-        partner.setCreate_time(DateUtil.parseDefaultDate(request.getParameter("create_time")));
-        partner.setState(Integer.parseInt(request.getParameter("state")));
-        return partner;
-    }
 
     // 删除合作伙伴
     @MyLog("删除合作伙伴")
