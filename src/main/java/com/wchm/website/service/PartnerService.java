@@ -5,6 +5,7 @@ import com.wchm.website.util.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -34,4 +35,6 @@ public interface PartnerService {
 
     // 修改
     Result partnerUpdate(Partner partner);
+
+    Object fomartPartner(HttpServletRequest request);
 }

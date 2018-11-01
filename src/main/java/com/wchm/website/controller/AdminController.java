@@ -3,12 +3,9 @@ package com.wchm.website.controller;
 import com.wchm.website.annotation.MyLog;
 import com.wchm.website.entity.*;
 import com.wchm.website.service.*;
-import com.wchm.website.util.DateUtil;
 import com.wchm.website.util.ExcelUtils;
 import com.wchm.website.util.Result;
-import com.wchm.website.util.UploadUtil;
 import io.swagger.annotations.Api;
-import org.apache.poi.hssf.usermodel.*;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.util.List;
 
 @Api(tags = "后台")
@@ -152,7 +148,7 @@ public class AdminController {
     @RequiresRoles(value = "admin")
     @PostMapping("/news/del")
     @ResponseBody
-    public Result newsDel(Integer id) throws Exception {
+    public Result newsDel(Integer id){
         return newsService.delNewsByID(id);
     }
 
@@ -210,103 +206,14 @@ public class AdminController {
         return bookingService.queryBookingByPage(pageNum, pageSize, user_name);
     }
 
-    // 导出预售表单
+    // 导出Excel预售表单
     @MyLog("导出预售表单")
     @RequiresRoles(value = "admin")
     @ResponseBody
     @GetMapping("/booking/excel")
-    public void bookingExcel(HttpServletResponse response) throws IOException {
-
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("预售表单");
-
-        // 查询数据库
-        List<Booking> classmateList = bookingService.bookingInfor();
-        // 设置要导出的文件的名字
-        String fileName = "预售表单" + ".xls";
-
-        // 新增数据行，并且设置单元格数据
-        int rowNum = 1;
-        String[] headers = {"序号","姓氏" , "名字", "手机号码", "邮箱", "钱包地址",
-                "创建时间", "投资方式", "预售投资金额", "投资货币", "电脑账号",
-                "所在国家", "反馈意见"};
-        //headers表示excel表中第一行的表头
-        HSSFRow row = sheet.createRow(0);
-        row.setHeightInPoints(20);//目的是想把行高设置成20px
-
-        HSSFFont fontStyle = workbook.createFont();
-        fontStyle.setFontName("黑体");
-        fontStyle.setFontHeightInPoints((short) 20);
-        //  在excel表中添加表头
-        for (int i = 0; i < headers.length; i++) {
-            HSSFCell cell = row.createCell(i);
-            HSSFRichTextString text = new HSSFRichTextString(headers[i]);
-            cell.setCellValue(text);
-        }
-        int i =1;
-        // 在表中存放查询到的数据放入对应的列
-        for (Booking booking : classmateList) {
-            // 投资方式（1.个人投资/2.基金投资）
-            String investment = booking.getInvestment();
-            if (investment.equals("1")) {
-                investment = "个人投资";
-            } else if (investment.equals("2")) {
-                investment = "基金投资";
-            }
-
-            // 投资货币(1.BTC 2.ETH 3.TUSD)
-            String currency = booking.getCurrency();
-            if (currency.equals("1")) {
-                currency = "BTC";
-            } else if (currency.equals("2")) {
-                currency = "ETH";
-            } else if (currency.equals("3")) {
-                currency = "TUSD";
-            }
-            //park_eco"parkEco(1.口口相传2.电报 3.媒体出版物 4.互联网 5.一次会议 6.我们目前投资者之一 7.其他)"
-            String park_eco = booking.getPark_eco();
-            if(park_eco.equals("1")){
-                park_eco="口口相传";
-            }else if(park_eco.equals("2")){
-                park_eco="电报";
-            }else if(park_eco.equals("3")){
-                park_eco="媒体出版物";
-            }else if(park_eco.equals("4")){
-                park_eco="互联网";
-            }else if(park_eco.equals("5")){
-                park_eco="一次会议";
-            }else if(park_eco.equals("6")){
-                park_eco="我们目前投资者之一";
-            }else if(park_eco.equals("7")){
-                park_eco="其他";
-            }
-
-            HSSFRow row1 = sheet.createRow(rowNum);
-            row1.createCell(0).setCellValue(i++);
-            row1.createCell(1).setCellValue(booking.getUser_name());
-            row1.createCell(2).setCellValue(booking.getSur_name());
-            row1.createCell(3).setCellValue(booking.getMobile());
-            row1.createCell(4).setCellValue(booking.getEmail());
-            row1.createCell(5).setCellValue(booking.getAddress());
-            row1.createCell(6).setCellValue(booking.getCreate_time());
-            //    row1.createCell(7).setCellValue(booking.getState()+"");
-            row1.createCell(7).setCellValue(investment);
-            row1.createCell(8).setCellValue(booking.getDollar());
-            row1.createCell(9).setCellValue(currency);
-            row1.createCell(10).setCellValue(booking.getAccount());
-            row1.createCell(11).setCellValue(booking.getCountry());
-            row1.createCell(12).setCellValue(park_eco);
-            row1.createCell(13).setCellValue(booking.getFeedback());
-
-            rowNum++;
-        }
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
-        response.flushBuffer();
-        workbook.write(response.getOutputStream());
-
+    public Object bookingExcel(HttpServletResponse response) throws IOException {
+        return bookingService.bookingExport(response);
     }
-
 
     /**
      * ------------------关注人数列表--------------
@@ -460,7 +367,7 @@ public class AdminController {
     @PostMapping("/team/save")
     @ResponseBody
     public Result teamSave(HttpServletRequest request) {
-        Team team = fomartTeam(request);
+        Team team = (Team) teamService.fomartPartner(request);
         return teamService.teamSave(team);
     }
 
@@ -469,40 +376,10 @@ public class AdminController {
     @PostMapping("/team/update")
     @ResponseBody
     public Result teamUpdate(HttpServletRequest request) {
-        Team team = fomartTeam(request);
+        Team team = (Team) teamService.fomartPartner(request);
         return teamService.teamUpdate(team);
     }
 
-    /**
-     * 上传图片，并把表单数据封装到对象中
-     * 团队头像管理
-     *
-     * @param request
-     * @return
-     */
-    private Team fomartTeam(HttpServletRequest request) {
-        Team team = new Team();
-        try {
-            String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
-            team.setHead(imgPath);
-        } catch (Exception e) {
-            log.error("上传图片异常", e);
-            e.printStackTrace();
-        }
-        String idStr = request.getParameter("id");
-        Long id = null;
-        if (idStr != null) {
-            id = Long.parseLong(idStr);
-        }
-
-        team.setId(id);
-        team.setNumber(request.getParameter("number"));
-        team.setTeam_name(request.getParameter("team_name"));
-        team.setDescription(request.getParameter("description"));
-        team.setCreate_time(DateUtil.parseDefaultDate(request.getParameter("create_time")));
-        team.setState(Integer.parseInt(request.getParameter("state")));
-        return team;
-    }
 
     // 删除团队
     @RequiresRoles(value = "admin")
@@ -553,7 +430,7 @@ public class AdminController {
     @PostMapping("/partner/save")
     @ResponseBody
     public Result partnerSave(HttpServletRequest request) {
-        Partner partner = fomartPartner(request);
+        Partner partner = (Partner) partnerService.fomartPartner(request);
         return partnerService.partnerSave(partner);
     }
 
@@ -563,40 +440,10 @@ public class AdminController {
     @PostMapping("/partner/update")
     @ResponseBody
     public Result partnerUpdate(HttpServletRequest request) {
-        Partner partner = fomartPartner(request);
+        Partner partner = (Partner) partnerService.fomartPartner(request);
         return partnerService.partnerUpdate(partner);
     }
 
-    /**
-     * 上传图片，并把表单数据封装到对象中
-     * 合作伙伴图片管理
-     *
-     * @param request
-     * @return
-     */
-    private Partner fomartPartner(HttpServletRequest request) {
-        Partner partner = new Partner();
-        try {
-            String imgPath = UploadUtil.imageUpload(request, relative, absolutely);
-            partner.setPicture(imgPath);
-        } catch (Exception e) {
-            log.error("上传图片异常", e);
-            e.printStackTrace();
-        }
-        String idStr = request.getParameter("id");
-        Long id = null;
-        if (idStr != null) {
-            id = Long.parseLong(idStr);
-        }
-
-        partner.setId(id);
-        partner.setNumber(request.getParameter("number"));
-        partner.setPartner_name(request.getParameter("partner_name"));
-        partner.setLink(request.getParameter("link"));
-        partner.setCreate_time(DateUtil.parseDefaultDate(request.getParameter("create_time")));
-        partner.setState(Integer.parseInt(request.getParameter("state")));
-        return partner;
-    }
 
     // 删除合作伙伴
     @MyLog("删除合作伙伴")

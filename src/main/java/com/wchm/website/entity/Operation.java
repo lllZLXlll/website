@@ -34,13 +34,18 @@ public class Operation implements Serializable {
     @ApiModelProperty("金额")
     private BigDecimal money;
 
-
-
     @ApiModelProperty("用户钱包地址")
     private String address;
 
     @ApiModelProperty("状态（ 1成功 0失败）")
     private Integer state;
+
+    @ApiModelProperty("方法名")
+    private String method;
+
+    @ApiModelProperty("参数")
+    private String params;
+
 
 
     public String getCreate_time() {
