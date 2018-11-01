@@ -20,7 +20,7 @@ public interface NewsService {
 
     Result  queryNewsList(Integer pageNum, Integer pageSize,Integer lang);//
     //删除新闻
-    Result delNewsByID(Integer id);
+    Result delNewsByID(Integer id) throws Exception;
     //保存新闻
     Result newsSave(News news);
     //插入新闻
