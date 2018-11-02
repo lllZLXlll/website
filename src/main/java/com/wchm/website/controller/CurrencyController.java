@@ -58,15 +58,15 @@ public class CurrencyController {
      * @param address
      * @return
      */
-    @PostMapping("/applyfor")
+    @GetMapping("/applyfor")
     @ResponseBody
     @ApiOperation(value = "官网个人中心，用户提现申请")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "用户token", required = true, paramType = "query"),
             @ApiImplicitParam(name = "address", value = "用户钱包地址", required = true, paramType = "query"),
     })
-    public Result extractApplyfor(HttpServletResponse response, @RequestParam("token") String token,
-                                  @RequestParam("address") String address) {
+    public Result extractApplyfor(HttpServletResponse response, String token,
+                                  String address) {
         response.setHeader("Access-Control-Allow-Origin", "*"); // 防止跨域
         try {
            return currencyService.extractApplyfor(token, address);
