@@ -40,6 +40,18 @@ public class Currency implements Serializable {
     @ApiModelProperty("锁仓描述")
     private String lock_describe;
 
+    @ApiModelProperty("锁仓比例")
+    private Integer proportion;
+
+    @ApiModelProperty("锁仓开始时间")
+    private Date lock_begin_time;
+
+    @ApiModelProperty("锁仓结束时间")
+    private Date lock_end_time;
+
+    @ApiModelProperty("上一次解仓时间")
+    private Date last_unlock_time;
+
     @ApiModelProperty("用户代币备注")
     private String remarks;
 
@@ -54,4 +66,23 @@ public class Currency implements Serializable {
     }
 
 
+    @Override
+    public String toString() {
+        return "Currency{" +
+                "id=" + id +
+                ", user_name='" + user_name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", address='" + address + '\'' +
+                ", currency=" + currency +
+                ", surplus=" + surplus +
+                ", lock_describe='" + lock_describe + '\'' +
+                ", proportion=" + proportion +
+                ", lock_begin_time=" + lock_begin_time +
+                ", lock_end_time=" + lock_end_time +
+                ", last_unlock_time=" + last_unlock_time +
+                ", remarks='" + remarks + '\'' +
+                ", state=" + state +
+                ", create_time=" + create_time +
+                '}';
+    }
 }

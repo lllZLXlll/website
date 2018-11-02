@@ -2,8 +2,11 @@ package com.wchm.website.mapper;
 
 import com.wchm.website.entity.Currency;
 import com.wchm.website.entity.CurrencyRecord;
+import com.wchm.website.entity.ExtractApplyfor;
+import com.wchm.website.vo.CurrencyAccountVo;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -54,5 +57,66 @@ public interface CurrencyMapper {
 
     @Select("SELECT * FROM website_currency_pool WHERE id = #{id} AND state = 1 ORDER BY id DESC")
     Currency queryCurrencyById(@Param("id") Long id);
+
+    @Select("SELECT *, " +
+            "   CASE  " +
+            "       WHEN LENGTH(new_address) < 42 THEN " +
+            "           old_address " +
+            "   ELSE " +
+            "       new_address " +
+            "   END address " +
+            "FROM ( " +
+            "   SELECT " +
+            "       currency, " +
+            "       surplus, " +
+            "       proportion, " +
+            "       CONCAT(DATE_FORMAT(lock_begin_time, '%Y.%m.%d'), '-', DATE_FORMAT(lock_end_time, '%Y.%m.%d')) lock_time, " +
+            "       lock_describe, " +
+            "       t1.address old_address, " +
+            "       t2.address new_address " +
+            "   FROM " +
+            "       website_currency_pool t1 " +
+            "   JOIN eacoo_users t2 ON t1.mobile = t2.mobile " +
+            "   WHERE t2.uid = #{id} " +
+            ") t")
+    CurrencyAccountVo queryCurrencyAccount(@Param("id") Long userId);
+
+    @Select("SELECT * FROM website_extract_applyfor WHERE uid = #{uid} AND state = 1 ")
+    List<ExtractApplyfor> queryApplyforListByUid(@Param("uid") Long userId);
+
+    @Insert("INSERT INTO website_extract_applyfor(" +
+            "   uid, address, money, currency, time" +
+            ")VALUES(" +
+            "   #{userId}, #{address}, #{surplus}, #{currency}, NOW()" +
+            ")")
+    Long saveExtractApplyfor(@Param("userId") Long userId, @Param("address") String address,
+                             @Param("surplus") BigDecimal surplus, @Param("currency") BigDecimal currency);
+
+    @Select("SELECT " +
+            "   t1.*, " +
+            "   t3.user_name username " +
+            "FROM " +
+            "   website_extract_applyfor t1 " +
+            "JOIN eacoo_users t2 ON t1.uid = t2.uid " +
+            "JOIN website_currency_pool t3 ON t2.mobile = t3.mobile")
+    List<ExtractApplyfor> queryApplyforByPage();
+
+    @Update("UPDATE website_extract_applyfor SET state = 1, confirm_time = NOW() WHERE id = #{id}")
+    Long applyforUpdate(@Param("id") Integer id);
+
+    @Select("SELECT mobile FROM website_extract_applyfor t1 " +
+            "JOIN eacoo_users t2 ON t1.uid = t2.uid " +
+            "WHERE t1.id = #{id}")
+    String queryUserUidById(@Param("id") Integer id);
+
+    @Update("UPDATE website_currency_pool SET surplus = 0 WHERE mobile = #{mobile}")
+    Long updatePoolUserSurplus(@Param("mobile") String mobile);
+
+    @Select("SELECT * FROM website_currency_pool WHERE now( ) >= lock_end_time OR now( ) >= last_unlock_time")
+    List<Currency> queryPoolList();
+
+    @Update("UPDATE website_currency_pool SET surplus = #{currency.surplus}, " +
+            "currency = #{currency.currency}, last_unlock_time = #{currency.last_unlock_time} WHERE id = #{currency.id}")
+    Long updateCurrency(@Param("currency") Currency currency);
 }
 

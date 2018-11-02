@@ -3,16 +3,16 @@ package com.wchm.website.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
-import com.wchm.website.entity.Admin;
-import com.wchm.website.entity.Currency;
-import com.wchm.website.entity.CurrencyRecord;
-import com.wchm.website.entity.Operation;
+import com.wchm.website.entity.*;
 import com.wchm.website.mapper.CurrencyMapper;
 import com.wchm.website.mapper.CurrencyRecordMapper;
 import com.wchm.website.mapper.OperationMapper;
 import com.wchm.website.service.CurrencyService;
 import com.wchm.website.service.RedisService;
+import com.wchm.website.util.HttpUtils;
 import com.wchm.website.util.Result;
+import com.wchm.website.vo.CurrencyAccountVo;
+import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -76,10 +76,83 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Autowired
     RedisService redisService;
 
+    // 前端查询用户的锁仓信息，提现记录
     @Override
-    public List<Currency> queryCurrency() {
-        return null;
+    public Result queryCurrencyAccount(String token, String language) {
+        // TODO 测试数据
+//        token = "eyJpdiI6IlptUmhhMmx1Wld3N2FXNXFZV3BrYWc9PSIsInZhbHVlIjoiWUhYMk5kdlwvOFdCa1oya1lcL284eTFURjNDZUlsYzY2UDFPVndtZWZBc0JkdElwTlhMaVZCTWNxVjhKTDBNWnNwdkNCY2g2d3dQZmtsZlVkY2NQNGtxUT09In0=";
+
+        // 请求php接口解密token，拿到用户id
+        Long userId = getPhpUid(token);
+        if (userId == null) {
+            return Result.create().fail("登录信息失效，token不正确");
+        }
+
+        // 通过用户id查询信息
+        CurrencyAccountVo vo = currencyMapper.queryCurrencyAccount(userId);
+
+        if (vo == null) {
+            return Result.create().fail("查询不到相关信息");
+        }
+
+        // 如果是英文就改成英文的锁仓规则描述
+        if ("en".equals(language)) {
+            vo.setLock_describe("After the private placement is completed, cornerstone round users unlock 10% of the purchased PCT, the remaining part of the lock warehouse for 1 year, after the expiration of the lock warehouse, according to the quarterly release of 20%");
+        }
+
+        // 查询提现记录
+        List<ExtractApplyfor> extractList = currencyMapper.queryApplyforListByUid(userId);
+        vo.setExtractList(extractList);
+
+        return Result.create().success(vo);
     }
+
+    @Override
+    public Result extractApplyfor(String token, String address) {
+        // 请求php接口解密token，拿到用户id
+        Long userId = getPhpUid(token);
+        if (userId == null) {
+            return Result.create().fail("登录信息失效，token不正确");
+        }
+
+        // 校验地址是否正确
+        CurrencyAccountVo vo = currencyMapper.queryCurrencyAccount(userId);
+
+        if (!vo.getAddress().equals(address)) {
+            return Result.create().fail("钱包地址不正确");
+        }
+
+        // 用户能提现的代币金额就是website_currency_pool表中的surplus字段的值，如果这里没有值说明不能提现
+        if (vo.getSurplus().doubleValue() <= 0) {
+            return Result.create().fail("剩余部分代币未到解仓时间，请到解仓时间再试");
+        }
+
+        // 往提现申请表中插入一条申请
+        long result = currencyMapper.saveExtractApplyfor(userId, address, vo.getSurplus(), vo.getCurrency());
+        if (result <= 0) {
+            return Result.create().fail("提现申请提交失败，请联系客服处理");
+        }
+
+        return Result.create().fail("提现申请提交成功");
+    }
+
+    private Long getPhpUid(String token) {
+        // TODO api是测试环境，上正式之后要替换掉
+        String phpApi = "http://bbs.gezanjia.com/api/v1/sign";
+
+        String response = HttpUtils.post(phpApi, "token", token);
+        JSONObject json = JSONObject.fromObject(response);
+        String state = json.getString("status");
+        String message = json.getString("message");
+        json = json.getJSONObject("data");
+
+        if (!"1".equals(state)) {
+            return null;
+        }
+
+        return Long.parseLong(json.getString("uid"));
+    }
+
 
     /**
      * 分页
@@ -335,6 +408,46 @@ public class CurrencyServiceImpl implements CurrencyService {
             s = "0" + s;
         }
         return s;
+    }
+
+    @Override
+    public Result queryApplyforByPage(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
+        List<ExtractApplyfor> data = currencyMapper.queryApplyforByPage();
+        PageInfo<Currency> p = new PageInfo(data);
+        return Result.create().success("查询成功", p);
+    }
+
+    @Override
+    public Result applyforSubmit(Integer id) {
+        if (id == null) {
+            return Result.create().fail("参数为空，确认提现失败");
+        }
+
+        // 修改申请表状态为成功
+        long result = currencyMapper.applyforUpdate(id);
+        if (result <= 0) {
+            return Result.create().fail("确认提现失败，请联系技术");
+        }
+
+        // 通过申请表id查询到该用户uid，通过uid查询user表中的电话，通过电话关联到代币池表中的数据
+        String mobile = currencyMapper.queryUserUidById(id);
+
+        // 修改代币池表中的用户可用代币总额为0
+        result = currencyMapper.updatePoolUserSurplus(mobile);
+
+
+        return Result.create().success("确认提现成功");
+    }
+
+    @Override
+    public List<Currency> queryPoolList() {
+        return currencyMapper.queryPoolList();
+    }
+
+    @Override
+    public Long updateCurrency(Currency item) {
+        return currencyMapper.updateCurrency(item);
     }
 
 }

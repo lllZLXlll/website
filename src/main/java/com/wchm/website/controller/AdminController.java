@@ -6,6 +6,7 @@ import com.wchm.website.service.*;
 import com.wchm.website.util.ExcelUtils;
 import com.wchm.website.util.Result;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,14 +131,14 @@ public class AdminController {
      * @return
      */
     // 新闻列表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/news/list")
     public String newsList() {
         return "news-list";
     }
 
     // 新闻列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/news/data")
     @ResponseBody
     public Result newsData(Integer pageNum, Integer pageSize, String title, Integer lang) {
@@ -146,7 +147,7 @@ public class AdminController {
 
     // 删除新闻
     @MyLog(value = "删除新闻")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/news/del")
     @ResponseBody
     public Result newsDel(Integer id){
@@ -154,7 +155,7 @@ public class AdminController {
     }
 
     // 添加新闻跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/news/add")
     public String newsAdd() {
         return "news-add";
@@ -162,7 +163,7 @@ public class AdminController {
 
     // 添加新闻跳转
     @MyLog("添加新闻")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/news/save")
     @ResponseBody
     public Result newsSave(@RequestBody News news) {
@@ -170,7 +171,7 @@ public class AdminController {
     }
 
     // 查询新闻信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/news/info/{id}")
     public ModelAndView newsInfo(@PathVariable("id") Integer id) {
         return newsService.newsInfo(id);
@@ -178,7 +179,7 @@ public class AdminController {
 
     // 修改新闻信息
     @MyLog("修改新闻")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/news/update")
     @ResponseBody
     public Result newsUpdate(@RequestBody News news) {
@@ -193,14 +194,14 @@ public class AdminController {
      */
 
     // 预售列表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates", "finance"}, logical = Logical.OR)
     @GetMapping("/booking/list")
     public String bookingList() {
         return "booking-list";
     }
 
     // 预售列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates", "finance"}, logical = Logical.OR)
     @GetMapping("/booking/data")
     @ResponseBody
     public Result bookingData(Integer pageNum, Integer pageSize, String user_name) {
@@ -209,59 +210,60 @@ public class AdminController {
 
     // 导出Excel预售表单
     @MyLog("导出预售表单")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates", "finance"}, logical = Logical.OR)
     @ResponseBody
     @GetMapping("/booking/excel")
     public Object bookingExcel(HttpServletResponse response) throws IOException {
         return bookingService.bookingExport(response);
     }
 
-
     /**
      * ------------------关注人数列表--------------
      *
      * @return community
      */
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/community/list")
     public String communityList() {
         return "community-list";
     }
 
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/community/data")
     @ResponseBody
     public Result communityData(Integer pageNum, Integer pageSize) {
         return communityService.queryCommunityByPage(pageNum, pageSize);
     }
 
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/community/info/{id}")
     public ModelAndView communityInfo(@PathVariable("id") Integer id) {
         return communityService.communityInfo(id);
     }
 
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/community/add")
     public String communityAdd() {
         return "community-add";
     }
-    @MyLog("关注人数添加")
-    @RequiresRoles(value = "admin")
+
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/community/save")
     @ResponseBody
     public Result communitySave(@RequestBody Community community) {
         return communityService.communitySave(community);
     }
+
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @MyLog("关注人数修改")
-    @RequiresRoles(value = "admin")
     @PostMapping("/community/update")
     @ResponseBody
     public Result communityUpdate(@RequestBody Community community) {
         return communityService.communityUpdate(community);
     }
+
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @MyLog("关注人数删除")
-    @RequiresRoles(value = "admin")
     @PostMapping("/community/del")
     @ResponseBody
     public Result communityDel(Integer id) {
@@ -274,14 +276,14 @@ public class AdminController {
      * @return
      */
     // 公告列表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/notice/list")
     public String noticeList() {
         return "notice-list";
     }
 
     // 公告列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/notice/data")
     @ResponseBody
     public Result noticeData(Integer pageNum, Integer pageSize, String title, Integer lang) {
@@ -289,7 +291,7 @@ public class AdminController {
     }
 
     // 添加公告跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/notice/add")
     public String noticeAdd() {
         return "notice-add";
@@ -297,7 +299,7 @@ public class AdminController {
 
     // 添加公告跳转
     @MyLog("添加公告")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/notice/save")
     @ResponseBody
     public Result noticeSave(@RequestBody Notice notice) {
@@ -306,7 +308,7 @@ public class AdminController {
 
     // 删除公告
     @MyLog("删除公告")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/notice/del")
     @ResponseBody
     public Result noticeDel(Integer id) {
@@ -314,7 +316,7 @@ public class AdminController {
     }
 
     // 查询公告信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/notice/info/{id}")
     public ModelAndView noticeInfo(@PathVariable("id") Integer id) {
         return noticeService.noticeInfo(id);
@@ -322,7 +324,7 @@ public class AdminController {
 
     // 修改公告信息
     @MyLog("修改公告")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/notice/update")
     @ResponseBody
     public Result newsUpdate(@RequestBody Notice notice) {
@@ -336,14 +338,14 @@ public class AdminController {
      * @return
      */
     // 团队列表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/team/list")
     public String teamList() {
         return "team-list";
     }
 
     // 团队列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/team/data")
     @ResponseBody
     public Result teamData(Integer pageNum, Integer pageSize, String team_name) {
@@ -351,21 +353,21 @@ public class AdminController {
     }
 
     // 查询团队信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/team/info/{id}")
     public ModelAndView teamInfo(@PathVariable("id") Integer id) {
         return teamService.teamInfo(id);
     }
 
     // 添加团队跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/team/add")
     public String teamAdd() {
         return "team-add";
     }
 
     // 添加团队
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/team/save")
     @ResponseBody
     public Result teamSave(HttpServletRequest request) {
@@ -374,7 +376,7 @@ public class AdminController {
     }
 
     // 修改团队信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/team/update")
     @ResponseBody
     public Result teamUpdate(HttpServletRequest request) {
@@ -384,7 +386,7 @@ public class AdminController {
 
 
     // 删除团队
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/team/del")
     @ResponseBody
     public Result teamDel(Integer id) {
@@ -398,14 +400,14 @@ public class AdminController {
      * @return
      */
     // 合作伙伴列表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/partner/list")
     public String partnerList() {
         return "partner-list";
     }
 
     // 合作伙伴列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/partner/data")
     @ResponseBody
     public Result partnerData(Integer pageNum, Integer pageSize, String partner_name) {
@@ -413,14 +415,14 @@ public class AdminController {
     }
 
     // 查询合作伙伴信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/partner/info/{id}")
     public ModelAndView partnerInfo(@PathVariable("id") Integer id) {
         return partnerService.partnerInfo(id);
     }
 
     // 添加合作伙伴跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/partner/add")
     public String partnerAdd() {
         return "partner-add";
@@ -428,7 +430,7 @@ public class AdminController {
 
     // 添加合作伙伴
     @MyLog("添加合作伙伴")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/partner/save")
     @ResponseBody
     public Result partnerSave(HttpServletRequest request) {
@@ -438,7 +440,7 @@ public class AdminController {
 
     // 修改合作伙伴信息
     @MyLog("修改合作伙伴")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/partner/update")
     @ResponseBody
     public Result partnerUpdate(HttpServletRequest request) {
@@ -449,7 +451,7 @@ public class AdminController {
 
     // 删除合作伙伴
     @MyLog("删除合作伙伴")
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/partner/del")
     @ResponseBody
     public Result partnerDel(Integer id) {
@@ -483,26 +485,23 @@ public class AdminController {
      * @return
      */
     // 带币池列表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
     @GetMapping("/currency/list")
     public String currencyList() {
         return "currency-list";
     }
 
     // 带币池列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
     @GetMapping("/currency/data")
     @ResponseBody
     public Result currencyData(Integer pageNum, Integer pageSize, String user_name) {
         return currencyService.queryCurrencyByPage(pageNum, pageSize, user_name);
     }
 
-    // 添加带币池跳转
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/add")
-    public String currencyAdd() {
-        return "currency-add";
-    }
+    /**
+     * TODO 第一期的锁仓不需要程序转账，这部分做好的代码保留到第二期可能用得上。
+     */
 
     // 添加带币池跳转
     @MyLog("添加代币池用户")
@@ -513,6 +512,35 @@ public class AdminController {
         return currencyService.currencySave(currency);
     }
 
+//    // 转账详情列表跳转
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @GetMapping("/currency/record/{id}")
+//    public ModelAndView recordInfo(@PathVariable("id") Integer id) {
+//        return currencyService.recordInfo(id);
+//    }
+//
+//    // 转账跳转
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @GetMapping("/currency/transfer/{id}")
+//    public ModelAndView currencyInfo(@PathVariable("id") Integer id) {
+//        return currencyService.currencyInfo(id);
+//    }
+//
+//    // 添加带币池跳转
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @GetMapping("/currency/add")
+//    public String currencyAdd() {
+//        return "currency-add";
+//    }
+//
+//    // 添加带币池跳转
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @PostMapping("/currency/save")
+//    @ResponseBody
+//    public Result currencySave(@RequestBody Currency currency) {
+//        return currencyService.currencySave(currency);
+//    }
+//
 //    // 删除带币池
 //    @PostMapping("/currency/del")
 //    @ResponseBody
@@ -553,40 +581,86 @@ public class AdminController {
     }
 
 
+//    /**
+//     * 带币池转账
+//     *
+//     * @param id    <p>带币池表id</p>
+//     * @param money <p>需要转账的代币</p>
+//     * @return
+//     */
+//    @MyLog("带币池转账")
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @GetMapping("/currency/transfers/{id}/{money}")
+//    @ResponseBody
+//    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
+//        try {
+//            return currencyService.currencyTransfer(id, money);
+//        } catch (Exception e) {
+//            return Result.create().fail(e.getMessage());
+//        }
+//    }
+//
+//
 //    // 修改带币池信息
 //    @PostMapping("/currency/update")
 //    @ResponseBody
 //    public Result currencyUpdate(@RequestBody Currency currency) {
 //        return currencyService.currencyUpdate(currency);
 //    }
+//
+//    //带币池用户导入
+//    @MyLog("代币池用户导入")
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @PostMapping("/currency/excel")
+//    @ResponseBody
+//    public Result excelImport(HttpServletRequest request) {
+//        try {
+//            List<Currency> list = ExcelUtils.readFromExcel(request);
+//            if (list == null) {
+//                return Result.create().fail("导入失败");
+//            }
+//            for (Currency currency : list) {
+//                currencyService.excelImport(currency);
+//            }
+//        } catch (Exception e) {
+//            log.error(e.getMessage() + "-----error-----代币池导入数据失败", e);
+//            return Result.create().fail("导入失败，请联系技术，切勿重复操作！");
+//        }
+//        return Result.create().success("导入成功");
+//    }
+//
+//    // 带币池转账列表数据
+//    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+//    @GetMapping("/currency/record/data")
+//    @ResponseBody
+//    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
+//        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
+//    }
 
-    //带币池用户导入
-    @MyLog("代币池用户导入")
-    @RequiresRoles(value = "admin")
-    @PostMapping("/currency/excel")
-    @ResponseBody
-    public Result excelImport(HttpServletRequest request) {
-        try {
-            List<Currency> list = ExcelUtils.readFromExcel(request);
-            if (list == null) {
-                return Result.create().fail("导入失败");
-            }
-            for (Currency currency : list) {
-                currencyService.excelImport(currency);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage() + "-----error-----代币池导入数据失败", e);
-            return Result.create().fail("导入失败，请联系技术，切勿重复操作！");
-        }
-        return Result.create().success("导入成功");
+    /**
+     * ------------------用户申请锁仓代币提现列表--------------
+     */
+    // 带币池列表跳转
+    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+    @GetMapping("/applyfor/list")
+    public String applyforList() {
+        return "applyfor-list";
     }
 
-    // 带币池转账列表数据
-    @RequiresRoles(value = "admin")
-    @GetMapping("/currency/record/data")
+    // 带币池列表数据
+    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+    @GetMapping("/applyfor/data")
     @ResponseBody
-    public Result currencyRecordData(Integer pageNum, Integer pageSize, Integer id) {
-        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
+    public Result applyforData(Integer pageNum, Integer pageSize) {
+        return currencyService.queryApplyforByPage(pageNum, pageSize);
+    }
+
+    // 带币池列表数据
+    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
+    @PostMapping("/applyfor/submit")
+    @ResponseBody
+    public Result applyforSubmit(Integer id) {
+        return currencyService.applyforSubmit(id);
     }
 
 
@@ -596,14 +670,14 @@ public class AdminController {
      * @return
      */
     // 消息中心表跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/message/list")
     public String messageList() {
         return "message-list";
     }
 
     // 消息中心列表数据
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/message/data")
     @ResponseBody
     public Result messageData(Integer pageNum, Integer pageSize, String title) {
@@ -611,14 +685,14 @@ public class AdminController {
     }
 
     // 添加消息中心跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/message/add")
     public String messageAdd() {
         return "message-add";
     }
 
     // 添加消息中心跳转
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/message/save")
     @ResponseBody
     public Result messageSave(@RequestBody Message message) {
@@ -626,7 +700,7 @@ public class AdminController {
     }
 
     // 删除消息中心
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/message/del")
     @ResponseBody
     public Result messageDel(Integer id) {
@@ -634,14 +708,14 @@ public class AdminController {
     }
 
     // 查询消息中心信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @GetMapping("/message/info/{id}")
     public ModelAndView messageInfo(@PathVariable("id") Integer id) {
         return messageService.messageInfo(id);
     }
 
     // 修改消息中心信息
-    @RequiresRoles(value = "admin")
+    @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
     @PostMapping("/message/update")
     @ResponseBody
     public Result messageUpdate(@RequestBody Message message) {

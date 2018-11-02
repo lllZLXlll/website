@@ -10,14 +10,14 @@ var tbody = "" +
     "   <td>data7</td>" +//lock_describe
     "   <td>data10</td>" + //remarks
     "   <td>data12</td>" + //create_time
-    "   <td class='td-manage'>" +
-    "       <a title='明细' onclick='x_currency_show(\"明细\",\"data13\")' href='javascript:;'>" +
-    "           <span style='color: #007DDB;'>明细</span>" +
-    "       </a> | " +
-    "       <a title='转账' onclick=\"x_currency_show2('转账','data14')\" href='javascript:;'>" +
-    "           <span style='color: red;'>转账</span>" +
-    "       </a>" +
-    "   </td>" +
+    // "   <td class='td-manage'>" +
+    // "       <a title='明细' onclick='x_currency_show(\"明细\",\"data13\")' href='javascript:;'>" +
+    // "           <span style='color: #007DDB;'>明细</span>" +
+    // "       </a> | " +
+    // "       <a title='转账' onclick=\"x_currency_show2('转账','data14')\" href='javascript:;'>" +
+    // "           <span style='color: red;'>转账</span>" +
+    // "       </a>" +
+    // "   </td>" +
     "</tr>";
 var pageNum = 1;
 var pageSize = 10;

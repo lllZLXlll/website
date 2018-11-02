@@ -6,7 +6,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://172.21.139.179:3306/gwgt
+    url: jdbc:mysql://172.21.139.179:3306/eacoophp
     username: ENC(4ceffAI9QYMd0BPknro0Mw==)
     password: ENC(zgcm9P3zKuZL53MS9iHf8ylTxFzwoVbJPzsHCUxZIgQ=)
     type: com.alibaba.druid.pool.DruidDataSource
