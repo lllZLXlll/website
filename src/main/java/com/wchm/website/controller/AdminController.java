@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -254,6 +255,7 @@ public class AdminController {
     }
 
     @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
+    @MyLog("关注人数修改")
     @PostMapping("/community/update")
     @ResponseBody
     public Result communityUpdate(@RequestBody Community community) {
@@ -261,6 +263,7 @@ public class AdminController {
     }
 
     @RequiresRoles(value = {"admin", "operates"}, logical = Logical.OR)
+    @MyLog("关注人数删除")
     @PostMapping("/community/del")
     @ResponseBody
     public Result communityDel(Integer id) {
@@ -500,6 +503,15 @@ public class AdminController {
      * TODO 第一期的锁仓不需要程序转账，这部分做好的代码保留到第二期可能用得上。
      */
 
+    // 添加带币池跳转
+    @MyLog("添加代币池用户")
+    @RequiresRoles(value = "admin")
+    @PostMapping("/currency/save")
+    @ResponseBody
+    public Result currencySave(@RequestBody Currency currency) {
+        return currencyService.currencySave(currency);
+    }
+
 //    // 转账详情列表跳转
 //    @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
 //    @GetMapping("/currency/record/{id}")
@@ -535,6 +547,39 @@ public class AdminController {
 //    public Result currencyDel(Integer id) {
 //        return currencyService.delCurrencyByID(id);
 //    }
+
+    // 转账详情列表跳转
+    @RequiresRoles(value = "admin")
+    @GetMapping("/currency/record/{id}")
+    public ModelAndView recordInfo(@PathVariable("id") Integer id) {
+        return currencyService.recordInfo(id);
+    }
+
+    // 转账跳转
+    @RequiresRoles(value = "admin")
+    @GetMapping("/currency/transfer/{id}")
+    public ModelAndView currencyInfo(@PathVariable("id") Integer id) {
+        return currencyService.currencyInfo(id);
+    }
+
+    /**
+     * 带币池转账
+     *
+     * @param id    <p>带币池表id</p>
+     * @param money <p>需要转账的代币</p>
+     * @return
+     */
+    @RequiresRoles(value = "admin")
+    @GetMapping("/currency/transfers/{id}/{money}")
+    @ResponseBody
+    public Result currencyTransfer(@PathVariable("id") Long id, @PathVariable("money") BigDecimal money) {
+        try {
+            return currencyService.currencyTransfer(id, money);
+        } catch (Exception e) {
+            return Result.create().fail(e.getMessage());
+        }
+    }
+
 
 //    /**
 //     * 带币池转账
