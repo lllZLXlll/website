@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -215,6 +216,7 @@ public class AdminController {
         return bookingService.bookingExport(response);
     }
 
+
     /**
      * ------------------关注人数列表--------------
      *
@@ -244,21 +246,21 @@ public class AdminController {
     public String communityAdd() {
         return "community-add";
     }
-
+    @MyLog("关注人数添加")
     @RequiresRoles(value = "admin")
     @PostMapping("/community/save")
     @ResponseBody
     public Result communitySave(@RequestBody Community community) {
         return communityService.communitySave(community);
     }
-
+    @MyLog("关注人数修改")
     @RequiresRoles(value = "admin")
     @PostMapping("/community/update")
     @ResponseBody
     public Result communityUpdate(@RequestBody Community community) {
         return communityService.communityUpdate(community);
     }
-
+    @MyLog("关注人数删除")
     @RequiresRoles(value = "admin")
     @PostMapping("/community/del")
     @ResponseBody
@@ -503,6 +505,7 @@ public class AdminController {
     }
 
     // 添加带币池跳转
+    @MyLog("添加代币池用户")
     @RequiresRoles(value = "admin")
     @PostMapping("/currency/save")
     @ResponseBody
@@ -538,7 +541,6 @@ public class AdminController {
      * @param money <p>需要转账的代币</p>
      * @return
      */
-    @MyLog("带币池转账")
     @RequiresRoles(value = "admin")
     @GetMapping("/currency/transfers/{id}/{money}")
     @ResponseBody
