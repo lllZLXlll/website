@@ -440,4 +440,14 @@ public class CurrencyServiceImpl implements CurrencyService {
         return Result.create().success("确认提现成功");
     }
 
+    @Override
+    public List<Currency> queryPoolList() {
+        return currencyMapper.queryPoolList();
+    }
+
+    @Override
+    public Long updateCurrency(Currency item) {
+        return currencyMapper.updateCurrency(item);
+    }
+
 }

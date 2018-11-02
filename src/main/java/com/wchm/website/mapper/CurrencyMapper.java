@@ -111,5 +111,12 @@ public interface CurrencyMapper {
 
     @Update("UPDATE website_currency_pool SET surplus = 0 WHERE mobile = #{mobile}")
     Long updatePoolUserSurplus(@Param("mobile") String mobile);
+
+    @Select("SELECT * FROM website_currency_pool WHERE now( ) >= lock_end_time OR now( ) >= last_unlock_time")
+    List<Currency> queryPoolList();
+
+    @Update("UPDATE website_currency_pool SET surplus = #{currency.surplus}, " +
+            "currency = #{currency.currency}, last_unlock_time = #{currency.last_unlock_time} WHERE id = #{currency.id}")
+    Long updateCurrency(@Param("currency") Currency currency);
 }
 

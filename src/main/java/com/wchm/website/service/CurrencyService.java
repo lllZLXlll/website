@@ -52,4 +52,9 @@ public interface CurrencyService {
 
     // 管理员确认提现
     Result applyforSubmit(Integer id);
+
+    // 查询代币池所有数据
+    List<Currency> queryPoolList();
+
+    Long updateCurrency(Currency item);
 }
