@@ -6,6 +6,7 @@ import com.wchm.website.entity.ExtractApplyfor;
 import com.wchm.website.vo.CurrencyAccountVo;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -82,5 +83,33 @@ public interface CurrencyMapper {
 
     @Select("SELECT * FROM website_extract_applyfor WHERE uid = #{uid} AND state = 1 ")
     List<ExtractApplyfor> queryApplyforListByUid(@Param("uid") Long userId);
+
+    @Insert("INSERT INTO website_extract_applyfor(" +
+            "   uid, address, money, currency, time" +
+            ")VALUES(" +
+            "   #{userId}, #{address}, #{surplus}, #{currency}, NOW()" +
+            ")")
+    Long saveExtractApplyfor(@Param("userId") Long userId, @Param("address") String address,
+                             @Param("surplus") BigDecimal surplus, @Param("currency") BigDecimal currency);
+
+    @Select("SELECT " +
+            "   t1.*, " +
+            "   t3.user_name username " +
+            "FROM " +
+            "   website_extract_applyfor t1 " +
+            "JOIN eacoo_users t2 ON t1.uid = t2.uid " +
+            "JOIN website_currency_pool t3 ON t2.mobile = t3.mobile")
+    List<ExtractApplyfor> queryApplyforByPage();
+
+    @Update("UPDATE website_extract_applyfor SET state = 1, confirm_time = NOW() WHERE id = #{id}")
+    Long applyforUpdate(@Param("id") Integer id);
+
+    @Select("SELECT mobile FROM website_extract_applyfor t1 " +
+            "JOIN eacoo_users t2 ON t1.uid = t2.uid " +
+            "WHERE t1.id = #{id}")
+    String queryUserUidById(@Param("id") Integer id);
+
+    @Update("UPDATE website_currency_pool SET surplus = 0 WHERE mobile = #{mobile}")
+    Long updatePoolUserSurplus(@Param("mobile") String mobile);
 }
 

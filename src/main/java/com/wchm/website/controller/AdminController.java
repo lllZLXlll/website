@@ -591,6 +591,32 @@ public class AdminController {
 //        return currencyService.queryCurrencyRecordByPage(pageNum, pageSize, id);
 //    }
 
+    /**
+     * ------------------用户申请锁仓代币提现列表--------------
+     */
+    // 带币池列表跳转
+    @RequiresRoles(value = "admin")
+    @GetMapping("/applyfor/list")
+    public String applyforList() {
+        return "applyfor-list";
+    }
+
+    // 带币池列表数据
+    @RequiresRoles(value = "admin")
+    @GetMapping("/applyfor/data")
+    @ResponseBody
+    public Result applyforData(Integer pageNum, Integer pageSize) {
+        return currencyService.queryApplyforByPage(pageNum, pageSize);
+    }
+
+    // 带币池列表数据
+    @RequiresRoles(value = "admin")
+    @PostMapping("/applyfor/submit")
+    @ResponseBody
+    public Result applyforSubmit(Integer id) {
+        return currencyService.applyforSubmit(id);
+    }
+
 
     /**
      * ------------------消息中心列表--------------

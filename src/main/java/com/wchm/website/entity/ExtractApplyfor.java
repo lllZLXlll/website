@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "提现盛情")
+@ApiModel(value = "提现申请")
 public class ExtractApplyfor implements Serializable {
 
     private static final long serialVersionUID = 3859045813388423916L;
@@ -25,6 +25,9 @@ public class ExtractApplyfor implements Serializable {
     @ApiModelProperty("uid")
     private Long uid;
 
+    @ApiModelProperty("用户姓名")
+    private String username;
+
     @ApiModelProperty("钱包地址")
     private String address;
 
@@ -34,6 +37,9 @@ public class ExtractApplyfor implements Serializable {
     @ApiModelProperty("用户剩余代币总额")
     private BigDecimal currency;
 
+    @ApiModelProperty("管理员确认提现时间")
+    private Date confirm_time;
+
     @ApiModelProperty("提现申请时间")
     private Date time;
 
@@ -42,6 +48,11 @@ public class ExtractApplyfor implements Serializable {
 
     public String getTime() {
         return DateUtil.formatDefaultDate(time);
+
+    }
+
+    public String getConfirm_time() {
+        return DateUtil.formatDefaultDate(confirm_time);
 
     }
 
