@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -37,7 +38,8 @@ public class BlockChainBrowserController {
     @GetMapping("")
     @ResponseBody
     @ApiOperation(value = "区块链首页查询", response = BlockChainVo.class)
-    public Result queryIndexData() {
+    public Result queryIndexData(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
         try {
             return blockChainBrowserService.queryIndexData();
         } catch (Exception e) {
@@ -54,7 +56,8 @@ public class BlockChainBrowserController {
     @GetMapping("/trans")
     @ResponseBody
     @ApiOperation(value = "区块链首页-最新交易记录", response = Transaction.class)
-    public Result queryIndexDataTransaction() {
+    public Result queryIndexDataTransaction(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
         try {
             List<Transaction> trans = blockChainBrowserService.queryIndexDataTransaction();
             return Result.create().success(trans);
@@ -105,7 +108,8 @@ public class BlockChainBrowserController {
             @ApiImplicitParam(name = "pageNum", value = "当前页，默认1", required = true, paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "当前页大小，默认20", required = true, paramType = "query"),
     })
-    public Result searchData(String hash, Integer pageNum, Integer pageSize) {
+    public Result searchData(HttpServletResponse response, String hash, Integer pageNum, Integer pageSize) {
+        response.setHeader("Access-Control-Allow-Origin", "*"); //防跨域
         try {
             return blockChainBrowserService.searchData(hash, pageNum, pageSize);
         } catch (Exception e) {

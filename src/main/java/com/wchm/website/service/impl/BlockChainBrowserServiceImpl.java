@@ -7,6 +7,7 @@ import com.wchm.website.util.Result;
 import com.wchm.website.vo.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
@@ -18,8 +19,10 @@ import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.http.HttpService;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -40,8 +43,14 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
     @Value("${wchm.company-address}")
     private String companyAddress;
 
+    @Value("${wchm.contract-address}")
+    private String contractAddress;
+
     @Value("${wchm.infura-api}")
     private String infuraApi;
+
+    @Value("${wchm.method-id}")
+    private String methodId;
 
     // 10的18次方
     private BigDecimal _10_18 = new BigDecimal(Math.pow(10, 18));
@@ -223,12 +232,15 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         // 这里查询出来的值和以太坊中的交易记录数量不一致，少了收入的，没有相应的接口可以获取
         BigInteger count = future.get().getTransactionCount();
 
-        // 查询该地址的余额
-        CompletableFuture completableFuture1 = web3.ethGetBalance(hash, param).sendAsync();
-        Future<EthGetBalance> future1 = completableFuture1.whenComplete((v, e) -> {
-        });
-        BigInteger balance = future1.get().getBalance();
-        BigDecimal d_balance = new BigDecimal(balance).divide(_10_18); // wei转换ETH/PCT
+        // 查询该地址的余额 ETH
+//        CompletableFuture completableFuture1 = web3.ethGetBalance(hash, param).sendAsync();
+//        Future<EthGetBalance> future1 = completableFuture1.whenComplete((v, e) -> {
+//        });
+//        BigInteger balance = future1.get().getBalance();
+//        BigDecimal d_balance = new BigDecimal(balance).divide(_10_18); // wei转换ETH/PCT
+
+        // 查询该地址的余额 PCT
+        BigDecimal d_balance = getBalance(hash);
 
         vo.setBalance(d_balance);
         vo.setTxCount(count);
@@ -306,5 +318,50 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 
         return url;
     }
+
+    /**
+     * 根据钱包地址查询账户PCT余额
+     * @param address   钱包地址
+     * @return
+     * @throws IOException
+     */
+    public BigDecimal getBalance(String address) throws IOException {
+        String json = "{ " +
+                " \"jsonrpc\": \"2.0\", " +
+                " \"method\": \"eth_call\", " +
+                " \"params\": [{ " +
+                " \"from\": \"" + address + "\", " +
+                " \"to\": \"" + "0x183630c3AfA08957E588eaa26b748cc5C2D42DC6" + "\", " +
+                " \"gas\": \"0x0\", " +
+                " \"gasPrice\": \"0x0\", " +
+                " \"value\": \"0x0\", " +
+                " \"data\": \"" + "0x70a08231000000000000000000000000" + address.substring(2) + "\", " +
+                " \"nonce\": \"0x0\" " +
+                " }, \"latest\"], " +
+                " \"id\": 23 " +
+                "} ";
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(infuraApi)
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+
+        if (response.isSuccessful()) {
+            JSONObject object = JSONObject.fromObject(response.body().string());
+            String result = object.getString("result");
+            String text = result.substring(2);
+            String str = new BigInteger(text, 16).toString(10);
+            long d = (long) Math.pow(10, 18);
+            BigDecimal pctmoney = new BigDecimal(str).divide(new BigDecimal(d + "")).setScale(4, RoundingMode.DOWN);
+            return pctmoney;
+        } else {
+            return new BigDecimal("0");
+        }
+    }
+
 
 }

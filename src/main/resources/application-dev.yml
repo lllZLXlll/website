@@ -94,7 +94,7 @@ wchm:
   company-pri-key: ""
   # PCT代币地址
   contract-address: "0x183630c3AfA08957E588eaa26b748cc5C2D42DC6"
-  # method-id
+  # 转账 method-id
   method-id: "0xa9059cbb000000000000000000000000"
   # 第三方请求以太坊接口数据访问地址
   infura-api: "https://mainnet.infura.io/v3/c783bc77104c4b2d8d7cca07e85dcbc5"
