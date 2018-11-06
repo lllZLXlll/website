@@ -249,7 +249,7 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 //        BigDecimal d_balance = new BigDecimal(balance).divide(_10_18); // wei转换ETH/PCT
 
         // 查询该地址的余额 PCT
-        BigDecimal d_balance = getBalance(web3, hash);
+        BigDecimal d_balance = getBalance(hash);
 
         vo.setBalance(d_balance);
         vo.setTxCount(count);
