@@ -3,6 +3,7 @@ package com.wchm.website.service.impl;
 import com.wchm.website.service.BlockChainBrowserService;
 import com.wchm.website.util.DateUtil;
 import com.wchm.website.util.HttpUtils;
+import com.wchm.website.util.PCT;
 import com.wchm.website.util.Result;
 import com.wchm.website.vo.*;
 import net.sf.json.JSONArray;
@@ -10,7 +11,10 @@ import net.sf.json.JSONObject;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.thymeleaf.util.StringUtils;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -19,6 +23,7 @@ import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.http.HttpService;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -54,7 +59,6 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 
     // 10的18次方
     private BigDecimal _10_18 = new BigDecimal(Math.pow(10, 18));
-
 
     @Override
     public Result queryIndexData() throws Exception {
@@ -169,6 +173,11 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         return Result.create().fail("请输入正确的区块哈希或钱包地址");
     }
 
+    public static void main(String[] args) throws FileNotFoundException {
+        String proPath = ResourceUtils.getURL("classpath:").getPath() + "static/keystore/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6";
+        System.out.println(proPath.substring(1));
+    }
+
     private DetailsVo searchByAddress(String hash, Integer pageNum, Integer pageSize) throws Exception {
         // API
         String apiUrl = fomcatApiUrl(hash, pageNum, pageSize);
@@ -240,7 +249,7 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 //        BigDecimal d_balance = new BigDecimal(balance).divide(_10_18); // wei转换ETH/PCT
 
         // 查询该地址的余额 PCT
-        BigDecimal d_balance = getBalance(hash);
+        BigDecimal d_balance = getBalance(web3, hash);
 
         vo.setBalance(d_balance);
         vo.setTxCount(count);
@@ -320,8 +329,9 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
     }
 
     /**
-     * 根据钱包地址查询账户PCT余额
-     * @param address   钱包地址
+     * 请求接口方式根据钱包地址查询账户PCT余额
+     *
+     * @param address 钱包地址
      * @return
      * @throws IOException
      */
@@ -361,6 +371,29 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         } else {
             return new BigDecimal("0");
         }
+    }
+
+    /**
+     * 调用合约方式根据钱包地址查询账户PCT余额
+     *
+     * @param address 钱包地址
+     * @return
+     * @throws IOException
+     */
+    public BigDecimal getBalance(Web3j web3, String address) throws Exception {
+        // gasPrice
+        BigInteger gasPrice1 = web3.ethGasPrice().sendAsync().get().getGasPrice();
+        // 读取keystore文件
+        String filePath = "static/keystore/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6";
+        String proPath = ResourceUtils.getURL("classpath:").getPath() + filePath;
+        Credentials credentials = WalletUtils.loadCredentials("123456789", proPath.substring(1));
+        // 实例化合约对象
+        PCT pct = new PCT(contractAddress, web3, credentials, gasPrice1, BigInteger.valueOf(100000));
+        // 调用合约方法查询余额
+        BigInteger balance = pct.balanceOf(address).sendAsync().get();
+
+        long d = (long) Math.pow(10, 18);
+        return new BigDecimal(balance).divide(new BigDecimal(d + "")).setScale(4, RoundingMode.DOWN);
     }
 
 

@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,8 @@ import java.util.List;
 @RequestMapping("/browser")
 public class BlockChainBrowserController {
 
+    public final static Logger log = LoggerFactory.getLogger(BlockChainBrowserController.class);
+
     @Autowired
     BlockChainBrowserService blockChainBrowserService;
 
@@ -43,7 +47,7 @@ public class BlockChainBrowserController {
         try {
             return blockChainBrowserService.queryIndexData();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return Result.create().fail("查询数据失败，请稍后重试");
         }
     }
@@ -62,7 +66,7 @@ public class BlockChainBrowserController {
             List<Transaction> trans = blockChainBrowserService.queryIndexDataTransaction();
             return Result.create().success(trans);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return Result.create().fail("查询数据失败，请稍后重试");
         }
     }
@@ -113,7 +117,7 @@ public class BlockChainBrowserController {
         try {
             return blockChainBrowserService.searchData(hash, pageNum, pageSize);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return Result.create().fail("查询数据失败，请稍后重试");
         }
     }
