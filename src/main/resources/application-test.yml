@@ -93,3 +93,7 @@ wchm:
   infura-api: "https://mainnet.infura.io/v3/c783bc77104c4b2d8d7cca07e85dcbc5"
   # 查询钱包地址交易记录api地址
   address-transactions-url: "https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=${wchm.contract-address}&startblock=0&endblock=99999999&page=[pageNum]&offset=[pageSize]&sort=desc&address=[address]&apikey=RAUWFA7NCA5H2IMDJ4V5GYK6ARVTA7Y23U"
+  # keystore文件存放地址
+  keystore-address: "/usr/local/website/upload/keystore/pct/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6"
+  # keystore文件密码
+  keystore-password: "123456789"

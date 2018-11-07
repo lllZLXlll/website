@@ -51,6 +51,12 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
     @Value("${wchm.contract-address}")
     private String contractAddress;
 
+    @Value("${wchm.keystore-address}")
+    private String keystoreAddress;
+
+    @Value("${wchm.keystore-password}")
+    private String keystorePassword;
+
     @Value("${wchm.infura-api}")
     private String infuraApi;
 
@@ -173,11 +179,6 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         return Result.create().fail("请输入正确的区块哈希或钱包地址");
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        String proPath = ResourceUtils.getURL("classpath:").getPath() + "static/keystore/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6";
-        System.out.println(proPath.substring(1));
-    }
-
     private DetailsVo searchByAddress(String hash, Integer pageNum, Integer pageSize) throws Exception {
         // API
         String apiUrl = fomcatApiUrl(hash, pageNum, pageSize);
@@ -249,7 +250,7 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 //        BigDecimal d_balance = new BigDecimal(balance).divide(_10_18); // wei转换ETH/PCT
 
         // 查询该地址的余额 PCT
-        BigDecimal d_balance = getBalance(hash);
+        BigDecimal d_balance = getBalance(web3, hash);
 
         vo.setBalance(d_balance);
         vo.setTxCount(count);
@@ -289,8 +290,15 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         vo.setFrom(tran.getFrom());
         vo.setTo(tran.getTo());
         vo.setBlockNumber(tran.getBlockNumber());
-        vo.setValue(new BigDecimal(tran.getValue()).divide(_10_18));
         vo.setMiner(d_gasPrice.multiply(d_gasUsed).divide(_10_18));
+
+        // 交易的代币信息放在了input中，最后的64位就是转账代币的16进制
+        String input = tran.getInput();
+        // 取最后的64位
+        input = input.substring(74);
+        // 转换成10进制
+        input = new BigInteger(input, 16).toString(10);
+        vo.setValue(new BigDecimal(input).divide(_10_18));
 
         BigInteger time = future2.get().getBlock().getTimestamp();
         DateUtil.getTimeDifferenceMinute(new Date(), new Date(time.longValue()));
@@ -384,9 +392,7 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         // gasPrice
         BigInteger gasPrice1 = web3.ethGasPrice().sendAsync().get().getGasPrice();
         // 读取keystore文件
-        String filePath = "static/keystore/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6";
-        String proPath = ResourceUtils.getURL("classpath:").getPath() + filePath;
-        Credentials credentials = WalletUtils.loadCredentials("123456789", proPath.substring(1));
+        Credentials credentials = WalletUtils.loadCredentials(keystorePassword, keystoreAddress);
         // 实例化合约对象
         PCT pct = new PCT(contractAddress, web3, credentials, gasPrice1, BigInteger.valueOf(100000));
         // 调用合约方法查询余额
