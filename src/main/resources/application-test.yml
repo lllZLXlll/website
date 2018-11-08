@@ -97,3 +97,6 @@ wchm:
   keystore-address: "/usr/local/website/upload/keystore/pct/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6"
   # keystore文件密码
   keystore-password: "123456789"
+  php:
+    # php 解析token api
+    token-api: "https://test-discuz.parkeco.io/api/v1/sign"

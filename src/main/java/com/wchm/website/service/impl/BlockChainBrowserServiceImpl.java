@@ -11,7 +11,6 @@ import net.sf.json.JSONObject;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.thymeleaf.util.StringUtils;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
@@ -19,11 +18,12 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
-import org.web3j.protocol.core.methods.response.*;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -71,6 +71,9 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         // 返回vo对象
         BlockChainVo vo = new BlockChainVo();
 
+        // PCT持币人数
+//        vo.setAddressCount(getPCTUserCount());
+
         // 查询最新交易信息
         List<com.wchm.website.vo.Transaction> tranList = queryIndexDataTransaction();
         vo.setTranList(tranList);
@@ -83,6 +86,24 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 
         return Result.create().success(vo);
     }
+
+
+    /**
+     * 业务需求：统计持有PCT总用户人数
+     * 实现方法：
+     * 1.以太坊中已有总计每个币种有多少持币人数，爬取页面中的数据返回到前端即可。
+     * 2.利用第三方节点监听以太坊区块，把PCT交易的记录保存到数据库，在做出统计去重之后能得到人数。
+     * <p>
+     * 具体实现：
+     * 选择使用方案1，原因是直接查询以太坊的数据，数据实时性高并且准确无误，而且开发时间成本、难度也很低。
+     * 而方案2实现要更多时间成本，且数据不能做到完全实时性，因为有个统计的过程。
+     */
+    private Long getPCTUserCount() {
+        // TODO
+
+        return null;
+    }
+
 
     /**
      * 查询区块链首页交易列表方法
@@ -154,7 +175,6 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
 
         return set;
     }
-
 
     @Override
     public Result searchData(String hash, Integer pageNum, Integer pageSize) throws Exception {
@@ -265,44 +285,38 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
         Web3j web3 = Web3j.build(new HttpService(infuraApi));
 
         // 通过交易哈希查询交易详情
-        CompletableFuture completableFuture = web3.ethGetTransactionByHash(hash).sendAsync();
-        Future<EthTransaction> future = completableFuture.whenComplete((v, e) -> {
-        });
-        Transaction tran = future.get().getTransaction().get();
+        Transaction tran = web3.ethGetTransactionByHash(hash).sendAsync().get().getTransaction().get();
+        ;
 
         // 通过交易哈希获取交易收据，在收据中获取gasUsed
-        CompletableFuture completableFuture1 = web3.ethGetTransactionReceipt(hash).sendAsync();
-        Future<EthGetTransactionReceipt> future1 = completableFuture1.whenComplete((v, e) -> {
-        });
-        TransactionReceipt receipt = future1.get().getTransactionReceipt().get();
+        TransactionReceipt receipt = web3.ethGetTransactionReceipt(hash).sendAsync().get().getTransactionReceipt().get();
 
         // 通过交易哈希查询区块，获取时间戳
         DefaultBlockParameter param = new DefaultBlockParameterNumber(tran.getBlockNumber());
-        CompletableFuture completableFuture2 = web3.ethGetBlockByNumber(param, false).sendAsync();
-        Future<EthBlock> future2 = completableFuture2.whenComplete((v, e) -> {
-        });
+        BigInteger time = web3.ethGetBlockByNumber(param, false).sendAsync().get().getBlock().getTimestamp();
+        DateUtil.getTimeDifferenceMinute(new Date(), new Date(time.longValue()));
+        vo.setTimestamp(DateUtil.formatTimesTampDate(new Date(time.longValue() * 1000)));
 
         // 计算矿工费: 矿工费=交易燃料费用*燃料价格/10^18, miner=gasPrice*gasUsed/10^18
         BigDecimal d_gasPrice = new BigDecimal(tran.getGasPrice());
         BigDecimal d_gasUsed = new BigDecimal(receipt.getGasUsed());
 
+        // 交易的代币信息放在了input中
+        String input = tran.getInput();
+        // 取得to的地址, tran中的to是合约地址
+        String to = "0x" + input.substring(34, 74);
+        vo.setTo(to);
+
+        // 最后的64位就是转账代币的16进制数值
+        String value = input.substring(74);
+        // 转换成10进制
+        value = new BigInteger(value, 16).toString(10);
+        vo.setValue(new BigDecimal(value).divide(_10_18));
+
         vo.setHash(tran.getHash());
         vo.setFrom(tran.getFrom());
-        vo.setTo(tran.getTo());
         vo.setBlockNumber(tran.getBlockNumber());
         vo.setMiner(d_gasPrice.multiply(d_gasUsed).divide(_10_18));
-
-        // 交易的代币信息放在了input中，最后的64位就是转账代币的16进制
-        String input = tran.getInput();
-        // 取最后的64位
-        input = input.substring(74);
-        // 转换成10进制
-        input = new BigInteger(input, 16).toString(10);
-        vo.setValue(new BigDecimal(input).divide(_10_18));
-
-        BigInteger time = future2.get().getBlock().getTimestamp();
-        DateUtil.getTimeDifferenceMinute(new Date(), new Date(time.longValue()));
-        vo.setTimestamp(DateUtil.formatTimesTampDate(new Date(time.longValue() * 1000)));
 
         return vo;
     }
