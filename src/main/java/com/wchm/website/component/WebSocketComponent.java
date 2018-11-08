@@ -7,13 +7,12 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.math.BigInteger;
+import java.util.List;
 
 /**
  * 通过web socket向订阅了消息的客户端推送消息
- *
+ * <p>
  * 推送交易记录消息。
  */
 
@@ -31,12 +30,14 @@ public class WebSocketComponent {
      */
 
 //    @Scheduled(fixedRate = 1000 * 10) // 每隔10秒向客户端发送一次数据
-    public void sendMessage() {
+    public void sendTransactionRecord() {
         List<Transaction> trans = blockChainBrowserService.queryIndexDataTransaction();
 
         if (trans != null && !trans.isEmpty()) {
             messagingTemplate.convertAndSend("/topic/getTransactionRecord", trans);
         }
     }
+
+
 
 }

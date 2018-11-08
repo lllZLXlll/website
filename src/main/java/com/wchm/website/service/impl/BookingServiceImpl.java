@@ -95,7 +95,7 @@ class BookingServiceImpl implements BookingService {
         int rowNum = 1;
         String[] headers = {"序号","姓氏" , "名字", "手机号码", "邮箱", "钱包地址",
                 "创建时间", "投资方式", "预售投资金额", "投资货币", "电脑账号",
-                "所在国家", "反馈意见"};
+                "所在国家", "parkEco", "反馈意见"};
         //headers表示excel表中第一行的表头
         HSSFRow row = sheet.createRow(0);
         row.setHeightInPoints(20);//目的是想把行高设置成20px
@@ -122,30 +122,30 @@ class BookingServiceImpl implements BookingService {
 
             // 投资货币(1.BTC 2.ETH 3.TUSD)
             String currency = booking.getCurrency();
-            if (currency.equals("1")) {
-                currency = "BTC";
-            } else if (currency.equals("2")) {
-                currency = "ETH";
-            } else if (currency.equals("3")) {
-                currency = "TUSD";
-            }
+//            if (currency.equals("1")) {
+//                currency = "BTC";
+//            } else if (currency.equals("2")) {
+//                currency = "ETH";
+//            } else if (currency.equals("3")) {
+//                currency = "TUSD";
+//            }
             //park_eco"parkEco(1.口口相传2.电报 3.媒体出版物 4.互联网 5.一次会议 6.我们目前投资者之一 7.其他)"
             String park_eco = booking.getPark_eco();
-            if(park_eco.equals("1")){
-                park_eco="口口相传";
-            }else if(park_eco.equals("2")){
-                park_eco="电报";
-            }else if(park_eco.equals("3")){
-                park_eco="媒体出版物";
-            }else if(park_eco.equals("4")){
-                park_eco="互联网";
-            }else if(park_eco.equals("5")){
-                park_eco="一次会议";
-            }else if(park_eco.equals("6")){
-                park_eco="我们目前投资者之一";
-            }else if(park_eco.equals("7")){
-                park_eco="其他";
-            }
+//            if(park_eco.equals("1")){
+//                park_eco="口口相传";
+//            }else if(park_eco.equals("2")){
+//                park_eco="电报";
+//            }else if(park_eco.equals("3")){
+//                park_eco="媒体出版物";
+//            }else if(park_eco.equals("4")){
+//                park_eco="互联网";
+//            }else if(park_eco.equals("5")){
+//                park_eco="一次会议";
+//            }else if(park_eco.equals("6")){
+//                park_eco="我们目前投资者之一";
+//            }else if(park_eco.equals("7")){
+//                park_eco="其他";
+//            }
 
             HSSFRow row1 = sheet.createRow(rowNum);
             row1.createCell(0).setCellValue(i++);

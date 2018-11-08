@@ -63,6 +63,9 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Value("${wchm.infura-api}")
     private String infuraApi;
 
+    @Value("${wchm.php.token-api}")
+    private String phpTokenApi;
+
 
     @Autowired
     CurrencyMapper currencyMapper;
@@ -137,10 +140,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     private Long getPhpUid(String token) {
-        // TODO api是测试环境，上正式之后要替换掉
-        String phpApi = "http://bbs.gezanjia.com/api/v1/sign";
-
-        String response = HttpUtils.post(phpApi, "token", token);
+        String response = HttpUtils.post(phpTokenApi, "token", token);
         JSONObject json = JSONObject.fromObject(response);
         String state = json.getString("status");
         String message = json.getString("message");

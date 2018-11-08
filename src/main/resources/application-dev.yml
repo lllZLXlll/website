@@ -30,26 +30,26 @@ spring:
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
-#  redis:
-#    # Redis服务器地址
-#    host: localhost
-#    # Redis服务器连接密码（默认为空）
-#    password:
-#    # Redis服务器连接端口
-#    port: 6379
-#    # Redis数据库索引（默认为0）
-#    database: 0
-#    # 连接超时时间（毫秒）
-#    timeout: 5000
-#    # 连接池最大连接数（使用负值表示没有限制）
-#    pool:
-#      max-active: 8
-#      # 连接池最大阻塞等待时间（使用负值表示没有限制）
-#      max-wait: -1
-#      # 连接池中的最大空闲连接
-#      max-idle: 8
-#      # 连接池中的最小空闲连接
-#      min-idle: 0
+  #  redis:
+  #    # Redis服务器地址
+  #    host: localhost
+  #    # Redis服务器连接密码（默认为空）
+  #    password:
+  #    # Redis服务器连接端口
+  #    port: 6379
+  #    # Redis数据库索引（默认为0）
+  #    database: 0
+  #    # 连接超时时间（毫秒）
+  #    timeout: 5000
+  #    # 连接池最大连接数（使用负值表示没有限制）
+  #    pool:
+  #      max-active: 8
+  #      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+  #      max-wait: -1
+  #      # 连接池中的最大空闲连接
+  #      max-idle: 8
+  #      # 连接池中的最小空闲连接
+  #      min-idle: 0
 
   http:
     encoding:
@@ -100,3 +100,10 @@ wchm:
   infura-api: "https://mainnet.infura.io/v3/c783bc77104c4b2d8d7cca07e85dcbc5"
   # 查询钱包地址交易记录api地址
   address-transactions-url: "https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=${wchm.contract-address}&startblock=0&endblock=99999999&page=[pageNum]&offset=[pageSize]&sort=desc&address=[address]&apikey=RAUWFA7NCA5H2IMDJ4V5GYK6ARVTA7Y23U"
+  # keystore文件存放地址
+  keystore-address: "F://keystore/pct/UTC--2018-11-06T01-21-53.686Z--252a5761cbe1e0711eec88ad90d333fa5e1fb2f6"
+  # keystore文件密码
+  keystore-password: "123456789"
+  php:
+    # php 解析token api
+    token-api: "https://test-discuz.parkeco.io/api/v1/sign"

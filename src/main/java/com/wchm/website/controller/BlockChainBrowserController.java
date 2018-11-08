@@ -89,16 +89,6 @@ public class BlockChainBrowserController {
 //        }
 //    }
 
-
-    /**
-     * https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0x183630c3AfA08957E588eaa26b748cc5C2D42DC6&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&address=0xbd2fd77d6c2f4ba55d39825fe24b4993dbd79913&apikey=RAUWFA7NCA5H2IMDJ4V5GYK6ARVTA7Y23U
-     *
-     * contractaddress: 代币地址-固定
-     * address:         钱包地址
-     *
-     *
-     */
-
     /**
      * 区块链搜索框查询数据
      *
