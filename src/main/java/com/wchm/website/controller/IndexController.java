@@ -7,6 +7,7 @@ import com.wchm.website.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,8 @@ import java.util.Date;
 @RequestMapping("")
 public class IndexController {
 
+    @Value("${server.port}")
+    private String port;
 
     @Autowired
     private BookingService bookingService; //预售
@@ -71,10 +74,11 @@ public class IndexController {
 //        return paperService.paperSave(number, response, request);
 //    }
 
-
-//    @GetMapping("/socket")
-//    public String webSocket(HttpServletResponse response) {
-//        return "websocket";
+//
+//    @GetMapping("/port")
+//    @ResponseBody
+//    public String webSocket() {
+//        return port;
 //    }
 
 
