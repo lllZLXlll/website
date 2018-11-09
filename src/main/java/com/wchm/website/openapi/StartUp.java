@@ -19,19 +19,39 @@ public class StartUp {
                 String hasTokenJson = HttpUtils.sendPost(access_key, secret_key, HostConstant.MAIN_HOST, HostConstant.GET_TOKEN);
 
                 JSONObject jsonObject = JSONObject.fromObject(hasTokenJson);
-               // set token
+
 
                 String sy = jsonObject.getString("data");
 
                 JSONObject jsonObject1 =JSONObject.fromObject(sy);
 
+                // set token
                 HttpParams.setToken(jsonObject1.getString("token"));
-
 
                 // get 获取token 状态
                 String tokenStatusJson =  HttpUtils.sendPost(access_key, secret_key, HostConstant.MAIN_HOST, HostConstant.CHECK_TOKEN_STATUS);
 
-                System.out.println(tokenStatusJson);
+                String code=null;
+                if (tokenStatusJson.equals(null)){
+
+                }
+
+                // 获取实时行情
+                String  real =HttpUtils.sendPost(access_key, secret_key, HostConstant.MAIN_HOST,HostConstant.GET_MARKET_REAL);
+
+                JSONObject co = JSONObject.fromObject(real);
+
+                //打印实时行情
+                System.out.println(co);
+
+
+                 // TODO
+                // 1.需要判断token的状态是否有效，
+
+                // 2.从龙网调取货币价格接口
+
+                // 打印token状态
+       //         System.out.println(tokenStatusJson);
             }
         }).start();
 

@@ -11,9 +11,12 @@ public class HostConstant {
     // 获取token状态
     public static String CHECK_TOKEN_STATUS = "/api/v1/token/status/";
 
-/*    // 获取所有货币(GET)
-    public static String GET_COIN_ALL ="https://{host}/api/v1/coin/all/";
+   // 获取所有货币(GET)
+    public static String GET_COIN_ALL ="/api/v1/coin/all/";
 
     // 获取用户所拥有的货币信息.(POST 只返回用户有的币种)
-    public static String GET_USER_COIN ="https://{host}/api/v1/user/own/";*/
+    public static String GET_USER_COIN ="/api/v1/user/own/";
+
+    //获取实时行情
+    public static String GET_MARKET_REAL="/api/v1/market/real/";
 }

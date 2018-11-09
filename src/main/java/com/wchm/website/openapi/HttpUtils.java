@@ -35,13 +35,13 @@ public class HttpUtils {
             }
             result = sb.toString();
         } catch (Exception e) {
-            System.out.println("[request error][address��" + uri + "][error msg��" + e.getMessage() + "]");
+            System.out.println("[request error][address" + uri + "][error msg" + e.getMessage() + "]");
         } finally {
             try {
                 if (null != in)
                     in.close();
             } catch (Exception e2) {
-                System.out.println("[close stream error][error msg��" + e2.getMessage() + "]");
+                System.out.println("[close stream error][error msg" + e2.getMessage() + "]");
             }
         }
         return result;
