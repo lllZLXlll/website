@@ -495,8 +495,8 @@ public class AdminController {
     @RequiresRoles(value = {"admin", "finance"}, logical = Logical.OR)
     @GetMapping("/currency/data")
     @ResponseBody
-    public Result currencyData(Integer pageNum, Integer pageSize, String user_name) {
-        return currencyService.queryCurrencyByPage(pageNum, pageSize, user_name);
+    public Result currencyData(Integer pageNum, Integer pageSize, String user_name,Integer type) {
+        return currencyService.queryCurrencyByPage(pageNum, pageSize, user_name,type);
     }
 
     /**

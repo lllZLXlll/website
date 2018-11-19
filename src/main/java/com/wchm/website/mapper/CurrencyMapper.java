@@ -18,8 +18,12 @@ public interface CurrencyMapper {
     List<Currency> queryCurrencyByPage();
 
     //查询
-    @Select("SELECT * FROM website_currency_pool WHERE user_name LIKE '%' #{user_name} '%' AND state = 1 ORDER BY id DESC")
-    List<Currency> queryCurrencyByPageName(@Param("user_name") String user_name);
+    @Select("<script> " +
+            "SELECT  * FROM website_currency_pool" +
+            " WHERE user_name LIKE '%' #{user_name} '%'  <when test='type != null'> and type = #{type}</when> " +
+            "ORDER BY state = 1 DESC " +
+            "</script>")
+    List<Currency> queryCurrencyByPageName(@Param("user_name") String user_name,@Param("type") Integer type);
 
     //删除
     @Delete("DELETE FROM website_currency_pool WHERE id = #{id}")
@@ -112,8 +116,8 @@ public interface CurrencyMapper {
     @Update("UPDATE website_currency_pool SET surplus = 0 WHERE mobile = #{mobile}")
     Long updatePoolUserSurplus(@Param("mobile") String mobile);
 
-    @Select("SELECT * FROM website_currency_pool WHERE now( ) >= lock_end_time OR now( ) >= last_unlock_time")
-    List<Currency> queryPoolList();
+    @Select("SELECT * FROM website_currency_pool WHERE (now( ) >= lock_end_time OR now( ) >= last_unlock_time) AND type = #{type}")
+    List<Currency> queryPoolList(@Param("type") Integer type);
 
     @Update("UPDATE website_currency_pool SET surplus = #{currency.surplus}, " +
             "currency = #{currency.currency}, last_unlock_time = #{currency.last_unlock_time} WHERE id = #{currency.id}")

@@ -1,6 +1,5 @@
 package com.wchm.website.mapper;
 
-import com.wchm.website.entity.News;
 import com.wchm.website.entity.Notice;
 import org.apache.ibatis.annotations.*;
 
@@ -8,18 +7,18 @@ import java.util.List;
 
 public interface NoticeMapper {
 
-    @Select("SELECT * FROM website_notice WHERE state = 1 ORDER BY time DESC LIMIT 3")
-    List<Notice> queryNotices();
-
     @Select("SELECT * FROM website_notice ORDER BY create_time DESC")
     List<Notice> queryNoticeByPage();
+
+    @Select("SELECT * FROM website_notice WHERE state = 1 AND lang = #{lang} ORDER BY time DESC LIMIT 10")
+    List<Notice> queryNotices(@Param("lang") Integer lang);
 
     @Select("<script> " +
             "SELECT  * FROM website_notice" +
             " WHERE title LIKE '%' #{title} '%' <choose> <when  test='lang != null'> and lang = #{lang}</when>  </choose> " +
             "ORDER BY time DESC " +
             "</script>")
-    List<Notice> queryNoticeByPageTitle(@Param("title") String title,@Param("lang") Integer lang);
+    List<Notice> queryNoticeByPageTitle(@Param("title") String title, @Param("lang") Integer lang);
 
     @Insert("INSERT INTO website_notice(title, content, time, description, create_time, state,lang) " +
             "VALUES(#{notice.title}, #{notice.content}, #{notice.timeInsert}, #{notice.description}, NOW(), #{notice.state},#{notice.lang})")
@@ -37,11 +36,19 @@ public interface NoticeMapper {
             " where id = #{notice.id} ")
     Long newsUpdate(@Param("notice") Notice notice);
 
-    @Select("SELECT * FROM website_notice WHERE id = #{id} and lang = #{lang}")
-    Notice queryNoticeInfo(@Param("id") Long id,@Param("lang") Integer lang);
+    @Select("SELECT * FROM website_notice WHERE id = #{id}")
+    Notice queryNoticeInfo(@Param("id") Long id);
 
-
-    @Select("SELECT * FROM website_notice WHERE state = 1 and lang = #{lang} ORDER BY time DESC")
+    @Select("<script> " +
+            " SELECT  * FROM website_notice " +
+            " WHERE state = 1 " +
+            " <choose> " +
+            "   <when test='lang != null'> " +
+            "       AND lang = #{lang} " +
+            "   </when>" +
+            " </choose> " +
+            " ORDER BY time DESC " +
+            "</script>")
     List<Notice> queryNoticeList(@Param("lang") Integer lang);
 
 }

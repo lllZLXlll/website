@@ -20,7 +20,16 @@
     <div class="x-body">
       <div class="layui-row">
         <div class="layui-form layui-col-md12 x-so">
+          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名字：</span>
           <input type="text" id="user_name" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;类型：</span>
+          <div class="layui-input-inline">
+            <select  id="currencyType">
+              <option value="">全部</option>
+              <option  value="1">基石轮</option>
+              <option value="2">A轮</option>
+            </select>
+          </div>
           <button class="layui-btn" onclick="currencySreach()"><i class="layui-icon">&#xe615;</i></button>
         </div>
       </div>
@@ -41,11 +50,12 @@
             <th>姓名</th>
             <th>手机号码</th>
             <th>用户钱包地址</th>
-            <th>代币总额</th>
-            <th>剩余代币总额</th>
+            <th>代币剩余总额</th>
+            <th>可提现总额</th>
             <th>锁仓计划</th>
             <th>备注</th>
             <th>创建时间</th>
+            <th>类型</th>
             <!--<th>操作</th>-->
             </tr>
         </thead>

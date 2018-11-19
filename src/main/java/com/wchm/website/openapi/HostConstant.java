@@ -19,4 +19,7 @@ public class HostConstant {
 
     //获取实时行情
     public static String GET_MARKET_REAL="/api/v1/market/real/";
+
+    //获取实时行情
+    public static String GET_SYMBOL_ALL="/api/v1/symbol/all/";
 }

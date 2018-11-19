@@ -232,6 +232,10 @@ public class BlockChainBrowserServiceImpl implements BlockChainBrowserService {
                     String value = j.get("value").toString(); // 交易额
                     String timeStamp = j.get("timeStamp").toString(); // 时间
 
+                    // 用户输入的地址有时会大写加小写，equals就会对比不一样
+                    from = from.toLowerCase();
+                    hash = hash.toLowerCase();
+
                     // 判断是转出send还是收入receive
                     if (from.equals(hash)) {
                         txVo.setType("send");

@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public interface NoticeService {
 
-    List<Notice> queryNotices();
+    Result queryNotices(Integer lang);
 
     Result  queryNoticeList(Integer pageNum, Integer pageSize,Integer lang);
 
@@ -24,5 +24,5 @@ public interface NoticeService {
 
     Result newsUpdate(Notice notice);
 
-    Result queryNoticeInfo(Long id,Integer lang);
+    Result queryNoticeInfo(Long id);
 }

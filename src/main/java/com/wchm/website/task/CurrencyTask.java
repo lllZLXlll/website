@@ -25,6 +25,7 @@ public class CurrencyTask {
     private CurrencyService currencyService;
 
     /**
+     * 基石轮
      * 每个季度修改代币池表中的数据，每次解仓20%代币，剩余可用代币增加20%，代币总额减少20%。
      * <p>
      * 第一次解仓按照每个人的解仓时间
@@ -33,8 +34,8 @@ public class CurrencyTask {
      */
     @Scheduled(cron = "0 0 6 * * ?")
     private void updateUserCurrency() {
-        // 查询代币池中数据
-        List<Currency> poolList = currencyService.queryPoolList();
+        // 查询代币池中数据 基石轮
+        List<Currency> poolList = currencyService.queryPoolList(1);
 
         if (poolList == null) {
             return;
@@ -53,15 +54,16 @@ public class CurrencyTask {
             // 解仓时间
             Date lock_end_time = item.getLock_end_time();
             // 代币总额
+            BigDecimal count = item.getCount();
+            // 代币总额减去剩余总额
             BigDecimal currency = item.getCurrency();
             // 可用代币
             BigDecimal surplus = item.getSurplus();
             surplus = surplus == null ? new BigDecimal("0") : surplus;
 
             // 解仓的代币金额 20%
-            BigDecimal money = currency.multiply(new BigDecimal("0.2"));
+            BigDecimal money = count.multiply(new BigDecimal("0.2"));
             item.setSurplus(surplus.add(money));
-
             // 总额减少
             item.setCurrency(currency.subtract(money));
 
@@ -92,11 +94,58 @@ public class CurrencyTask {
                 log.error("-----error-----用户代币池解仓修改失败，代币池数据：currency：" + item.toString());
                 return;
             }
-
         }
-
-
     }
 
+    /**
+     * A轮
+     * A 轮用户解锁所购 PCT 的 50%，剩余部分2018-11-18开始锁仓6个月后解锁。
+     *
+     */
+    @Scheduled(cron = "50 30 17 * * ?")
+    private void updateUserCurrencyA() {
+        // 查询代币池中数据 A轮
+        List<Currency> poolList = currencyService.queryPoolList(2);
+
+        if (poolList == null) {
+            return;
+        }
+
+        for (Currency item : poolList) {
+            // 上一次解仓时间
+            Date last_unlock_time = item.getLast_unlock_time();
+            // 解仓时间
+            Date lock_end_time = item.getLock_end_time();
+            // 代币总额
+            BigDecimal currency = item.getCurrency();
+            // 可用代币
+            BigDecimal surplus = item.getSurplus();
+            surplus = surplus == null ? new BigDecimal("0") : surplus;
+
+            // 解仓的代币金额 50%
+            item.setSurplus(surplus.add(currency));
+
+            // 总额减少
+            item.setCurrency(new BigDecimal("0"));
+
+            String lock_end_time_str = DateUtil.formatDefaultDate(lock_end_time);
+            String now = DateUtil.formatDefaultDate(new Date());
+            item.setLast_unlock_time(DateUtil.parseDefaultDate(now));
+
+            long result = -1;
+
+            if (last_unlock_time == null) {
+                if (now.equals(lock_end_time_str)) {
+                    // 时间一致，解仓，修改数据库
+                    result = currencyService.updateCurrency(item);
+                }
+            }
+
+            if (result == 0) {
+                log.error("-----error-----用户代币池解仓修改失败，代币池数据：currency：" + item.toString());
+                return;
+            }
+        }
+    }
 
 }

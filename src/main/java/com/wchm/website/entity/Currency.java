@@ -32,6 +32,9 @@ public class Currency implements Serializable {
     private String address;
 
     @ApiModelProperty("用户代币总额")
+    private BigDecimal count;
+
+    @ApiModelProperty("代币总额减去剩余总额")
     private BigDecimal currency;
 
     @ApiModelProperty("用户剩余代币总额")
@@ -61,6 +64,11 @@ public class Currency implements Serializable {
     @ApiModelProperty("创建时间")
     private Date create_time = new Date();
 
+
+    @ApiModelProperty("1:基石轮，2:A轮")
+    private Integer type ;
+
+
     public String getCreate_time() {
         return DateUtil.formatDefaultDate(create_time);
     }
@@ -73,6 +81,7 @@ public class Currency implements Serializable {
                 ", user_name='" + user_name + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", address='" + address + '\'' +
+                ", count=" + count +
                 ", currency=" + currency +
                 ", surplus=" + surplus +
                 ", lock_describe='" + lock_describe + '\'' +

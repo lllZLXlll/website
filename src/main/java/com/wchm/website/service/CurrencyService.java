@@ -18,7 +18,7 @@ public interface CurrencyService {
     Result queryCurrencyAccount(String token, String language);
 
     //分页
-    Result queryCurrencyByPage(Integer pageNum, Integer pageSize, String user_name);
+    Result queryCurrencyByPage(Integer pageNum, Integer pageSize, String user_name,Integer type);
 
     //保存
     Result currencySave(Currency currency);
@@ -54,7 +54,7 @@ public interface CurrencyService {
     Result applyforSubmit(Integer id);
 
     // 查询代币池所有数据
-    List<Currency> queryPoolList();
+    List<Currency> queryPoolList(Integer type);
 
     Long updateCurrency(Currency item);
 }

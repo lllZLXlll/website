@@ -10,6 +10,8 @@ var tbody = "" +
     "   <td>data7</td>" +//lock_describe
     "   <td>data10</td>" + //remarks
     "   <td>data12</td>" + //create_time
+    "   <td>data13</td>" + //create_time
+
     // "   <td class='td-manage'>" +
     // "       <a title='明细' onclick='x_currency_show(\"明细\",\"data13\")' href='javascript:;'>" +
     // "           <span style='color: #007DDB;'>明细</span>" +
@@ -27,11 +29,12 @@ $(function () {
 });
 
 // 分页查询
-function queryPageData(user_name) {
+function queryPageData(user_name,type) {
     var param = {
         pageNum: pageNum,
         pageSize: pageSize,
         user_name: user_name,
+        type: type,
     };
 
     $.ajax({
@@ -46,6 +49,7 @@ function queryPageData(user_name) {
                     var tableBody = '';
                     var dataList = data.data.list;
                     for (var i = 0; i < dataList.length; i++) {
+                        var type = dataList[i].type;
                         tableBody += tbody;
                         tableBody = tableBody.replace('data1', i + 1);
                         tableBody = tableBody.replace('data2', dataList[i].user_name);
@@ -56,8 +60,10 @@ function queryPageData(user_name) {
                         tableBody = tableBody.replace('data7', dataList[i].lock_describe);
                         tableBody = tableBody.replace('data10', dataList[i].remarks);
                         tableBody = tableBody.replace('data12', dataList[i].create_time);
-                        tableBody = tableBody.replace('data13', '/admin/currency/record/' + dataList[i].id);
-                        tableBody = tableBody.replace('data14', '/admin/currency/transfer/' + dataList[i].id);
+                        tableBody = tableBody.replace('data13', type == 1 ? '基石轮' : 'A轮');
+
+                        // tableBody = tableBody.replace('data13', '/admin/currency/record/' + dataList[i].id);
+                        // tableBody = tableBody.replace('data14', '/admin/currency/transfer/' + dataList[i].id);
                     }
                     $("#currencyTbody").html(tableBody);
 
@@ -93,7 +99,8 @@ function queryPageData(user_name) {
 // 搜索
 function currencySreach() {
     var user_name = $("#user_name").val();
-    queryPageData(user_name);
+    var currencyType = $("#currencyType").val();
+    queryPageData(user_name,currencyType);
 }
 
 // 删除

@@ -1,6 +1,7 @@
 package com.wchm.website.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wchm.website.fieldfilter.JsonReturnHandler;
 import com.wchm.website.interceptor.AuthorityInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -93,6 +96,16 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         // 配置拦截路径，和不拦截路径
         registry.addInterceptor(new AuthorityInterceptor()).addPathPatterns("/admin/**").excludePathPatterns("/admin/login/**");
 
+    }
+
+    @Bean
+    public JsonReturnHandler jsonReturnHandler() {
+        return new JsonReturnHandler(); // 初始化json过滤器
+    }
+
+    @Override
+    public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
+        returnValueHandlers.add(jsonReturnHandler());
     }
 
 

@@ -24,8 +24,8 @@ class NoticeServiceImpl implements NoticeService {
     NoticeMapper noticeMapper;
 
     @Override
-    public List<Notice> queryNotices() {
-        return noticeMapper.queryNotices();
+    public Result queryNotices(Integer lang) {
+        return Result.create().success(noticeMapper.queryNotices(lang == null ? 0 : lang));
     }
 
 
@@ -122,8 +122,8 @@ class NoticeServiceImpl implements NoticeService {
 
 
     @Override
-    public Result queryNoticeInfo(Long id, Integer lang) {
-        Notice notice = noticeMapper.queryNoticeInfo(id,lang);
+    public Result queryNoticeInfo(Long id) {
+        Notice notice = noticeMapper.queryNoticeInfo(id);
         return Result.create().success("查询成功",notice);
     }
 

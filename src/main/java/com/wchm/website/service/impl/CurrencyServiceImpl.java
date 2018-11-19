@@ -163,13 +163,13 @@ public class CurrencyServiceImpl implements CurrencyService {
      * @return
      */
     @Override
-    public Result queryCurrencyByPage(Integer pageNum, Integer pageSize, String user_name) {
+    public Result queryCurrencyByPage(Integer pageNum, Integer pageSize, String user_name,Integer type) {
         PageHelper.startPage(pageNum == null || pageNum <= 0 ? 1 : pageNum, pageSize == null || pageSize <= 0 ? 10 : pageSize);
         List<Currency> data;
-        if (StringUtil.isEmpty(user_name)) {
+        if (StringUtil.isEmpty(user_name)&& type==null) {
             data = currencyMapper.queryCurrencyByPage();
         } else {
-            data = currencyMapper.queryCurrencyByPageName(user_name);
+            data = currencyMapper.queryCurrencyByPageName(user_name,type);
         }
         PageInfo<Currency> p = new PageInfo(data);
         return Result.create().success("查询成功", p);
@@ -441,8 +441,8 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public List<Currency> queryPoolList() {
-        return currencyMapper.queryPoolList();
+    public List<Currency> queryPoolList(Integer type) {
+        return currencyMapper.queryPoolList(type);
     }
 
     @Override
